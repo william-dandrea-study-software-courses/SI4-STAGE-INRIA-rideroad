@@ -8,9 +8,6 @@
       "schematics": {
         "@schematics/angular:component": {
           "style": "scss"
-        },
-        "@schematics/angular:application": {
-          "strict": true
         }
       },
       "root": "",
@@ -107,5 +104,7 @@
       }
     }
   },
-  "defaultProject": "safecycle-client"
+  "cli": {
+    "analytics": "30288002-1273-41d5-87c9-98a5a00b3ccb"
+  }
 }
