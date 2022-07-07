@@ -11,6 +11,7 @@
 .main-container-map {
   box-sizing: border-box;
   flex:1;
+
 }
 
 
@@ -23,11 +24,18 @@
 .main-inputs-section {
 
   height: 100%;
-  width: 30%;
+  width: 35%;
 
   background: white;
+  z-index: 2;
 }
 
+
+.example-container {
+  width: 400px;
+  height: 200px;
+  margin: 10px;
+}
 
 
 

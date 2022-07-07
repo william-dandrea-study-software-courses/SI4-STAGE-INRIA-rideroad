@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 
 @Component({
   selector: 'app-new-itinerary-bar',
@@ -7,9 +8,26 @@ import { Component, OnInit } from '@angular/core';
 })
 export class NewItineraryBarComponent implements OnInit {
 
-  constructor() { }
+  public itineraryForm: FormGroup;
 
-  ngOnInit(): void {
+  constructor(private formBuilder: FormBuilder) {
+    this.itineraryForm = this.formBuilder.group({
+      departure: ['', [Validators.required]],
+      destination: ['', [Validators.required]],
+      roadType: ['', [Validators.required]],
+    })
+  }
+
+  ngOnInit(): void {}
+
+
+  public onSearch(): void {
+    if (this.itineraryForm.valid) {
+      console.log(this.itineraryForm)
+    } else {
+      console.log("Please enter all details")
+    }
+
   }
 
 }

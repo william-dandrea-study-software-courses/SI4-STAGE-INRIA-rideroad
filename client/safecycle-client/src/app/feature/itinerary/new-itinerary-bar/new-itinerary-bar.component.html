@@ -3,31 +3,36 @@
 
   <h1>New itinerary</h1>
 
-  <div>
+  <form [formGroup]="itineraryForm">
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>Departure</mat-label>
-      <input matInput placeholder="Enter the departure address">
+      <input matInput placeholder="Enter the departure address" formControlName="departure">
       <mat-icon matSuffix>my_location</mat-icon>
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>Destination</mat-label>
-      <input matInput placeholder="Enter the destination">
+      <input matInput placeholder="Enter the destination" formControlName="destination">
       <mat-icon matSuffix>my_location</mat-icon>
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>Road type</mat-label>
-      <mat-select>
+      <mat-select formControlName="roadType">
         <mat-option value="one">Road</mat-option>
         <mat-option value="two">Dirt</mat-option>
         <mat-option value="two">Bike path</mat-option>
       </mat-select>
     </mat-form-field>
 
-    <button mat-raised-button color="primary" class="full-width">Search</button>
+    <button mat-raised-button color="primary" class="full-width" (click)="onSearch()">Search</button>
 
-  </div>
+  </form>
+
+  <hr class="rounded">
+
+
+  <app-itinerary-card class="itinerary-card-extern-container"></app-itinerary-card>
 
 
 
