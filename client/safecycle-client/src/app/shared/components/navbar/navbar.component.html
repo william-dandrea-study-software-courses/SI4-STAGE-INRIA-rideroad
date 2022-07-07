@@ -1,0 +1,11 @@
+<mat-toolbar color="primary">
+  <span>{{ '{' }} <mat-icon>directions_bike</mat-icon> {{ '}' }} SafeCycle</span>
+  <span class="max-spacer"></span>
+
+  <button mat-button (click)="changePageTo('itinerary')">New itinerary</button>
+  <button mat-button (click)="changePageTo('strategic-point')">Strategic places</button>
+  <button mat-button (click)="changePageTo('gps')">GPS</button>
+</mat-toolbar>
+
+<ng-content select=".content"></ng-content>
+

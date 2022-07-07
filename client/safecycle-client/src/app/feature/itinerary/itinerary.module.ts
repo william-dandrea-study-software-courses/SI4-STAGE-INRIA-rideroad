@@ -2,13 +2,18 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { ItineraryRoutingModule } from './itinerary-routing.module';
+import { ItineraryComponent } from './itinerary.component';
+import {SharedModule} from "../../shared/shared.module";
 
 
 @NgModule({
-  declarations: [],
+  declarations: [
+    ItineraryComponent
+  ],
   imports: [
     CommonModule,
-    ItineraryRoutingModule
+    ItineraryRoutingModule,
+    SharedModule
   ]
 })
 export class ItineraryModule { }
