@@ -1,6 +1,3 @@
-#map {
-  height: 100%;
-}
 
 
 .main-itinerary-section {
@@ -14,7 +11,21 @@
 .main-container-map {
   box-sizing: border-box;
   flex:1;
+}
 
+
+#map {
+  height: 100%;
+  width: 100%;
+}
+
+
+.main-inputs-section {
+
+  height: 100%;
+  width: 30%;
+
+  background: white;
 }
 
 

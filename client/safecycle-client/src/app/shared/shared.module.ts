@@ -23,6 +23,7 @@ import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 import {MatSnackBarModule} from "@angular/material/snack-bar";
 import { PageNotFoundComponent } from './pages/page-not-found/page-not-found.component';
 import {RouterModule} from "@angular/router";
+import {MatSelectModule} from "@angular/material/select";
 
 const modules = [
   CommonModule,
@@ -45,7 +46,8 @@ const modules = [
   FormsModule,
   MatSnackBarModule,
   MatProgressBarModule,
-  MatProgressSpinnerModule
+  MatProgressSpinnerModule,
+  MatSelectModule,
 ]
 
 const components = [
