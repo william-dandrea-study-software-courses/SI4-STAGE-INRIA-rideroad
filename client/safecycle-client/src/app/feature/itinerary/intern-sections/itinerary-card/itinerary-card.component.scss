@@ -7,6 +7,33 @@
   border-radius: 5px;
   box-sizing: border-box;
 
-  box-shadow: 2px 2px 1px #fafafa;
+  box-shadow: 3px 3px 3px lightgrey;
   padding: 10px;
 }
+
+.details-grid-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 5px;
+  margin: 10px;
+}
+
+.details-tail {
+  background: #ffffff;
+  display: flex ;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  box-shadow: 1px 1px 5px lightgrey;
+  padding: 10px;
+}
+
+.details-tail-name {
+  font-size: 18px;
+}
+
+.details-tail-infos {
+  font-size: 12px;
+}
+

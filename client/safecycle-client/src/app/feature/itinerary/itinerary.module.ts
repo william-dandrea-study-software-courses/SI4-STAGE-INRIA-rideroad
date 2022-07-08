@@ -14,10 +14,10 @@ import { ItineraryCardComponent } from './intern-sections/itinerary-card/itinera
     NewItineraryBarComponent,
     ItineraryCardComponent
   ],
-  imports: [
-    CommonModule,
-    ItineraryRoutingModule,
-    SharedModule
-  ]
+    imports: [
+        CommonModule,
+        ItineraryRoutingModule,
+        SharedModule,
+    ]
 })
 export class ItineraryModule { }

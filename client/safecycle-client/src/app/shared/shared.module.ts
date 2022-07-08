@@ -24,6 +24,8 @@ import {MatSnackBarModule} from "@angular/material/snack-bar";
 import { PageNotFoundComponent } from './pages/page-not-found/page-not-found.component';
 import {RouterModule} from "@angular/router";
 import {MatSelectModule} from "@angular/material/select";
+import {MatTabsModule} from "@angular/material/tabs";
+import {MatGridListModule} from "@angular/material/grid-list";
 
 const modules = [
   CommonModule,
@@ -48,6 +50,8 @@ const modules = [
   MatProgressBarModule,
   MatProgressSpinnerModule,
   MatSelectModule,
+  MatTabsModule,
+  MatGridListModule
 ]
 
 const components = [
