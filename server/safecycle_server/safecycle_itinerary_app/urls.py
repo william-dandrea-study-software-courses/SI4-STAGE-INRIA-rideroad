@@ -5,4 +5,5 @@ from . import views
 
 urlpatterns = [
     path('hello', views.say_hello, name="hello"),
+    path('itinerary', views.get_itinerary, name="itinerary")
 ]
