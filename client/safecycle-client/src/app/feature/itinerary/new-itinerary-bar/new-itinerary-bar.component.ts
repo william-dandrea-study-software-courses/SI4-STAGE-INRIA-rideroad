@@ -22,13 +22,15 @@ import {NominatimAddressModel} from "../../../core/model/nominatim-address.model
 })
 export class NewItineraryBarComponent implements OnInit {
 
+  private departureAddress: NominatimAddressModel | null = null;
+  private destinationAddress: NominatimAddressModel | null = null;
+
   public itineraryForm: FormGroup;
+  public departureControl = new FormControl('');
+  public destinationControl = new FormControl('');
 
-  departureControl = new FormControl('');
-  public filteredOptions: Subscription;
-
-  options: string[] = ['One', 'Two', 'Three'];
-  public adressesOptions: NominatimAddressModel[] = []
+  public adressesOptionsDeparture: NominatimAddressModel[] = []
+  public adressesOptionsDestination: NominatimAddressModel[] = []
 
   constructor(private formBuilder: FormBuilder, private autoCompletionAddressService: AutoCompletionAddressService) {
     this.itineraryForm = this.formBuilder.group({
@@ -37,32 +39,60 @@ export class NewItineraryBarComponent implements OnInit {
       roadType: ['', [Validators.required]],
     })
 
-    this.filteredOptions = this.departureControl.valueChanges.pipe(
+    this.departureControl.valueChanges.pipe(
       filter(res => {
-        return res !== null && res.length >= 1
+        return res !== null
       }),
       distinctUntilChanged(),
       debounceTime(400),
       tap(() => {
-        this.adressesOptions = [];
+        this.adressesOptionsDeparture = [];
       }),
       switchMap(value => this.autoCompletionAddressService.getAddress(value))
-    )
-      .subscribe((data: NominatimAddressModel[]) => {
+    ).subscribe((data: NominatimAddressModel[]) => {
         if (data == undefined) {
-          this.adressesOptions = [];
+          this.adressesOptionsDeparture = [];
         } else {
-          this.adressesOptions = data;
+          this.adressesOptionsDeparture = data;
         }
-        console.log(this.adressesOptions);
       });
+
+    this.destinationControl.valueChanges.pipe(
+      filter(res => res !== null),
+      distinctUntilChanged(),
+      debounceTime(400),
+      tap(() => {this.adressesOptionsDeparture = [];}),
+      switchMap(value => this.autoCompletionAddressService.getAddress(value))
+    ).subscribe((data: NominatimAddressModel[]) => {
+      if (data == undefined) {
+        this.adressesOptionsDestination = [];
+      } else {
+        this.adressesOptionsDestination = data
+      }
+    })
   }
+
 
   ngOnInit(): void {}
 
 
+  public setDepartureAddress(address: NominatimAddressModel): void {
+    this.itineraryForm.controls['departure'].setValue(address.display_name);
+    this.departureAddress = address
+  }
+
+  public setDestinationAddress(address: NominatimAddressModel): void {
+    this.itineraryForm.controls['destination'].setValue(address.display_name);
+    this.destinationAddress = address
+  }
+
+
 
   public onSearch(): void {
+
+    console.log(this.itineraryForm.value)
+    console.log(this.departureAddress)
+
     if (this.itineraryForm.valid) {
       console.log(this.itineraryForm)
     } else {

@@ -12,6 +12,8 @@ export class AutoCompletionAddressService {
 
   public getAddress(input: string | null) : Observable<NominatimAddressModel[]> {
 
+    console.log(input)
+
     if (input != null ){
       const url = 'https://nominatim.openstreetmap.org/search.php';
 

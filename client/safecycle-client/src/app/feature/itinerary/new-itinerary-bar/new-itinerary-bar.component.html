@@ -6,10 +6,10 @@
   <form [formGroup]="itineraryForm">
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>Departure</mat-label>
-      <input matInput placeholder="Enter the departure address" formControlName="departure" [matAutocomplete]="auto" [formControl]="departureControl">
+      <input matInput placeholder="Enter the departure address" formControlName="departure" [matAutocomplete]="autoDeparture" [formControl]="departureControl">
 
-      <mat-autocomplete #auto="matAutocomplete">
-        <mat-option *ngFor="let adress of adressesOptions" [value]="adress.display_name">
+      <mat-autocomplete #autoDeparture="matAutocomplete">
+        <mat-option *ngFor="let adress of adressesOptionsDeparture" [value]="adress.display_name" (click)="setDepartureAddress(adress)">
           {{adress.display_name}}
         </mat-option>
       </mat-autocomplete>
@@ -19,7 +19,14 @@
 
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>Destination</mat-label>
-      <input matInput placeholder="Enter the destination" formControlName="destination">
+      <input matInput placeholder="Enter the destination" formControlName="destination" [matAutocomplete]="autoDestination" [formControl]="destinationControl" >
+
+      <mat-autocomplete #autoDestination="matAutocomplete">
+        <mat-option *ngFor="let adress of adressesOptionsDestination" [value]="adress.display_name" (click)="setDestinationAddress(adress)">
+          {{adress.display_name}}
+        </mat-option>
+      </mat-autocomplete>
+
       <mat-icon matSuffix>my_location</mat-icon>
     </mat-form-field>
 
