@@ -13,7 +13,6 @@ export class ItineraryService {
 
 
   public getItinerary(longitudeStart: number, latitudeStart: number, longitudeEnd: number, latitudeEnd: number, roadType: number): Observable<ItineraryModel> {
-
     const url = 'http://127.0.0.1:8000/api/itinerary';
 
     let queryParams = new HttpParams();
@@ -24,7 +23,10 @@ export class ItineraryService {
     queryParams = queryParams.append("road_type", roadType);
 
     return this.http.get<ItineraryModel>(url, {params:queryParams})
-
   }
+
+
+
+
 
 }

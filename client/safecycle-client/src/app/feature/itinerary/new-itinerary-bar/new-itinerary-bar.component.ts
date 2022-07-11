@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {
   map,
@@ -10,7 +10,7 @@ import {
   filter,
   tap,
   finalize,
-  Subscription
+  Subscription, BehaviorSubject
 } from "rxjs";
 import {AutoCompletionAddressService} from "../../../core/service/auto-completion-address.service";
 import {NominatimAddressModel} from "../../../core/model/nominatim-address.model";
@@ -22,8 +22,12 @@ import {NominatimAddressModel} from "../../../core/model/nominatim-address.model
 })
 export class NewItineraryBarComponent implements OnInit {
 
-  private departureAddress: NominatimAddressModel | null = null;
-  private destinationAddress: NominatimAddressModel | null = null;
+
+  @Output() public departureAddress = new EventEmitter<NominatimAddressModel>();
+  @Output() public destinationAddress = new EventEmitter<NominatimAddressModel>();
+  @Output() public profil = new EventEmitter<number>();
+  @Output() public onValidate = new EventEmitter<boolean>();
+  // @Output() public onValidate: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false)
 
   public itineraryForm: FormGroup;
   public departureControl = new FormControl('');
@@ -78,23 +82,23 @@ export class NewItineraryBarComponent implements OnInit {
 
   public setDepartureAddress(address: NominatimAddressModel): void {
     this.itineraryForm.controls['departure'].setValue(address.display_name);
-    this.departureAddress = address
+    this.departureAddress.emit(address);
   }
 
   public setDestinationAddress(address: NominatimAddressModel): void {
     this.itineraryForm.controls['destination'].setValue(address.display_name);
-    this.destinationAddress = address
+    this.destinationAddress.emit(address)
   }
 
 
 
   public onSearch(): void {
 
-    console.log(this.itineraryForm.value)
-    console.log(this.departureAddress)
-
     if (this.itineraryForm.valid) {
       console.log(this.itineraryForm)
+
+      this.profil.emit(+this.itineraryForm.value['roadType'])
+      this.onValidate.emit(true);
     } else {
       console.log("Please enter all details")
     }

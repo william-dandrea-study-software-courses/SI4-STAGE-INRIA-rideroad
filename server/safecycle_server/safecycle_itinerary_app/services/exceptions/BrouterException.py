@@ -1,0 +1,5 @@
+
+
+
+class BrouterException(Exception):
+    pass

@@ -5,6 +5,7 @@ from django.shortcuts import render
 
 # Create your views here.
 from .services.ItineraryGeneration import ItineraryGeneration
+from .services.exceptions.BrouterException import BrouterException
 
 
 def say_hello(request):
@@ -32,10 +33,16 @@ def get_itinerary(request):
 
     print(departure_longitude, departure_latitude, destination_longitude, destination_latitude, road_type)
 
-    itinerary = ItineraryGeneration(departure_longitude=departure_longitude, departure_latitude=departure_latitude, destination_longitude=destination_longitude, destination_latitude=destination_latitude, road_type=road_type)
-    result = itinerary.search()
+    try:
+        itinerary = ItineraryGeneration(departure_longitude=departure_longitude, departure_latitude=departure_latitude, destination_longitude=destination_longitude, destination_latitude=destination_latitude, road_type=road_type)
+        result = itinerary.search()
+        return HttpResponse(json.dumps(result), status=200)
+    except BrouterException:
+        return HttpResponse(json.dumps({'message': "Cannot find coordonates in the map"}), status=416)
+    except:
+        return HttpResponse(json.dumps({'message': "Error during processing"}), status=424)
 
-    return HttpResponse(json.dumps(result))
+
 
 
 def get_test_itinerary(request):

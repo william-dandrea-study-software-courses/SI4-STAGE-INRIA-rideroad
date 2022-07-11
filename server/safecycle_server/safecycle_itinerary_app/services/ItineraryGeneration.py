@@ -4,6 +4,7 @@ import requests
 from requests import Session
 import logging
 
+from .exceptions.BrouterException import BrouterException
 from .models import RoadTypeEnum
 from .models.Coord import Coord
 from .models.Itinerary import Itinerary
@@ -42,12 +43,11 @@ class ItineraryGeneration:
 
         if request_manager.status_code == 200:
             logger.info("Request worked")
-
             return request_manager.json()
-        else:
-            logger.error(f"Request {url} failed")
 
-        return None
+        logger.error(f"Request {url} failed")
+        raise BrouterException()
+
 
 
     def __analyse_brouter_request(self, request_json):
