@@ -5,5 +5,7 @@ from . import views
 
 urlpatterns = [
     path('hello', views.say_hello, name="hello"),
-    path('itinerary', views.get_itinerary, name="itinerary")
+    path('test-itinerary', views.get_test_itinerary, name="test-itinerary"),
+    path('itinerary', views.get_itinerary, name="itinerary"),
+
 ]

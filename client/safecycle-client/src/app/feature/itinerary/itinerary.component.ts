@@ -1,6 +1,8 @@
 import {AfterViewInit, Component, OnInit} from '@angular/core';
 
 import * as L from 'leaflet';
+import {GEO_JSON} from "../../shared/mocks/geojson";
+import {LatLng} from "leaflet";
 
 @Component({
   selector: 'app-itinerary',
@@ -24,8 +26,8 @@ export class ItineraryComponent implements OnInit, AfterViewInit {
 
   private initMat(): void {
     this.map = L.map('map', {
-      center: [ 48.858840058739816, 7.073708905917356 ],
-      zoom: 18,
+      center: [ 43.482957, -1.564209 ],
+      zoom: 8,
     });
 
     const tiles = L.tileLayer('https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png', {
@@ -36,6 +38,16 @@ export class ItineraryComponent implements OnInit, AfterViewInit {
     });
 
     tiles.addTo(this.map);
+
+    const latLong = GEO_JSON.map(array => {
+      return new LatLng(array[1], array[0], array[2]);
+    });
+
+
+
+    const itin = L.polyline(latLong)
+    itin.addTo(this.map)
+
   }
 
 }

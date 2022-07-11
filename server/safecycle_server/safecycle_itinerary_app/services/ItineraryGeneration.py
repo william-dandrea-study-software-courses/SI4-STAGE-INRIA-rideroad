@@ -25,12 +25,12 @@ class ItineraryGeneration:
 
     def search(self):
 
-        alternative1 = self.__berouter_request('trekking', 0)
+        alternative1 = self.berouter_request('trekking', 0)
 
 
         return self.__analyse_brouter_request(alternative1).toDict()
 
-    def __berouter_request(self, profile: str, alternative: int):
+    def berouter_request(self, profile: str, alternative: int):
 
         url = 'http://brouter.de/brouter?'
         url += f'format=geojson' + '&'

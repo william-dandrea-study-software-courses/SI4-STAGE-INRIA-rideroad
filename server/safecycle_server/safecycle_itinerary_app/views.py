@@ -36,3 +36,16 @@ def get_itinerary(request):
     result = itinerary.search()
 
     return HttpResponse(json.dumps(result))
+
+
+def get_test_itinerary(request):
+    print("yo")
+    itinerary = ItineraryGeneration(departure_longitude=-1.762642, departure_latitude=43.373684,
+                                    destination_longitude=1.62221,
+                                    destination_latitude=43.389117, road_type=1)
+
+
+    result = itinerary.berouter_request('trekking', 1)
+
+
+    return HttpResponse(result)
