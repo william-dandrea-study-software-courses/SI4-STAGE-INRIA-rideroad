@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'safecycle_itinerary_app'
+    'safecycle_itinerary_app.apps.SafecycleItineraryAppConfig'
 ]
 
 MIDDLEWARE = [

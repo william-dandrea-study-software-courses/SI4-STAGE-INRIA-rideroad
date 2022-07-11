@@ -1,7 +1,11 @@
+import json
+
 from django.http import HttpResponse
 from django.shortcuts import render
 
 # Create your views here.
+from .services.ItineraryGeneration import ItineraryGeneration
+
 
 def say_hello(request):
     return HttpResponse("Hello")
@@ -28,5 +32,7 @@ def get_itinerary(request):
 
     print(departure_longitude, departure_latitude, destination_longitude, destination_latitude, road_type)
 
+    itinerary = ItineraryGeneration(departure_longitude=departure_longitude, departure_latitude=departure_latitude, destination_longitude=destination_longitude, destination_latitude=destination_latitude, road_type=road_type)
+    result = itinerary.search()
 
-    return HttpResponse("Itinerary")
+    return HttpResponse(json.dumps(result))
