@@ -14,6 +14,7 @@ import {
 } from "rxjs";
 import {AutoCompletionAddressService} from "../../../core/service/auto-completion-address.service";
 import {NominatimAddressModel} from "../../../core/model/nominatim-address.model";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
   selector: 'app-new-itinerary-bar',
@@ -29,6 +30,10 @@ export class NewItineraryBarComponent implements OnInit {
   @Output() public onValidate = new EventEmitter<boolean>();
   // @Output() public onValidate: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false)
 
+  private isDepartureAddressInitialized: boolean = false;
+  private isDestinationAddressInitialized: boolean = false;
+  private isProfilInitialized: boolean = false;
+
   public itineraryForm: FormGroup;
   public departureControl = new FormControl('');
   public destinationControl = new FormControl('');
@@ -36,7 +41,7 @@ export class NewItineraryBarComponent implements OnInit {
   public adressesOptionsDeparture: NominatimAddressModel[] = []
   public adressesOptionsDestination: NominatimAddressModel[] = []
 
-  constructor(private formBuilder: FormBuilder, private autoCompletionAddressService: AutoCompletionAddressService) {
+  constructor(private formBuilder: FormBuilder, private autoCompletionAddressService: AutoCompletionAddressService, private snackBar: MatSnackBar) {
     this.itineraryForm = this.formBuilder.group({
       departure: ['', [Validators.required]],
       destination: ['', [Validators.required]],
@@ -83,24 +88,27 @@ export class NewItineraryBarComponent implements OnInit {
   public setDepartureAddress(address: NominatimAddressModel): void {
     this.itineraryForm.controls['departure'].setValue(address.display_name);
     this.departureAddress.emit(address);
+    this.isDepartureAddressInitialized = true;
   }
 
   public setDestinationAddress(address: NominatimAddressModel): void {
     this.itineraryForm.controls['destination'].setValue(address.display_name);
     this.destinationAddress.emit(address)
+    this.isDestinationAddressInitialized = true;
   }
 
 
 
   public onSearch(): void {
 
-    if (this.itineraryForm.valid) {
+    if (this.itineraryForm.valid && this.isDepartureAddressInitialized && this.isDestinationAddressInitialized) {
       console.log(this.itineraryForm)
 
       this.profil.emit(+this.itineraryForm.value['roadType'])
       this.onValidate.emit(true);
     } else {
       console.log("Please enter all details")
+      this.snackBar.open("Please fill all the forms", "Ok");
     }
   }
 

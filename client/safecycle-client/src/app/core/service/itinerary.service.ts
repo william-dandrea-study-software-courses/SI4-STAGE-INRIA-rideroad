@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpParams} from "@angular/common/http";
-import {Observable} from "rxjs";
+import {BehaviorSubject, Observable} from "rxjs";
 import {NominatimAddressModel} from "../model/nominatim-address.model";
 import {ItineraryModel} from "../model/itinerary.model";
 
@@ -9,10 +9,13 @@ import {ItineraryModel} from "../model/itinerary.model";
 })
 export class ItineraryService {
 
+  public itinerary: ItineraryModel | null = null;
+  public $itinerary: BehaviorSubject<ItineraryModel | null> = new BehaviorSubject<ItineraryModel | null>(null)
+
   constructor(private http: HttpClient) { }
 
 
-  public getItinerary(longitudeStart: number, latitudeStart: number, longitudeEnd: number, latitudeEnd: number, roadType: number): Observable<ItineraryModel> {
+  private getItinerary(longitudeStart: number, latitudeStart: number, longitudeEnd: number, latitudeEnd: number, roadType: number): Observable<ItineraryModel> {
     const url = 'http://127.0.0.1:8000/api/itinerary';
 
     let queryParams = new HttpParams();
@@ -23,6 +26,14 @@ export class ItineraryService {
     queryParams = queryParams.append("road_type", roadType);
 
     return this.http.get<ItineraryModel>(url, {params:queryParams})
+  }
+
+
+  public launchSearchItinerary(longitudeStart: number, latitudeStart: number, longitudeEnd: number, latitudeEnd: number, roadType: number) {
+    this.getItinerary(longitudeStart, latitudeStart, longitudeEnd, latitudeEnd, roadType).subscribe(v => {
+      this.itinerary = v;
+      this.$itinerary.next(v);
+    })
   }
 
 

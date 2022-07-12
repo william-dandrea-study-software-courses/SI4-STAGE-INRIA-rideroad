@@ -25,34 +25,10 @@ export class ItineraryComponent implements OnInit, AfterViewInit {
 
   constructor(private itineraryService: ItineraryService) { }
 
-  public ngOnInit(): void {
-  }
+  public ngOnInit(): void {}
 
   public ngAfterViewInit(): void {
     this.initMat();
-
-    this.itineraryService.getItinerary(-1.762642, 43.373684, -1.62221, 43.389117, 1).subscribe(v => {
-
-      const allPaths: PathModel[] = v.paths;
-
-      let allSegments = []
-      for (let path of allPaths) {
-        const allLongLat = path.coords.map(coord => new LatLng(coord.lat, coord.lon, coord.elevation))
-
-        allSegments.push(
-          L.polyline(allLongLat, {
-            color: path.costs.elevation > 0 ? "blue" : "red",
-            weight: 5,
-            smoothFactor: 1,
-          })
-        )
-      }
-
-      const itinerary = L.featureGroup(allSegments);
-      itinerary.addTo(this.map);
-    }, e => {
-      console.log("Cannot find the path")
-    })
   }
 
   private initMat(): void {
@@ -87,31 +63,35 @@ export class ItineraryComponent implements OnInit, AfterViewInit {
   public onValidate(event: boolean) {
 
     if (this.departureAddress != null && this.destinationAddress != null && this.profil != null) {
-      this.itineraryService.getItinerary(+this.departureAddress?.lon, +this.departureAddress?.lat, +this.destinationAddress?.lon, +this.destinationAddress?.lat, +this.profil).subscribe(v => {
+      this.itineraryService.launchSearchItinerary(+this.departureAddress?.lon, +this.departureAddress?.lat, +this.destinationAddress?.lon, +this.destinationAddress?.lat, +this.profil);
 
-        const allPaths: PathModel[] = v.paths;
+      this.itineraryService.$itinerary.subscribe(v => {
 
-        let allSegments = []
-        for (let path of allPaths) {
-          const allLongLat = path.coords.map(coord => new LatLng(coord.lat, coord.lon, coord.elevation))
+        if (v != null) {
+          const allPaths: PathModel[] = v.paths;
 
-          allSegments.push(
-            L.polyline(allLongLat, {
-              color: path.costs.elevation > 0 ? "blue" : "red",
-              weight: 5,
-              smoothFactor: 1,
-            })
-          )
+          let allSegments = []
+          for (let path of allPaths) {
+            const allLongLat = path.coords.map(coord => new LatLng(coord.lat, coord.lon, coord.elevation))
+
+            allSegments.push(
+              L.polyline(allLongLat, {
+                color: path.costs.elevation > 0 ? "blue" : "red",
+                weight: 5,
+                smoothFactor: 1,
+              })
+            )
+          }
+
+          const itinerary = L.featureGroup(allSegments);
+          itinerary.addTo(this.map);
         }
 
-        const itinerary = L.featureGroup(allSegments);
-        itinerary.addTo(this.map);
+
       }, e => {
         console.log("Cannot find the path")
       })
     }
-
-
 
   }
 
