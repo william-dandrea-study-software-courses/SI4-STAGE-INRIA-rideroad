@@ -72,23 +72,33 @@ export class ItineraryComponent implements OnInit, AfterViewInit {
       this.itineraryService.launchSearchItinerary(+this.departureAddress?.lon, +this.departureAddress?.lat, +this.destinationAddress?.lon, +this.destinationAddress?.lat, +this.profil);
 
       this.itineraryService.$itinerary.subscribe(v => {
+
+        if (v != null){
+          this.map.setView([v[0].paths[0].coords[0].lat, v[0].paths[0].coords[0].lon])
+        }
+
         this.itineraryService.$selectedItinerary.subscribe(selected => {
           if (v != null) {
             this.currentItineraryLayers.forEach(cil => cil.remove())
             this.currentItineraryLayers = [];
 
+
+
             for (let index = 0; index < v.length; index++) {
               const allPaths: PathModel[] = v[index].paths;
               let allSegments = []
 
-              const opacity: number = index == selected ? 1.0 : 0.4
+              const opacity: number = index == selected ? 1.0 : 0.35
+
 
               for (let path of allPaths) {
                 const allLongLat = path.coords.map(coord => new LatLng(coord.lat, coord.lon, coord.elevation))
+                const color: string = index == selected ? (path.costs.elevation > 0 ? "#2596be" : "#be4d25") : "grey"
 
-                allSegments.push(
+
+                  allSegments.push(
                   L.polyline(allLongLat, {
-                    color: path.costs.elevation > 0 ? "#2596be" : "#be4d25",
+                    color: color,
                     weight: 7,
                     smoothFactor: 1,
                     opacity: opacity,

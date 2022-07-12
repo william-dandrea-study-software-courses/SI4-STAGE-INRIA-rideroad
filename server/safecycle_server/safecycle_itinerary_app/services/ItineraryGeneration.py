@@ -140,6 +140,3 @@ class ItineraryGeneration:
                     break
 
         return iti
-
-
-
