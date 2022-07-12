@@ -1,5 +1,5 @@
 import json
-from concurrent.futures import ThreadPoolExecutor
+from django_thread import ThreadPoolExecutor
 from typing import List
 
 import requests
@@ -26,11 +26,11 @@ class ItineraryGeneration:
         self.__road_type: RoadTypeEnum = road_type
 
 
-
-
     def search(self):
 
-        def process_fn(profile, variante):
+        def process_fn(profile_variante_array):
+            profile=profile_variante_array[0]
+            variante=profile_variante_array[1]
             alternative = self.berouter_request(profile, variante)
             return self.__analyse_brouter_request(alternative).toDict()
 
@@ -45,26 +45,26 @@ class ItineraryGeneration:
         if self.__road_type == 3:  # Bike Path
             profile = "trekking"
 
-        # with ThreadPoolExecutor(max_workers=4) as executor:
-        #    itinerarys = list(executor.map(process_fn, [(profile, 0), (profile, 1), (profile, 2), (profile, 3)]))
+        executor = ThreadPoolExecutor()
 
-        itinerarys = [process_fn(profile, 0), process_fn(profile, 1), process_fn(profile, 2), process_fn(profile, 3)]
+        itinerarys = []
+        for i in [0,1,2,3]:
+            future = executor.submit(process_fn, [profile, i])
+            itinerarys.append(future)
+
+        itinerarys = [f.result() for f in itinerarys]
 
         return itinerarys
 
     def berouter_request(self, profile: str, alternative: int):
-
-
-
         url = 'http://brouter.de/brouter?'
         url += f'format=geojson' + '&'
         url += f'profile={profile}' + '&'
         url += f'lonlats={self.__departure_longitude},{self.__departure_latitude}|{self.__destination_longitude},{self.__destination_latitude}' + '&'
         url += f'alternativeidx={alternative}'
 
-        print(url)
 
-        request_manager = requests.get(url, timeout=5)
+        request_manager = requests.get(url, timeout=10)
 
         if request_manager.status_code == 200:
             logger.info("Request worked")
