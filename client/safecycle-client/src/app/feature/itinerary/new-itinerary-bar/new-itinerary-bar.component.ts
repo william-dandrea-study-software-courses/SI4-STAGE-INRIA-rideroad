@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, OnDestroy, OnInit, Output} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {
   map,
@@ -15,13 +15,15 @@ import {
 import {AutoCompletionAddressService} from "../../../core/service/auto-completion-address.service";
 import {NominatimAddressModel} from "../../../core/model/nominatim-address.model";
 import {MatSnackBar} from "@angular/material/snack-bar";
+import {ItineraryService} from "../../../core/service/itinerary.service";
+import {ItineraryModel} from "../../../core/model/itinerary.model";
 
 @Component({
   selector: 'app-new-itinerary-bar',
   templateUrl: './new-itinerary-bar.component.html',
   styleUrls: ['./new-itinerary-bar.component.scss']
 })
-export class NewItineraryBarComponent implements OnInit {
+export class NewItineraryBarComponent implements OnInit, OnDestroy {
 
 
   @Output() public departureAddress = new EventEmitter<NominatimAddressModel>();
@@ -41,11 +43,18 @@ export class NewItineraryBarComponent implements OnInit {
   public adressesOptionsDeparture: NominatimAddressModel[] = []
   public adressesOptionsDestination: NominatimAddressModel[] = []
 
-  constructor(private formBuilder: FormBuilder, private autoCompletionAddressService: AutoCompletionAddressService, private snackBar: MatSnackBar) {
+  public currentItinerary: ItineraryModel | null = null;
+  public currentItinerarySubscription: Subscription;
+
+  constructor(private formBuilder: FormBuilder, private autoCompletionAddressService: AutoCompletionAddressService, private snackBar: MatSnackBar, private itineraryService: ItineraryService) {
     this.itineraryForm = this.formBuilder.group({
       departure: ['', [Validators.required]],
       destination: ['', [Validators.required]],
       roadType: ['', [Validators.required]],
+    })
+
+    this.currentItinerarySubscription = this.itineraryService.$itinerary.subscribe(v => {
+      this.currentItinerary = v;
     })
 
     this.departureControl.valueChanges.pipe(
@@ -110,6 +119,10 @@ export class NewItineraryBarComponent implements OnInit {
       console.log("Please enter all details")
       this.snackBar.open("Please fill all the forms", "Ok");
     }
+  }
+
+  ngOnDestroy(): void {
+    this.currentItinerarySubscription.unsubscribe();
   }
 
 }

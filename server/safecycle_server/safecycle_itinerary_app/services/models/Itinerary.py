@@ -6,13 +6,15 @@ from .Path import Path
 class Itinerary:
 
 
-    def __init__(self, time, length, cost):
+    def __init__(self, time, length, cost, filtered_ascend):
         self.time = time
         self.profile = None
         self.alternative = None
         self.paths: List[Path] = []
         self.cost = cost
         self.length = length
+        self.filtered_ascend = filtered_ascend
+        self.altitude_profil: List[float] = []
 
 
     def toDict(self):
@@ -23,4 +25,6 @@ class Itinerary:
             "paths": [path.toDict() for path in self.paths],
             "cost": self.cost,
             "length": self.length,
+            "filtered_ascend": self.filtered_ascend,
+            "altitude_profil": self.altitude_profil,
         }

@@ -9,24 +9,32 @@
       <div class="details-grid-container">
         <div class="details-tail">
           <div class="details-tail-name">Distance</div>
-          <div class="details-tail-infos">30km</div>
+          <div class="details-tail-infos">{{ this.lengthItineraryInKm }} km</div>
         </div>
         <div class="details-tail">
           <div class="details-tail-name">Time</div>
-          <div class="details-tail-infos">1h03m</div>
+          <div class="details-tail-infos">{{ this.timeItinerary }}</div>
         </div>
         <div class="details-tail">
           <div class="details-tail-name">Inflection</div>
-          <div class="details-tail-infos">100m</div>
+          <div class="details-tail-infos">{{ this.inflationItinerary }} m</div>
         </div>
       </div>
 
-
-
-
-
     </mat-tab>
-    <mat-tab label="Inflection"> Inflection </mat-tab>
+    <mat-tab label="Inflection">
+      <div class="details-tail">
+        <div class="details-tail-name">Profil</div>
+        <div class="details-tail-infos">
+          <canvas baseChart
+                  [type]="'line'"
+                  [data]="lineChartData"
+                  [options]="lineChartOptions"
+                  [legend]="lineChartLegend">
+          </canvas>
+        </div>
+      </div>
+    </mat-tab>
     <mat-tab label="Meteo"> Meteo </mat-tab>
   </mat-tab-group>
 

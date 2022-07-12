@@ -1,4 +1,5 @@
 import json
+from typing import List
 
 import requests
 from requests import Session
@@ -24,11 +25,10 @@ class ItineraryGeneration:
         self.__road_type: RoadTypeEnum = road_type
 
 
+
+
     def search(self):
-
         alternative1 = self.berouter_request('trekking', 0)
-
-
         return self.__analyse_brouter_request(alternative1).toDict()
 
     def berouter_request(self, profile: str, alternative: int):
@@ -66,8 +66,9 @@ class ItineraryGeneration:
         time = int(props["total-time"])
         cost = int(props["cost"])
         length = int(props["track-length"])
+        filtered_ascend = int(props["filtered ascend"])
 
-        iti = Itinerary(time, length, cost)
+        iti = Itinerary(time, length, cost, filtered_ascend)
 
         def new_path():
             path = Path()
@@ -86,6 +87,7 @@ class ItineraryGeneration:
 
             coordinate = Coord(longitude_from_initial_coordinate, latitude_from_initial_coordinate, height_from_initial_coordinate)
             current_path.addNewCoordinateToPath(coordinate)
+            iti.altitude_profil.append(height_from_initial_coordinate)
 
             # Because a path is a combinaison of several coordinates (named 'coordinates' in the json), we need to watch
             # when we want to close this path. The moment when we close this path is when the coordinates of a message

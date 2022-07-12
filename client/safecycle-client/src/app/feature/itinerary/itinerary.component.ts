@@ -29,6 +29,10 @@ export class ItineraryComponent implements OnInit, AfterViewInit {
 
   public ngAfterViewInit(): void {
     this.initMat();
+
+    this.itineraryService.launchSearchItinerary(-1.7629402788039814, 43.37483706661806, -1.5668728515248176, 43.46248423267775, 1);
+    // La : 43.37483706661806, Lo : -1.7629402788039814
+    // La : 43.46248423267775, Lo -1.5668728515248176
   }
 
   private initMat(): void {

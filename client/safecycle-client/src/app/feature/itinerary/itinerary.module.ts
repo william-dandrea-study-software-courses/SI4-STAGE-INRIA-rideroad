@@ -6,6 +6,7 @@ import { ItineraryComponent } from './itinerary.component';
 import {SharedModule} from "../../shared/shared.module";
 import { NewItineraryBarComponent } from './new-itinerary-bar/new-itinerary-bar.component';
 import { ItineraryCardComponent } from './intern-sections/itinerary-card/itinerary-card.component';
+import {NgChartsModule} from "ng2-charts";
 
 
 @NgModule({
@@ -18,6 +19,7 @@ import { ItineraryCardComponent } from './intern-sections/itinerary-card/itinera
         CommonModule,
         ItineraryRoutingModule,
         SharedModule,
+        NgChartsModule,
     ]
 })
 export class ItineraryModule { }

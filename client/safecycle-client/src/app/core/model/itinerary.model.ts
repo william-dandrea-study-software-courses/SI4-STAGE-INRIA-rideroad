@@ -8,6 +8,8 @@ export interface ItineraryModel {
   paths: PathModel[];
   cost: number;
   length: number;
+  filtered_ascend: number;
+  altitude_profil: number[];
 }
 
 export interface PathModel {
