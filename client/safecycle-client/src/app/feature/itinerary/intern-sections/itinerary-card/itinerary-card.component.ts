@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {ItineraryService} from "../../../../core/service/itinerary.service";
 import {ItineraryModel} from "../../../../core/model/itinerary.model";
 import {Subscription} from "rxjs";
@@ -11,8 +11,11 @@ import {ChartConfiguration, ChartOptions} from "chart.js";
 })
 export class ItineraryCardComponent implements OnInit, OnDestroy {
 
+  @Input() indexItinerary: string | null = null;
+  public indexItineraryNumber: number = 0
+
   public currentItinerary: ItineraryModel | null = null;
-  public currentItinerarySubscription: Subscription;
+  public currentItinerarySubscription: Subscription = new Subscription();
 
   public lengthItineraryInKm: number | null = 0;
   public timeItinerary: string | null = null;
@@ -48,27 +51,38 @@ export class ItineraryCardComponent implements OnInit, OnDestroy {
 
 
 
-  constructor(private itineraryService: ItineraryService) {
+  constructor(public itineraryService: ItineraryService) {
+  }
+
+  ngOnInit(): void {
+    console.log(this.indexItinerary)
+    if (this.indexItinerary != null) {
+      this.indexItineraryNumber = +this.indexItinerary;
+    }
 
     this.currentItinerarySubscription = this.itineraryService.$itinerary.subscribe(v => {
-      this.currentItinerary = v;
+      if (v != null && this.indexItinerary != null) {
+        this.currentItinerary = v[+this.indexItinerary];
 
-      if (v != null) {
-        this.lengthItineraryInKm = parseFloat((v.length / 1000).toFixed(2))
-        this.inflationItinerary = v.filtered_ascend
+        this.lengthItineraryInKm = parseFloat((this.currentItinerary.length / 1000).toFixed(2))
+        this.inflationItinerary = this.currentItinerary.filtered_ascend
         // @ts-ignore
-        this.timeItinerary = new Date(v.time * 1000).toISOString().substr(11, 8)
+        this.timeItinerary = new Date(this.currentItinerary.time * 1000).toISOString().substr(11, 5).replace(':', 'h ') + 'min'
 
-        this.lineChartData.datasets[0].data = v.altitude_profil
-        this.lineChartData.labels = [...Array(v.altitude_profil.length).keys()]
+        this.lineChartData.datasets[0].data = this.currentItinerary.altitude_profil
+        this.lineChartData.labels = [...Array(this.currentItinerary.altitude_profil.length).keys()]
       }
     })
   }
 
-  ngOnInit(): void {}
-
   ngOnDestroy(): void {
     this.currentItinerarySubscription.unsubscribe();
+  }
+
+
+  public setSelectedItinerary(): void {
+    if (this.indexItinerary != null)
+      this.itineraryService.changeSelectedItinerary(+this.indexItinerary)
   }
 
 }

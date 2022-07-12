@@ -1,4 +1,5 @@
 import json
+from concurrent.futures import ThreadPoolExecutor
 from typing import List
 
 import requests
@@ -28,10 +29,32 @@ class ItineraryGeneration:
 
 
     def search(self):
-        alternative1 = self.berouter_request('trekking', 0)
-        return self.__analyse_brouter_request(alternative1).toDict()
+
+        def process_fn(profile, variante):
+            alternative = self.berouter_request(profile, variante)
+            return self.__analyse_brouter_request(alternative).toDict()
+
+        profile: str = ""
+
+        if self.__road_type == 1:  # Road
+            profile = "fastbike"
+
+        if self.__road_type == 2:  # Dirt
+            profile = "hiking-mountain"
+
+        if self.__road_type == 3:  # Bike Path
+            profile = "trekking"
+
+        # with ThreadPoolExecutor(max_workers=4) as executor:
+        #    itinerarys = list(executor.map(process_fn, [(profile, 0), (profile, 1), (profile, 2), (profile, 3)]))
+
+        itinerarys = [process_fn(profile, 0), process_fn(profile, 1), process_fn(profile, 2), process_fn(profile, 3)]
+
+        return itinerarys
 
     def berouter_request(self, profile: str, alternative: int):
+
+
 
         url = 'http://brouter.de/brouter?'
         url += f'format=geojson' + '&'
@@ -39,7 +62,9 @@ class ItineraryGeneration:
         url += f'lonlats={self.__departure_longitude},{self.__departure_latitude}|{self.__destination_longitude},{self.__destination_latitude}' + '&'
         url += f'alternativeidx={alternative}'
 
-        request_manager = requests.get(url)
+        print(url)
+
+        request_manager = requests.get(url, timeout=5)
 
         if request_manager.status_code == 200:
             logger.info("Request worked")

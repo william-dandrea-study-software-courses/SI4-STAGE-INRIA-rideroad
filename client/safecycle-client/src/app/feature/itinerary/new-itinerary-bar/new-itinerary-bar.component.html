@@ -47,7 +47,11 @@
 
   <div *ngIf="currentItinerary != null">
 
-    <app-itinerary-card class="itinerary-card-extern-container"></app-itinerary-card>
+    <div *ngFor="let itIndex of this.indexesCurrentItinerary">
+      <app-itinerary-card  class="itinerary-card-extern-container" indexItinerary="{{ itIndex }}"></app-itinerary-card>
+
+      <div style="height: 15px;"></div>
+    </div>
 
 
   </div>

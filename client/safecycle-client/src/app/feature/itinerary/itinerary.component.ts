@@ -2,11 +2,12 @@ import {AfterViewInit, Component, EventEmitter, OnInit} from '@angular/core';
 
 import * as L from 'leaflet';
 import {GEO_JSON} from "../../shared/mocks/geojson";
-import {Coords, LatLng} from "leaflet";
+import {Coords, FeatureGroup, LatLng} from "leaflet";
 import {ItineraryService} from "../../core/service/itinerary.service";
 import {LatLonElevationModel, PathModel} from "../../core/model/itinerary.model";
 import {NominatimAddressModel} from "../../core/model/nominatim-address.model";
 import {Observable} from "rxjs";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
   selector: 'app-itinerary',
@@ -17,20 +18,21 @@ export class ItineraryComponent implements OnInit, AfterViewInit {
 
   // @ts-ignore
   public map;
+  public currentItineraryLayers: FeatureGroup[] = [];
 
   public departureAddress: NominatimAddressModel | null = null;
   public destinationAddress: NominatimAddressModel | null = null;
   public profil: number | null = null;
 
 
-  constructor(private itineraryService: ItineraryService) { }
+  constructor(private itineraryService: ItineraryService, private snackBar: MatSnackBar) { }
 
   public ngOnInit(): void {}
 
   public ngAfterViewInit(): void {
     this.initMat();
 
-    this.itineraryService.launchSearchItinerary(-1.7629402788039814, 43.37483706661806, -1.5668728515248176, 43.46248423267775, 1);
+    // this.itineraryService.launchSearchItinerary(-1.7629402788039814, 43.37483706661806, -1.5668728515248176, 43.46248423267775, 1);
     // La : 43.37483706661806, Lo : -1.7629402788039814
     // La : 43.46248423267775, Lo -1.5668728515248176
   }
@@ -70,30 +72,40 @@ export class ItineraryComponent implements OnInit, AfterViewInit {
       this.itineraryService.launchSearchItinerary(+this.departureAddress?.lon, +this.departureAddress?.lat, +this.destinationAddress?.lon, +this.destinationAddress?.lat, +this.profil);
 
       this.itineraryService.$itinerary.subscribe(v => {
+        this.itineraryService.$selectedItinerary.subscribe(selected => {
+          if (v != null) {
+            this.currentItineraryLayers.forEach(cil => cil.remove())
+            this.currentItineraryLayers = [];
 
-        if (v != null) {
-          const allPaths: PathModel[] = v.paths;
+            for (let index = 0; index < v.length; index++) {
+              const allPaths: PathModel[] = v[index].paths;
+              let allSegments = []
 
-          let allSegments = []
-          for (let path of allPaths) {
-            const allLongLat = path.coords.map(coord => new LatLng(coord.lat, coord.lon, coord.elevation))
+              const opacity: number = index == selected ? 1.0 : 0.4
 
-            allSegments.push(
-              L.polyline(allLongLat, {
-                color: path.costs.elevation > 0 ? "blue" : "red",
-                weight: 5,
-                smoothFactor: 1,
-              })
-            )
+              for (let path of allPaths) {
+                const allLongLat = path.coords.map(coord => new LatLng(coord.lat, coord.lon, coord.elevation))
+
+                allSegments.push(
+                  L.polyline(allLongLat, {
+                    color: path.costs.elevation > 0 ? "#2596be" : "#be4d25",
+                    weight: 7,
+                    smoothFactor: 1,
+                    opacity: opacity,
+                  })
+                )
+              }
+
+              let itinerary = L.featureGroup(allSegments);
+              this.currentItineraryLayers.push(itinerary)
+            }
+
+            this.currentItineraryLayers.forEach(cil => cil.addTo(this.map))
           }
+        })
 
-          const itinerary = L.featureGroup(allSegments);
-          itinerary.addTo(this.map);
-        }
-
-
-      }, e => {
-        console.log("Cannot find the path")
+      }, error => {
+        this.snackBar.open('Cannot find the path', 'OK');
       })
     }
 

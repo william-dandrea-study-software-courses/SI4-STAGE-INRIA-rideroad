@@ -43,7 +43,8 @@ export class NewItineraryBarComponent implements OnInit, OnDestroy {
   public adressesOptionsDeparture: NominatimAddressModel[] = []
   public adressesOptionsDestination: NominatimAddressModel[] = []
 
-  public currentItinerary: ItineraryModel | null = null;
+  public currentItinerary: ItineraryModel[] | null = null;
+  public indexesCurrentItinerary: number[] = [];
   public currentItinerarySubscription: Subscription;
 
   constructor(private formBuilder: FormBuilder, private autoCompletionAddressService: AutoCompletionAddressService, private snackBar: MatSnackBar, private itineraryService: ItineraryService) {
@@ -55,6 +56,7 @@ export class NewItineraryBarComponent implements OnInit, OnDestroy {
 
     this.currentItinerarySubscription = this.itineraryService.$itinerary.subscribe(v => {
       this.currentItinerary = v;
+      this.indexesCurrentItinerary = Array.from(Array(v?.length).keys())
     })
 
     this.departureControl.valueChanges.pipe(
