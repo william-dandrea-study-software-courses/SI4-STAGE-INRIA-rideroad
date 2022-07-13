@@ -2,7 +2,7 @@
 
 export interface ItineraryModel {
 
-  time: number | null;
+  time: number;
   profile: number | null;
   alternative: number | null;
   paths: PathModel[];

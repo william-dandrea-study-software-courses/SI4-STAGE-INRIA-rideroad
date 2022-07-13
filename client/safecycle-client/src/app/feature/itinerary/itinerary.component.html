@@ -7,11 +7,7 @@
   <mat-drawer-container class="main-container-map">
 
     <mat-drawer mode="side" opened class="main-inputs-section">
-      <app-new-itinerary-bar (departureAddress)="onDepartureAddress($event)"
-                             (destinationAddress)="onDestinationAddress($event)"
-                             (profil)="onProfil($event)"
-                             (onValidate)="onValidate($event)"
-      ></app-new-itinerary-bar>
+      <app-new-itinerary-bar></app-new-itinerary-bar>
     </mat-drawer>
 
     <mat-drawer-content><div id="map"></div></mat-drawer-content>

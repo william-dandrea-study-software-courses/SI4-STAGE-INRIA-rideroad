@@ -25,27 +25,21 @@ import {ItineraryModel} from "../../../core/model/itinerary.model";
 })
 export class NewItineraryBarComponent implements OnInit, OnDestroy {
 
-
-  @Output() public departureAddress = new EventEmitter<NominatimAddressModel>();
-  @Output() public destinationAddress = new EventEmitter<NominatimAddressModel>();
-  @Output() public profil = new EventEmitter<number>();
-  @Output() public onValidate = new EventEmitter<boolean>();
-  // @Output() public onValidate: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false)
-
-  private isDepartureAddressInitialized: boolean = false;
-  private isDestinationAddressInitialized: boolean = false;
-  private isProfilInitialized: boolean = false;
+  private departureAddress: NominatimAddressModel | null = null;
+  private destinationAddress: NominatimAddressModel | null = null;
 
   public itineraryForm: FormGroup;
   public departureControl = new FormControl('');
   public destinationControl = new FormControl('');
+  public departureAPICallIsLoading = false;
+  public destinationAPICallIsLoading = false;
 
   public adressesOptionsDeparture: NominatimAddressModel[] = []
   public adressesOptionsDestination: NominatimAddressModel[] = []
 
   public currentItinerary: ItineraryModel[] | null = null;
   public indexesCurrentItinerary: number[] = [];
-  public currentItinerarySubscription: Subscription;
+  public currentItinerarySubscription: Subscription = new Subscription();
 
   constructor(private formBuilder: FormBuilder, private autoCompletionAddressService: AutoCompletionAddressService, private snackBar: MatSnackBar, private itineraryService: ItineraryService) {
     this.itineraryForm = this.formBuilder.group({
@@ -53,12 +47,22 @@ export class NewItineraryBarComponent implements OnInit, OnDestroy {
       destination: ['', [Validators.required]],
       roadType: ['', [Validators.required]],
     })
+  }
 
+  ngOnInit(): void {
     this.currentItinerarySubscription = this.itineraryService.$itinerary.subscribe(v => {
       this.currentItinerary = v;
       this.indexesCurrentItinerary = Array.from(Array(v?.length).keys())
     })
 
+    this.initializeDepartureControl();
+    this.initializeDestinationControl()
+  }
+
+  /**
+   * Manage the auto-completion for the departureControl form
+   */
+  private initializeDepartureControl(): void {
     this.departureControl.valueChanges.pipe(
       filter(res => {
         return res !== null
@@ -67,60 +71,100 @@ export class NewItineraryBarComponent implements OnInit, OnDestroy {
       debounceTime(400),
       tap(() => {
         this.adressesOptionsDeparture = [];
+        this.departureAPICallIsLoading = true;
       }),
-      switchMap(value => this.autoCompletionAddressService.getAddress(value))
+      switchMap(value =>
+        this.autoCompletionAddressService.getAddress(value)
+          .pipe(
+            finalize(() => {
+              this.departureAPICallIsLoading = false;
+            })
+          )
+      )
     ).subscribe((data: NominatimAddressModel[]) => {
-        if (data == undefined) {
-          this.adressesOptionsDeparture = [];
-        } else {
-          this.adressesOptionsDeparture = data;
-        }
-      });
+      if (data == undefined) {
+        this.adressesOptionsDeparture = [];
+      } else {
+        this.adressesOptionsDeparture = data;
+      }
+    });
+  }
 
+
+  /**
+   * Manage the auto-completion for the destinationControl form
+   */
+  private initializeDestinationControl(): void {
     this.destinationControl.valueChanges.pipe(
-      filter(res => res !== null),
+      filter(res => {
+        return res !== null
+      }),
       distinctUntilChanged(),
       debounceTime(400),
-      tap(() => {this.adressesOptionsDeparture = [];}),
-      switchMap(value => this.autoCompletionAddressService.getAddress(value))
+      tap(() => {
+        this.adressesOptionsDestination = [];
+        this.destinationAPICallIsLoading = true;
+      }),
+      switchMap(value =>
+        this.autoCompletionAddressService.getAddress(value)
+          .pipe(
+            finalize(() => {
+              this.destinationAPICallIsLoading = false;
+            })
+          )
+      )
     ).subscribe((data: NominatimAddressModel[]) => {
       if (data == undefined) {
         this.adressesOptionsDestination = [];
       } else {
-        this.adressesOptionsDestination = data
+        this.adressesOptionsDestination = data;
       }
-    })
-  }
-
-
-  ngOnInit(): void {}
-
-
-  public setDepartureAddress(address: NominatimAddressModel): void {
-    this.itineraryForm.controls['departure'].setValue(address.display_name);
-    this.departureAddress.emit(address);
-    this.isDepartureAddressInitialized = true;
-  }
-
-  public setDestinationAddress(address: NominatimAddressModel): void {
-    this.itineraryForm.controls['destination'].setValue(address.display_name);
-    this.destinationAddress.emit(address)
-    this.isDestinationAddressInitialized = true;
+    });
   }
 
 
 
-  public onSearch(): void {
-
-    if (this.itineraryForm.valid && this.isDepartureAddressInitialized && this.isDestinationAddressInitialized) {
-      console.log(this.itineraryForm)
-
-      this.profil.emit(+this.itineraryForm.value['roadType'])
-      this.onValidate.emit(true);
-    } else {
-      console.log("Please enter all details")
-      this.snackBar.open("Please fill all the forms", "Ok");
+  /**
+   * Called when a user click on the address in the list when he search a new adress
+   * @param address we want to affect
+   * @param place 0 for departureAddress, 1 for destinationAddress
+   */
+  public onAddressChange(address: NominatimAddressModel, place: number): void {
+    if (place == 0) {
+      this.itineraryForm.controls['departure'].setValue(address.display_name);
+      this.departureAddress = address;
     }
+    if (place == 1) {
+      this.itineraryForm.controls['destination'].setValue(address.display_name);
+      this.destinationAddress = address;
+    }
+  }
+
+
+  /**
+   * Method that call the itineraryService for the generation of a new itinerary
+   */
+  public onSearch(): void {
+    if (this.departureAddress != null && this.destinationAddress != null) {
+      this.itineraryService.launchSearchItinerary(
+        +this.departureAddress.lon,
+        +this.departureAddress.lat,
+        +this.destinationAddress.lon,
+        +this.destinationAddress.lat,
+        +this.itineraryForm.value['roadType']
+      )
+    } else {
+      this.itineraryNotFindError()
+    }
+  }
+
+  /**
+   * Handled when the fields are not full
+   */
+  private itineraryNotFindError(): void {
+    this.snackBar.open('Please fill all the forms', 'OK', {
+      duration: 5,
+    });
   }
 
   ngOnDestroy(): void {

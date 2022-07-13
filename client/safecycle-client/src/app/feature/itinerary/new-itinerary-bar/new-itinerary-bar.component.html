@@ -9,9 +9,13 @@
       <input matInput placeholder="Enter the departure address" formControlName="departure" [matAutocomplete]="autoDeparture" [formControl]="departureControl">
 
       <mat-autocomplete #autoDeparture="matAutocomplete">
-        <mat-option *ngFor="let adress of adressesOptionsDeparture" [value]="adress.display_name" (click)="setDepartureAddress(adress)">
-          {{adress.display_name}}
-        </mat-option>
+        <mat-option *ngIf="departureAPICallIsLoading" class="is-loading">Loading...</mat-option>
+        <ng-container *ngIf="!departureAPICallIsLoading">
+          <mat-option *ngFor="let address of adressesOptionsDeparture" [value]="address.display_name" (click)="onAddressChange(address, 0)" (onSelectionChange)="onAddressChange(address, 0)">
+            {{address.display_name}}
+          </mat-option>
+        </ng-container>
+
       </mat-autocomplete>
 
       <mat-icon matSuffix>my_location</mat-icon>
@@ -22,9 +26,14 @@
       <input matInput placeholder="Enter the destination" formControlName="destination" [matAutocomplete]="autoDestination" [formControl]="destinationControl" >
 
       <mat-autocomplete #autoDestination="matAutocomplete">
-        <mat-option *ngFor="let adress of adressesOptionsDestination" [value]="adress.display_name" (click)="setDestinationAddress(adress)">
-          {{adress.display_name}}
-        </mat-option>
+
+        <mat-option *ngIf="destinationAPICallIsLoading" class="is-loading">Loading...</mat-option>
+        <ng-container *ngIf="!destinationAPICallIsLoading">
+          <mat-option *ngFor="let address of adressesOptionsDestination" [value]="address.display_name" (click)="onAddressChange(address, 1)" (onSelectionChange)="onAddressChange(address, 1)">
+            {{address.display_name}}
+          </mat-option>
+        </ng-container>
+
       </mat-autocomplete>
 
       <mat-icon matSuffix>my_location</mat-icon>
