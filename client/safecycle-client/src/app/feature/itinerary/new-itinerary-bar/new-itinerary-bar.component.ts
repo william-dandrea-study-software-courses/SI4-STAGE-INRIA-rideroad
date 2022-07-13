@@ -17,6 +17,8 @@ import {NominatimAddressModel} from "../../../core/model/nominatim-address.model
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {ItineraryService} from "../../../core/service/itinerary.service";
 import {ItineraryModel} from "../../../core/model/itinerary.model";
+import {MapClickService} from "../../../core/service/map-click.service";
+import {LatLng} from "leaflet";
 
 @Component({
   selector: 'app-new-itinerary-bar',
@@ -25,14 +27,16 @@ import {ItineraryModel} from "../../../core/model/itinerary.model";
 })
 export class NewItineraryBarComponent implements OnInit, OnDestroy {
 
-  private departureAddress: NominatimAddressModel | null = null;
-  private destinationAddress: NominatimAddressModel | null = null;
+  private departureAddress: null | LatLng = null;
+  private destinationAddress: null | LatLng  = null;
 
   public itineraryForm: FormGroup;
   public departureControl = new FormControl('');
   public destinationControl = new FormControl('');
   public departureAPICallIsLoading = false;
   public destinationAPICallIsLoading = false;
+  public isFocusOnDeparture = false;
+  public isFocusOnDestination = false;
 
   public adressesOptionsDeparture: NominatimAddressModel[] = []
   public adressesOptionsDestination: NominatimAddressModel[] = []
@@ -41,10 +45,13 @@ export class NewItineraryBarComponent implements OnInit, OnDestroy {
   public indexesCurrentItinerary: number[] = [];
   public currentItinerarySubscription: Subscription = new Subscription();
 
-  constructor(private formBuilder: FormBuilder, private autoCompletionAddressService: AutoCompletionAddressService, private snackBar: MatSnackBar, private itineraryService: ItineraryService) {
+  public mapClickSubscription: Subscription = new Subscription();
+  public currentClickPosition: LatLng | null = null;
+
+  constructor(private formBuilder: FormBuilder, private autoCompletionAddressService: AutoCompletionAddressService, private snackBar: MatSnackBar, private itineraryService: ItineraryService, private mapClickService: MapClickService) {
     this.itineraryForm = this.formBuilder.group({
-      departure: ['', [Validators.required]],
-      destination: ['', [Validators.required]],
+      departure: ['', []],
+      destination: ['', []],
       roadType: ['', [Validators.required]],
     })
   }
@@ -56,8 +63,42 @@ export class NewItineraryBarComponent implements OnInit, OnDestroy {
     })
 
     this.initializeDepartureControl();
-    this.initializeDestinationControl()
+    this.initializeDestinationControl();
+
+    this.mapClickSubscription = this.mapClickService.$clickPosition.subscribe(pos => {
+      if (pos != null) {
+        this.currentClickPosition = pos.latlng;
+
+        if (this.isFocusOnDestination) {
+          this.isFocusOnDestination = false;
+          this.destinationControl.setValue(`${pos.latlng.lat} ,  ${pos.latlng.lng}`)
+          this.destinationAddress = pos.latlng;
+
+        }
+        if (this.isFocusOnDeparture) {
+          this.isFocusOnDeparture = false;
+          this.departureControl.setValue(`${pos.latlng.lat} ,  ${pos.latlng.lng}`)
+          this.departureAddress = pos.latlng;
+        }
+
+      }
+    })
   }
+
+
+  /**
+   * Called when a user click on the input field
+   * @param place 0 for departureAddress, 1 for destinationAddress
+   */
+  public onFocus(place: number) {
+    if (place == 0) {
+      this.isFocusOnDeparture = !this.isFocusOnDeparture;
+    }
+    if (place == 1) {
+      this.isFocusOnDestination = !this.isFocusOnDestination;
+    }
+  }
+
 
   /**
    * Manage the auto-completion for the departureControl form
@@ -123,7 +164,6 @@ export class NewItineraryBarComponent implements OnInit, OnDestroy {
   }
 
 
-
   /**
    * Called when a user click on the address in the list when he search a new adress
    * @param address we want to affect
@@ -132,11 +172,11 @@ export class NewItineraryBarComponent implements OnInit, OnDestroy {
   public onAddressChange(address: NominatimAddressModel, place: number): void {
     if (place == 0) {
       this.itineraryForm.controls['departure'].setValue(address.display_name);
-      this.departureAddress = address;
+      this.departureAddress = new LatLng(Number(address.lat), Number(address.lon));
     }
     if (place == 1) {
       this.itineraryForm.controls['destination'].setValue(address.display_name);
-      this.destinationAddress = address;
+      this.destinationAddress = new LatLng(Number(address.lat), Number(address.lon));
     }
   }
 
@@ -147,9 +187,9 @@ export class NewItineraryBarComponent implements OnInit, OnDestroy {
   public onSearch(): void {
     if (this.departureAddress != null && this.destinationAddress != null) {
       this.itineraryService.launchSearchItinerary(
-        +this.departureAddress.lon,
+        +this.departureAddress.lng,
         +this.departureAddress.lat,
-        +this.destinationAddress.lon,
+        +this.destinationAddress.lng,
         +this.destinationAddress.lat,
         +this.itineraryForm.value['roadType']
       )
@@ -163,7 +203,7 @@ export class NewItineraryBarComponent implements OnInit, OnDestroy {
    */
   private itineraryNotFindError(): void {
     this.snackBar.open('Please fill all the forms', 'OK', {
-      duration: 5,
+      duration: 3000,
     });
   }
 

@@ -18,12 +18,15 @@
 
       </mat-autocomplete>
 
-      <mat-icon matSuffix>my_location</mat-icon>
+
+      <mat-icon matSuffix (click)="onFocus(0)" [ngClass]="isFocusOnDeparture ? 'selected' : 'not-selected'">my_location</mat-icon>
+
+
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>Destination</mat-label>
-      <input matInput placeholder="Enter the destination" formControlName="destination" [matAutocomplete]="autoDestination" [formControl]="destinationControl" >
+      <input matInput placeholder="Enter the destination" formControlName="destination" [matAutocomplete]="autoDestination" [formControl]="destinationControl">
 
       <mat-autocomplete #autoDestination="matAutocomplete">
 
@@ -36,7 +39,7 @@
 
       </mat-autocomplete>
 
-      <mat-icon matSuffix>my_location</mat-icon>
+      <mat-icon matSuffix (click)="onFocus(1)" [ngClass]="isFocusOnDestination ? 'selected' : 'not-selected'">my_location</mat-icon>
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="full-width">

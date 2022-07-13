@@ -2,12 +2,13 @@ import {AfterViewInit, Component, EventEmitter, OnDestroy, OnInit} from '@angula
 
 import * as L from 'leaflet';
 import {GEO_JSON} from "../../shared/mocks/geojson";
-import {Coords, Map, FeatureGroup, LatLng} from "leaflet";
+import {Coords, Map, FeatureGroup, LatLng, LeafletMouseEvent} from "leaflet";
 import {ItineraryService} from "../../core/service/itinerary.service";
 import {ItineraryModel, LatLonElevationModel, PathModel} from "../../core/model/itinerary.model";
 import {NominatimAddressModel} from "../../core/model/nominatim-address.model";
 import {mergeMap, Observable, pipe, Subscription} from "rxjs";
 import {MatSnackBar} from "@angular/material/snack-bar";
+import {MapClickService} from "../../core/service/map-click.service";
 
 @Component({
   selector: 'app-itinerary',
@@ -24,7 +25,7 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
   private itinerarySubscription: Subscription = new Subscription();
   private selectedItinerarySubscription: Subscription = new Subscription();
 
-  constructor(private itineraryService: ItineraryService, private snackBar: MatSnackBar) {}
+  constructor(private itineraryService: ItineraryService, private mapClickService: MapClickService,private snackBar: MatSnackBar) {}
 
   public ngOnInit(): void {
     this.itineraryManager();
@@ -33,6 +34,9 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
   public ngAfterViewInit(): void {
     this.initialisationMap();
   }
+
+
+
 
   /**
    * This method initialize the map with OpenStreetMap and LeafLet. At first, we center the map on our current position
@@ -53,6 +57,15 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
     });
 
     tiles.addTo(this.map);
+
+    this.setClickOnMap();
+  }
+
+
+  private setClickOnMap() {
+    this.map.on('click', (v) => {
+      this.mapClickService.setClickPosition(v);
+    })
   }
 
 
@@ -94,12 +107,12 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
       const allPaths: PathModel[] = itineraries[index].paths;
       let allSegments = []
 
-      const opacity: number = index == selectedItinerary ? 1.0 : 0.35
+      const opacity: number = index == selectedItinerary ? 1.0 : 1.0
 
       for (let path of allPaths) {
         const allLongLat = path.coords.map(coord => new LatLng(coord.lat, coord.lon, coord.elevation))
 
-        const color: string = index == selectedItinerary ? (path.costs.elevation > 0 ? "#2596be" : "#be4d25") : "grey"
+        const color: string = index == selectedItinerary ? (path.costs.elevation > 0 ? "#2596be" : "#be4d25") : "#b2b2b2"
 
         allSegments.push(
           L.polyline(allLongLat, {
@@ -111,9 +124,15 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
         )
       }
 
+
       let itinerary = L.featureGroup(allSegments);
-      this.currentItineraryLayers.push(itinerary)
+      this.currentItineraryLayers.push(itinerary);
     }
+
+    // Swap elements like that, the selectedItinerary will be showed first
+    let tmp = this.currentItineraryLayers[this.currentItineraryLayers.length - 1]
+    this.currentItineraryLayers[this.currentItineraryLayers.length - 1] = this.currentItineraryLayers[selectedItinerary]
+    this.currentItineraryLayers[selectedItinerary] = tmp
 
     // We add the new itineraries to the map
     this.currentItineraryLayers.forEach(currentItineraryLayer => currentItineraryLayer.addTo(this.map))

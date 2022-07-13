@@ -63,7 +63,6 @@ export class ItineraryCardComponent implements OnInit, OnDestroy {
     })
   }
 
-
   /**
    * Set the variables
    * @param itinerary the curent itinerary
