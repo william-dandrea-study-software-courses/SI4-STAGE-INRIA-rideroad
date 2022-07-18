@@ -8,6 +8,7 @@ import {Subscription} from "rxjs";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {MapClickService} from "../../core/service/map-click.service";
 import {ItineraryVisual} from "../../core/model/itinerary-visual.class";
+import {GeolocalisationService} from "../../core/service/geolocalisation.service";
 
 @Component({
   selector: 'app-itinerary',
@@ -29,7 +30,7 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
   private inputUserStartMarker: Marker | null = null;
   private inputUserEndMarker: Marker | null = null;
 
-  constructor(private itineraryService: ItineraryService, private mapClickService: MapClickService,private snackBar: MatSnackBar) {}
+  constructor(private itineraryService: ItineraryService, private mapClickService: MapClickService,private snackBar: MatSnackBar, private geolocalisationService: GeolocalisationService) {}
 
   public ngOnInit(): void {
     this.itineraryManager();
@@ -60,9 +61,18 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
 
     tiles.addTo(this.map);
 
+
+    this.centerOnUserPosition();
     this.setClickOnMap();
   }
 
+  private centerOnUserPosition() {
+    this.geolocalisationService.getLocalisation((position: GeolocationPosition) => {
+      this.map.setView(new LatLng(position.coords.latitude, position.coords.longitude));
+    }, () => {
+      this.snackBar.open("Please allow you localisation", '', {duration: 2000,})
+    })
+  }
 
   private setClickOnMap() {
     this.map.on('click', (v) => {
@@ -172,7 +182,6 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
       duration: 5,
     });
   }
-
 
 
   private setItineraryMapView(itineraryVisual: ItineraryVisual) {

@@ -14,7 +14,7 @@ export class GeolocalisationService {
    * @param onError : user don't authorize the localisation feature
    */
   public getLocalisation(onSuccess: Function, onError: Function): void {
-    navigator.geolocation.getCurrentPosition((position) => {
+    navigator.geolocation.getCurrentPosition((position: GeolocationPosition) => {
       console.log(position)
       onSuccess(position)
     },(error) =>{
