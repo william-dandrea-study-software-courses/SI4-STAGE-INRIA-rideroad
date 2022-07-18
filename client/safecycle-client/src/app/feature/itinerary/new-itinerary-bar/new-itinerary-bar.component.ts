@@ -1,16 +1,13 @@
 import {Component, EventEmitter, OnDestroy, OnInit, Output} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {
-  map,
   debounceTime,
   distinctUntilChanged,
-  Observable,
-  startWith,
   switchMap,
   filter,
   tap,
   finalize,
-  Subscription, BehaviorSubject
+  Subscription,
 } from "rxjs";
 import {AutoCompletionAddressService} from "../../../core/service/auto-completion-address.service";
 import {NominatimAddressModel} from "../../../core/model/nominatim-address.model";
@@ -66,6 +63,17 @@ export class NewItineraryBarComponent implements OnInit, OnDestroy {
     this.initializeDepartureControl();
     this.initializeDestinationControl();
 
+    this.initializeMapClick();
+
+  }
+
+
+  /**
+   * Initialize the mapp CLick. When the user select focus on one field (departure or destination), the map will listen
+   * the position where the user click on the map, and setup the longitude and lattitude with this position for creating
+   * new itinerary
+   */
+  private initializeMapClick(): void {
     this.mapClickSubscription = this.mapClickService.$clickPosition.subscribe(pos => {
       if (pos != null) {
         this.currentClickPosition = pos.latlng;
@@ -80,9 +88,8 @@ export class NewItineraryBarComponent implements OnInit, OnDestroy {
           this.isFocusOnDeparture = false;
           this.departureControl.setValue(`${pos.latlng.lat} ,  ${pos.latlng.lng}`)
           this.departureAddress = pos.latlng;
-          this.itineraryService.setMarkerStart(this.departureAddress);
+          this.itineraryService.setMarkerEnd(this.departureAddress);
         }
-
       }
     })
   }

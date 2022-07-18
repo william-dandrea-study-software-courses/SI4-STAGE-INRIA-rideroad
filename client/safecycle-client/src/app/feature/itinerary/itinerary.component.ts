@@ -61,11 +61,13 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
 
     tiles.addTo(this.map);
 
-
     this.centerOnUserPosition();
     this.setClickOnMap();
   }
 
+  /**
+   * Method used for initiate the center on the map on the user location, but the user need to allow localisation
+   */
   private centerOnUserPosition() {
     this.geolocalisationService.getLocalisation((position: GeolocationPosition) => {
       this.map.setView(new LatLng(position.coords.latitude, position.coords.longitude));
@@ -74,6 +76,11 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
     })
   }
 
+  /**
+   * Initiate the click on the map, for each click on the map, the clickService will be called and be used in  the
+   * other components
+   * @private
+   */
   private setClickOnMap() {
     this.map.on('click', (v) => {
       this.mapClickService.setClickPosition(v);
@@ -86,7 +93,6 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
    * displaying them on the map
    */
   private itineraryManager(): void {
-
     this.itinerarySubscription = this.itineraryService.$itineraryVisual.subscribe(itinerariesVisual => {
 
       if (itinerariesVisual != null && itinerariesVisual.length > 0){
@@ -94,7 +100,7 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
         this.setItineraryMapView(itinerariesVisual[0]);
 
         // Now, we get the selected itinerary
-        this.showItineraries(itinerariesVisual)
+        this.generateItineraryPathForMap(itinerariesVisual)
       }
     }, error => {
       this.itineraryNotFindError(error)
@@ -106,15 +112,13 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
    * This method show the itineraries, 'underline' the selected itinerary and show the not selected ones in grey
    * @param itinerariesVisual
    */
-  private showItineraries(itinerariesVisual: ItineraryVisual[]): void {
-
+  private generateItineraryPathForMap(itinerariesVisual: ItineraryVisual[]): void {
 
     // We remove the old itineraries from the map
     this.currentDrewLayers.forEach(currentItineraryLayer => {
       this.map.removeLayer(currentItineraryLayer)
     });
     this.currentDrewLayers = [];
-
 
     let indexSelectedItinerary = 0;
     // We generate the paths as layers for the map and add them to the currentItineraryLayers array
@@ -143,9 +147,15 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
       itinerariesVisual[index].segments_on_map = L.featureGroup(allSegments);
     }
 
+    this.showItineraryOnMap(itinerariesVisual);
+  }
 
-
-
+  /**
+   * This method show the apth on the map, and we put the selected itinerary at the top of all this path (for more
+   * visibility)
+   * @param itinerariesVisual : list of itinerary that we want to show on the map
+   */
+  private showItineraryOnMap(itinerariesVisual: ItineraryVisual[]): void {
     // We add the new itineraries to the map
     // First we add the not-seleted itineraries
     itinerariesVisual.forEach(currentItineraryVisual => {
@@ -174,6 +184,7 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
     })
   }
 
+
   /**
    * Handled when the backend return an error
    */
@@ -184,6 +195,11 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
 
+  /**
+   * Method who set the marker on the map when the new itinerary is generated. When the new itinerary is generated, we delete
+   * every others markers on the map, and we add this markers. We delete all the other markers for being sure that we
+   * don't have several times the same marker
+   */
   private setItineraryMapView(itineraryVisual: ItineraryVisual) {
     if (itineraryVisual.startLatLng && itineraryVisual.endLatLng) {
       const startLatLng = itineraryVisual.startLatLng;
@@ -213,6 +229,11 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
 
+  /**
+   * Method who show the marker at the departure / destination position when a user select a new departure (via the input
+   * field or the cursor selector). The inputUserStartMarker and inputUserEndMarker need to be clean (removed from the map)
+   * when the user change / remove the destination from the input / cursor
+   */
   private setMarkersStartStop() {
     this.startMarkerSubscription = this.itineraryService.$startMarker.subscribe(value => {
       if (this.inputUserStartMarker != null) {
