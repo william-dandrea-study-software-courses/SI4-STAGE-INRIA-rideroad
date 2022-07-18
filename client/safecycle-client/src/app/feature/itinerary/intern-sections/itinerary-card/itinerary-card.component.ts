@@ -3,6 +3,7 @@ import {ItineraryService} from "../../../../core/service/itinerary.service";
 import {ItineraryModel} from "../../../../core/model/itinerary.model";
 import {Subscription} from "rxjs";
 import {ChartConfiguration, ChartOptions} from "chart.js";
+import {ItineraryVisual} from "../../../../core/model/itinerary-visual.class";
 
 @Component({
   selector: 'app-itinerary-card',
@@ -11,10 +12,9 @@ import {ChartConfiguration, ChartOptions} from "chart.js";
 })
 export class ItineraryCardComponent implements OnInit, OnDestroy {
 
-  @Input() indexItinerary: string | null = null;
   public indexItineraryNumber: number = 0
 
-  public currentItinerary: ItineraryModel | null = null;
+  @Input() public currentItinerary: ItineraryVisual | null = null;
   public currentItinerarySubscription: Subscription = new Subscription();
 
   public lengthItineraryInKm: number | null = 0;
@@ -23,7 +23,6 @@ export class ItineraryCardComponent implements OnInit, OnDestroy {
 
 
   // CHART
-
   public lineChartData: ChartConfiguration<'line'>['data'] = {
     labels: [],
     datasets: [
@@ -50,38 +49,40 @@ export class ItineraryCardComponent implements OnInit, OnDestroy {
   constructor(public itineraryService: ItineraryService) {}
 
   ngOnInit(): void {
-    console.log(this.indexItinerary)
-    if (this.indexItinerary != null) {
-      this.indexItineraryNumber = +this.indexItinerary;
-    }
-
-    this.currentItinerarySubscription = this.itineraryService.$itinerary.subscribe(itineraries => {
-      if (itineraries != null && this.indexItinerary != null) {
-        this.currentItinerary = itineraries[+this.indexItinerary];
-        this.setClassVariables(itineraries[+this.indexItinerary], +this.indexItinerary)
-      }
-    })
+    this.setClassVariables();
   }
 
   /**
    * Set the variables
-   * @param itinerary the curent itinerary
-   * @param indexItinerary the index of this itinerary
    */
-  private setClassVariables(itinerary: ItineraryModel, indexItinerary: number) {
-    this.lengthItineraryInKm = parseFloat((itinerary.length / 1000).toFixed(2))
-    this.inflationItinerary = itinerary.filtered_ascend
-    this.timeItinerary = new Date(itinerary.time * 1000).toISOString().substr(11, 5).replace(':', 'h ') + 'min'
+  private setClassVariables() {
+    if (this.currentItinerary != null) {
+      this.lengthItineraryInKm = parseFloat((this.currentItinerary.itinerary.length / 1000).toFixed(2))
+      this.inflationItinerary = this.currentItinerary.itinerary.filtered_ascend
+      this.timeItinerary = new Date(this.currentItinerary.itinerary.time * 1000).toISOString().substr(11, 5).replace(':', 'h ') + 'min'
 
-    this.lineChartData.datasets[0].data = itinerary.altitude_profil
-    this.lineChartData.labels = [...Array(itinerary.altitude_profil.length).keys()]
+      this.lineChartData.datasets[0].data = this.currentItinerary.itinerary.altitude_profil
+      this.lineChartData.labels = [...Array(this.currentItinerary.itinerary.length).keys()]
+    }
   }
 
+  public getIndex(): number {
+    if (this.currentItinerary) {
+      return this.currentItinerary.index;
+    }
+    return 0;
+  }
 
+  public isSelected(): boolean {
+    if (this.currentItinerary) {
+      return this.currentItinerary.is_selectionned;
+    }
+    return false;
+  }
 
   public onSelectedItinerary(): void {
-    if (this.indexItinerary != null)
-      this.itineraryService.changeSelectedItinerary(+this.indexItinerary)
+    if (this.currentItinerary != null)
+      this.itineraryService.changeSelectedItinerary(this.currentItinerary.index)
   }
 
   ngOnDestroy(): void {

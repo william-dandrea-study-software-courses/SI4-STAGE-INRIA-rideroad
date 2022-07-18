@@ -3,17 +3,21 @@ import {HttpClient, HttpParams} from "@angular/common/http";
 import {BehaviorSubject, Observable, throwError} from "rxjs";
 import {NominatimAddressModel} from "../model/nominatim-address.model";
 import {ItineraryModel} from "../model/itinerary.model";
+import {ItineraryVisual} from "../model/itinerary-visual.class"
 
 @Injectable({
   providedIn: 'root'
 })
 export class ItineraryService {
 
-  public itinerary: ItineraryModel[] | null = null;
-  public $itinerary: BehaviorSubject<ItineraryModel[] | null > = new BehaviorSubject<ItineraryModel[] | null>(null)
+  private itinerary: ItineraryModel[] | null = null;
+  private $itinerary: BehaviorSubject<ItineraryModel[] | null > = new BehaviorSubject<ItineraryModel[] | null>(null)
 
-  public selectedItinerary: number = 0;
-  public $selectedItinerary: BehaviorSubject<number> = new BehaviorSubject<number>(0)
+  public itineraryVisual: ItineraryVisual[] | null = null;
+  public $itineraryVisual: BehaviorSubject<ItineraryVisual[] | null> = new BehaviorSubject<ItineraryVisual[] | null>(null);
+
+  public selectedItinerary: ItineraryVisual | null = null;
+  public $selectedItinerary: BehaviorSubject<ItineraryVisual | null> = new BehaviorSubject<ItineraryVisual | null>(null);
 
   constructor(private http: HttpClient) { }
 
@@ -36,17 +40,45 @@ export class ItineraryService {
     this.getItinerary(longitudeStart, latitudeStart, longitudeEnd, latitudeEnd, roadType).subscribe(v => {
       this.itinerary = v;
       this.$itinerary.next(v);
+
+      this.itineraryVisual = this.itinerary.map((v, i) => new ItineraryVisual(v, i, false));
+      if (this.itineraryVisual.length > 0) {
+        this.changeSelectedItinerary(this.itineraryVisual[0].index);
+      }
+
+
+      this.$selectedItinerary.next(this.selectedItinerary);
+      this.$itineraryVisual.next(this.itineraryVisual);
     }, error => {
       this.$itinerary.error(error);
 
       this.itinerary = null;
-      this.$itinerary = new BehaviorSubject<ItineraryModel[] | null>(null)
+      this.$itinerary = new BehaviorSubject<ItineraryModel[] | null>(null);
+
+      this.itineraryVisual = null;
+      this.$itineraryVisual.next(null);
     })
   }
 
   public changeSelectedItinerary(index: number) : void {
-    this.selectedItinerary = index;
-    this.$selectedItinerary.next(this.selectedItinerary);
+    if (this.itineraryVisual != null) {
+
+      let selectedIt = null;
+
+      for (let i = 0; i < this.itineraryVisual.length; i++) {
+        if (this.itineraryVisual) {
+          this.itineraryVisual[i].is_selectionned = this.itineraryVisual[i].index === index;
+          if (this.itineraryVisual[i].index === index) {
+            selectedIt = this.itineraryVisual[i];
+          }
+        }
+      }
+
+      this.$itineraryVisual.next(this.itineraryVisual);
+
+      this.selectedItinerary = selectedIt;
+      this.$selectedItinerary.next(this.selectedItinerary);
+    }
   }
 
 

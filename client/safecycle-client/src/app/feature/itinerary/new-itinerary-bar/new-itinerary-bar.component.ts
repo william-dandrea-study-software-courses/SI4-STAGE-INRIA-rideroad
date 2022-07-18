@@ -19,6 +19,7 @@ import {ItineraryService} from "../../../core/service/itinerary.service";
 import {ItineraryModel} from "../../../core/model/itinerary.model";
 import {MapClickService} from "../../../core/service/map-click.service";
 import {LatLng} from "leaflet";
+import {ItineraryVisual} from "../../../core/model/itinerary-visual.class";
 
 @Component({
   selector: 'app-new-itinerary-bar',
@@ -41,7 +42,7 @@ export class NewItineraryBarComponent implements OnInit, OnDestroy {
   public adressesOptionsDeparture: NominatimAddressModel[] = []
   public adressesOptionsDestination: NominatimAddressModel[] = []
 
-  public currentItinerary: ItineraryModel[] | null = null;
+  public currentItinerary: ItineraryVisual[] | null = null;
   public indexesCurrentItinerary: number[] = [];
   public currentItinerarySubscription: Subscription = new Subscription();
 
@@ -57,7 +58,7 @@ export class NewItineraryBarComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.currentItinerarySubscription = this.itineraryService.$itinerary.subscribe(v => {
+    this.currentItinerarySubscription = this.itineraryService.$itineraryVisual.subscribe(v => {
       this.currentItinerary = v;
       this.indexesCurrentItinerary = Array.from(Array(v?.length).keys())
     })
@@ -197,6 +198,13 @@ export class NewItineraryBarComponent implements OnInit, OnDestroy {
       this.itineraryNotFindError()
     }
   }
+
+
+
+  public getItineraryByIndex() {
+
+  }
+
 
   /**
    * Handled when the fields are not full

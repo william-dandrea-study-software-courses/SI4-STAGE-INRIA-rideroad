@@ -9,6 +9,7 @@ import {NominatimAddressModel} from "../../core/model/nominatim-address.model";
 import {mergeMap, Observable, pipe, Subscription} from "rxjs";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {MapClickService} from "../../core/service/map-click.service";
+import {ItineraryVisual} from "../../core/model/itinerary-visual.class";
 
 @Component({
   selector: 'app-itinerary',
@@ -20,7 +21,6 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // @ts-ignore
   public map: Map;
-  public currentItineraryLayers: FeatureGroup[] = [];
 
   private itinerarySubscription: Subscription = new Subscription();
   private selectedItinerarySubscription: Subscription = new Subscription();
@@ -75,16 +75,15 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
    */
   private itineraryManager(): void {
 
-    this.itinerarySubscription = this.itineraryService.$itinerary.subscribe(itineraries => {
+    this.itinerarySubscription = this.itineraryService.$itineraryVisual.subscribe(itinerariesVisual => {
 
-      if (itineraries != null && itineraries.length > 0){
+      if (itinerariesVisual != null && itinerariesVisual.length > 0){
         // We set the start point
-        this.map.setView([itineraries[0].paths[0].coords[0].lat, itineraries[0].paths[0].coords[0].lon])
+        this.map.setView([itinerariesVisual[0].itinerary.paths[0].coords[0].lat, itinerariesVisual[0].itinerary.paths[0].coords[0].lon])
 
         // Now, we get the selected itinerary
-        this.selectedItinerarySubscription = this.itineraryService.$selectedItinerary.subscribe(selectedItinerary => {
-          this.showItineraries(itineraries, selectedItinerary)
-        })
+        this.showItineraries(itinerariesVisual)
+
       }
     }, error => {
       this.itineraryNotFindError(error)
@@ -94,25 +93,30 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
 
   /**
    * This method show the itineraries, 'underline' the selected itinerary and show the not selected ones in grey
-   * @param itineraries : list of itineraries
-   * @param selectedItinerary
+   * @param itinerariesVisual
    */
-  private showItineraries(itineraries: ItineraryModel[], selectedItinerary: number): void {
+  private showItineraries(itinerariesVisual: ItineraryVisual[]): void {
     // We remove the old itineraries from the map
-    this.currentItineraryLayers.forEach(currentItineraryLayer => currentItineraryLayer.remove())
-    this.currentItineraryLayers = [];
+    itinerariesVisual.forEach(currentItineraryLayer => {
+      if (currentItineraryLayer.segments_on_map != null) {
+        currentItineraryLayer.segments_on_map.remove()
+      }
+    })
 
+
+    let indexSelectedItinerary = 0;
     // We generate the paths as layers for the map and add them to the currentItineraryLayers array
-    for (let index = 0; index < itineraries.length; index++) {
-      const allPaths: PathModel[] = itineraries[index].paths;
+    for (let index = 0; index < itinerariesVisual.length; index++) {
+      const allPaths: PathModel[] = itinerariesVisual[index].itinerary.paths;
       let allSegments = []
 
-      const opacity: number = index == selectedItinerary ? 1.0 : 1.0
+      const opacity: number = itinerariesVisual[index].is_selectionned ? 1.0 : 1.0
+      indexSelectedItinerary = itinerariesVisual[index].is_selectionned ? index : indexSelectedItinerary;
 
       for (let path of allPaths) {
         const allLongLat = path.coords.map(coord => new LatLng(coord.lat, coord.lon, coord.elevation))
 
-        const color: string = index == selectedItinerary ? (path.costs.elevation > 0 ? "#2596be" : "#be4d25") : "#b2b2b2"
+        const color: string = itinerariesVisual[index].is_selectionned ? (path.costs.elevation > 0 ? "#2596be" : "#be4d25") : "#b2b2b2"
 
         allSegments.push(
           L.polyline(allLongLat, {
@@ -124,21 +128,42 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
         )
       }
 
-
-      let itinerary = L.featureGroup(allSegments);
-      this.currentItineraryLayers.push(itinerary);
+      itinerariesVisual[index].segments_on_map = L.featureGroup(allSegments);
     }
 
-    // Swap elements like that, the selectedItinerary will be showed first
-    let tmp = this.currentItineraryLayers[this.currentItineraryLayers.length - 1]
-    this.currentItineraryLayers[this.currentItineraryLayers.length - 1] = this.currentItineraryLayers[selectedItinerary]
-    this.currentItineraryLayers[selectedItinerary] = tmp
 
+
+
+
+    console.log(itinerariesVisual)
     // We add the new itineraries to the map
-    this.currentItineraryLayers.forEach(currentItineraryLayer => currentItineraryLayer.addTo(this.map))
+    // First we add the not-seleted itineraries
+    itinerariesVisual.forEach(currentItineraryVisual => {
+      if (currentItineraryVisual.segments_on_map != null) {
+        if (!currentItineraryVisual.is_selectionned) {
+          currentItineraryVisual.segments_on_map.addTo(this.map);
+          currentItineraryVisual.segments_on_map.on('click', (e) => {
+            this.itineraryService.changeSelectedItinerary(currentItineraryVisual.index)
+          });
+        }
+      }
+    })
+
+    // And we add the selected itinerary
+    itinerariesVisual.forEach(currentItineraryVisual => {
+      if (currentItineraryVisual.segments_on_map != null) {
+        if (currentItineraryVisual.is_selectionned) {
+          currentItineraryVisual.segments_on_map.addTo(this.map);
+          currentItineraryVisual.segments_on_map.on('click', (e) => {
+            this.itineraryService.changeSelectedItinerary(currentItineraryVisual.index)
+          });
+        }
+      }
+    })
+
+
+
   }
-
-
 
   /**
    * Handled when the backend return an error

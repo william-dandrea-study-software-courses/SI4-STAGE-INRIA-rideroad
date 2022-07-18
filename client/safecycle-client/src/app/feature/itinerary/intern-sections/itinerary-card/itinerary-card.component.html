@@ -1,7 +1,7 @@
 
 <div class="itinerary-card-intern-container" (click)="onSelectedItinerary()">
 
-  <h3 [ngClass]="this.indexItineraryNumber === this.itineraryService.selectedItinerary ? 'selected-card-title' : ''">Itinerary {{ this.indexItinerary }}</h3>
+  <h3 [ngClass]="isSelected() ? 'selected-card-title' : ''">Itinerary {{ getIndex() }}</h3>
 
   <mat-tab-group>
     <mat-tab label="Details">

@@ -58,19 +58,11 @@
   <hr class="rounded">
 
   <div *ngIf="currentItinerary != null">
-
-    <div *ngFor="let itIndex of this.indexesCurrentItinerary">
-      <app-itinerary-card  class="itinerary-card-extern-container" indexItinerary="{{ itIndex }}"></app-itinerary-card>
-
+    <div *ngFor="let iti of this.currentItinerary">
+      <app-itinerary-card  class="itinerary-card-extern-container" [currentItinerary]="iti"></app-itinerary-card>
       <div style="height: 15px;"></div>
     </div>
-
-
   </div>
-
-
-
-
 
 </section>
 
