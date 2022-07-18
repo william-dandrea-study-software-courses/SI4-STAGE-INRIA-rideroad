@@ -4,6 +4,7 @@ import {BehaviorSubject, Observable, throwError} from "rxjs";
 import {NominatimAddressModel} from "../model/nominatim-address.model";
 import {ItineraryModel} from "../model/itinerary.model";
 import {ItineraryVisual} from "../model/itinerary-visual.class"
+import {LatLng} from "leaflet";
 
 @Injectable({
   providedIn: 'root'
@@ -41,11 +42,14 @@ export class ItineraryService {
       this.itinerary = v;
       this.$itinerary.next(v);
 
-      this.itineraryVisual = this.itinerary.map((v, i) => new ItineraryVisual(v, i, false));
+      this.itineraryVisual = this.itinerary.map((v, i) => new ItineraryVisual(v, i, false))
+      this.itineraryVisual.forEach(iti => {
+        iti.startLatLng = new LatLng(latitudeStart, longitudeStart)
+        iti.endLatLng = new LatLng(latitudeEnd, longitudeEnd)
+      })
       if (this.itineraryVisual.length > 0) {
         this.changeSelectedItinerary(this.itineraryVisual[0].index);
       }
-
 
       this.$selectedItinerary.next(this.selectedItinerary);
       this.$itineraryVisual.next(this.itineraryVisual);
@@ -80,8 +84,4 @@ export class ItineraryService {
       this.$selectedItinerary.next(this.selectedItinerary);
     }
   }
-
-
-
-
 }

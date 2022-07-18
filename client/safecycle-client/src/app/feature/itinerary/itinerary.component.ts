@@ -35,9 +35,6 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
     this.initialisationMap();
   }
 
-
-
-
   /**
    * This method initialize the map with OpenStreetMap and LeafLet. At first, we center the map on our current position
    * (or in Paris if the user don't allow the geo-localisation). And secondly, we call the tileServer (OSM) with LeafLet
@@ -80,6 +77,13 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
       if (itinerariesVisual != null && itinerariesVisual.length > 0){
         // We set the start point
         this.map.setView([itinerariesVisual[0].itinerary.paths[0].coords[0].lat, itinerariesVisual[0].itinerary.paths[0].coords[0].lon])
+
+        if (itinerariesVisual[0].startLatLng && itinerariesVisual[0].endLatLng) {
+          const startLatLng = itinerariesVisual[0].startLatLng;
+          const endLatLng = itinerariesVisual[0].endLatLng;
+          this.map.fitBounds(L.latLngBounds(startLatLng, endLatLng));
+        }
+
 
         // Now, we get the selected itinerary
         this.showItineraries(itinerariesVisual)
