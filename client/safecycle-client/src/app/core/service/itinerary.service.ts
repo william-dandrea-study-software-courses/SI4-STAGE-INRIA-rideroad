@@ -20,6 +20,11 @@ export class ItineraryService {
   public selectedItinerary: ItineraryVisual | null = null;
   public $selectedItinerary: BehaviorSubject<ItineraryVisual | null> = new BehaviorSubject<ItineraryVisual | null>(null);
 
+  public startMarker: LatLng | null = null;
+  public $startMarker: BehaviorSubject<LatLng | null> = new BehaviorSubject<LatLng | null>(null);
+  public endMarker: LatLng | null = null;
+  public $endMarker: BehaviorSubject<LatLng | null> = new BehaviorSubject<LatLng | null>(null);
+
   constructor(private http: HttpClient) { }
 
 
@@ -84,4 +89,20 @@ export class ItineraryService {
       this.$selectedItinerary.next(this.selectedItinerary);
     }
   }
+
+
+
+  public setMarkerStart(latLon: LatLng | null) {
+    this.startMarker = latLon;
+    this.$startMarker.next(this.startMarker);
+  }
+
+  public setMarkerEnd(latLon: LatLng | null) {
+    this.endMarker = latLon;
+    this.$endMarker.next(this.endMarker);
+  }
+
+
+
+
 }

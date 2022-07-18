@@ -2,7 +2,7 @@ import {AfterViewInit, Component, EventEmitter, OnDestroy, OnInit} from '@angula
 
 import * as L from 'leaflet';
 import {GEO_JSON} from "../../shared/mocks/geojson";
-import {Coords, Map, FeatureGroup, LatLng, LeafletMouseEvent} from "leaflet";
+import {Coords, Map, FeatureGroup, LatLng, LeafletMouseEvent, Marker} from "leaflet";
 import {ItineraryService} from "../../core/service/itinerary.service";
 import {ItineraryModel, LatLonElevationModel, PathModel} from "../../core/model/itinerary.model";
 import {NominatimAddressModel} from "../../core/model/nominatim-address.model";
@@ -18,17 +18,22 @@ import {ItineraryVisual} from "../../core/model/itinerary-visual.class";
 })
 export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
 
-
   // @ts-ignore
   public map: Map;
 
   private itinerarySubscription: Subscription = new Subscription();
   private selectedItinerarySubscription: Subscription = new Subscription();
+  private startMarkerSubscription: Subscription = new Subscription();
+  private endMarkerSubscription: Subscription = new Subscription();
+
+  private inputUserStartMarker: Marker | null = null;
+  private inputUserEndMarker: Marker | null = null;
 
   constructor(private itineraryService: ItineraryService, private mapClickService: MapClickService,private snackBar: MatSnackBar) {}
 
   public ngOnInit(): void {
     this.itineraryManager();
+    this.setMarkersStartStop();
   }
 
   public ngAfterViewInit(): void {
@@ -76,13 +81,9 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
 
       if (itinerariesVisual != null && itinerariesVisual.length > 0){
         // We set the start point
-        this.map.setView([itinerariesVisual[0].itinerary.paths[0].coords[0].lat, itinerariesVisual[0].itinerary.paths[0].coords[0].lon])
+        // this.map.setView([itinerariesVisual[0].itinerary.paths[0].coords[0].lat, itinerariesVisual[0].itinerary.paths[0].coords[0].lon])
 
-        if (itinerariesVisual[0].startLatLng && itinerariesVisual[0].endLatLng) {
-          const startLatLng = itinerariesVisual[0].startLatLng;
-          const endLatLng = itinerariesVisual[0].endLatLng;
-          this.map.fitBounds(L.latLngBounds(startLatLng, endLatLng));
-        }
+        this.setItineraryMapView(itinerariesVisual[0]);
 
 
         // Now, we get the selected itinerary
@@ -179,9 +180,75 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
 
+
+  private setItineraryMapView(itineraryVisual: ItineraryVisual) {
+    if (itineraryVisual.startLatLng && itineraryVisual.endLatLng) {
+      const startLatLng = itineraryVisual.startLatLng;
+      const endLatLng = itineraryVisual.endLatLng;
+      this.map.fitBounds(L.latLngBounds(startLatLng, endLatLng));
+
+      /**
+      L.marker(startLatLng, {
+        icon: L.icon({
+          iconUrl: '/assets/icons/start_marker.png',
+          iconSize: [35, 35]
+        }),
+      }).addTo(this.map)
+
+      L.marker(endLatLng, {
+        icon: L.icon({
+          iconUrl: '/assets/icons/start_marker.png',
+          iconSize: [35, 35]
+        }),
+      }).addTo(this.map)
+       **/
+    }
+  }
+
+
+  private setMarkersStartStop() {
+    this.startMarkerSubscription = this.itineraryService.$startMarker.subscribe(value => {
+      if (this.inputUserStartMarker != null) {
+        this.map.removeLayer(this.inputUserStartMarker)
+      }
+
+      if (value != null) {
+        this.inputUserStartMarker = L.marker(value, {
+          icon: L.icon({
+            iconUrl: '/assets/icons/start_marker.png',
+            iconSize: [35, 35]
+          }),
+        })
+
+        this.map.addLayer(this.inputUserStartMarker)
+        this.map.setView(value);
+      }
+    })
+
+    this.endMarkerSubscription = this.itineraryService.$endMarker.subscribe(value => {
+      if (this.inputUserEndMarker != null) {
+        this.map.removeLayer(this.inputUserEndMarker)
+      }
+
+      if (value != null) {
+        this.inputUserEndMarker = L.marker(value, {
+          icon: L.icon({
+            iconUrl: '/assets/icons/start_marker.png',
+            iconSize: [35, 35]
+          }),
+        })
+        this.map.addLayer(this.inputUserEndMarker)
+        this.map.setView(value);
+      }
+    })
+  }
+
+
   public ngOnDestroy() {
     this.itinerarySubscription.unsubscribe();
     this.selectedItinerarySubscription.unsubscribe();
+    this.startMarkerSubscription.unsubscribe();
+    this.endMarkerSubscription.unsubscribe();
   }
 
 

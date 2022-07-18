@@ -174,10 +174,12 @@ export class NewItineraryBarComponent implements OnInit, OnDestroy {
     if (place == 0) {
       this.itineraryForm.controls['departure'].setValue(address.display_name);
       this.departureAddress = new LatLng(Number(address.lat), Number(address.lon));
+      this.itineraryService.setMarkerStart(this.departureAddress);
     }
     if (place == 1) {
       this.itineraryForm.controls['destination'].setValue(address.display_name);
       this.destinationAddress = new LatLng(Number(address.lat), Number(address.lon));
+      this.itineraryService.setMarkerEnd(this.destinationAddress);
     }
   }
 
