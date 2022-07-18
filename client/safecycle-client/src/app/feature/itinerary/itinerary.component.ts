@@ -1,12 +1,10 @@
-import {AfterViewInit, Component, EventEmitter, OnDestroy, OnInit} from '@angular/core';
+import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
 
 import * as L from 'leaflet';
-import {GEO_JSON} from "../../shared/mocks/geojson";
-import {Coords, Map, FeatureGroup, LatLng, LeafletMouseEvent, Marker} from "leaflet";
+import {Map, LatLng, Marker, Layer} from "leaflet";
 import {ItineraryService} from "../../core/service/itinerary.service";
-import {ItineraryModel, LatLonElevationModel, PathModel} from "../../core/model/itinerary.model";
-import {NominatimAddressModel} from "../../core/model/nominatim-address.model";
-import {mergeMap, Observable, pipe, Subscription} from "rxjs";
+import {PathModel} from "../../core/model/itinerary.model";
+import {Subscription} from "rxjs";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {MapClickService} from "../../core/service/map-click.service";
 import {ItineraryVisual} from "../../core/model/itinerary-visual.class";
@@ -20,6 +18,8 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // @ts-ignore
   public map: Map;
+
+  private currentDrewLayers: Layer[] = [];
 
   private itinerarySubscription: Subscription = new Subscription();
   private selectedItinerarySubscription: Subscription = new Subscription();
@@ -81,14 +81,10 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
 
       if (itinerariesVisual != null && itinerariesVisual.length > 0){
         // We set the start point
-        // this.map.setView([itinerariesVisual[0].itinerary.paths[0].coords[0].lat, itinerariesVisual[0].itinerary.paths[0].coords[0].lon])
-
         this.setItineraryMapView(itinerariesVisual[0]);
-
 
         // Now, we get the selected itinerary
         this.showItineraries(itinerariesVisual)
-
       }
     }, error => {
       this.itineraryNotFindError(error)
@@ -101,12 +97,13 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
    * @param itinerariesVisual
    */
   private showItineraries(itinerariesVisual: ItineraryVisual[]): void {
+
+
     // We remove the old itineraries from the map
-    itinerariesVisual.forEach(currentItineraryLayer => {
-      if (currentItineraryLayer.segments_on_map != null) {
-        currentItineraryLayer.segments_on_map.remove()
-      }
-    })
+    this.currentDrewLayers.forEach(currentItineraryLayer => {
+      this.map.removeLayer(currentItineraryLayer)
+    });
+    this.currentDrewLayers = [];
 
 
     let indexSelectedItinerary = 0;
@@ -139,14 +136,13 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
 
 
 
-
-    console.log(itinerariesVisual)
     // We add the new itineraries to the map
     // First we add the not-seleted itineraries
     itinerariesVisual.forEach(currentItineraryVisual => {
       if (currentItineraryVisual.segments_on_map != null) {
         if (!currentItineraryVisual.is_selectionned) {
           currentItineraryVisual.segments_on_map.addTo(this.map);
+          this.currentDrewLayers.push(currentItineraryVisual.segments_on_map)
           currentItineraryVisual.segments_on_map.on('click', (e) => {
             this.itineraryService.changeSelectedItinerary(currentItineraryVisual.index)
           });
@@ -159,15 +155,13 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
       if (currentItineraryVisual.segments_on_map != null) {
         if (currentItineraryVisual.is_selectionned) {
           currentItineraryVisual.segments_on_map.addTo(this.map);
+          this.currentDrewLayers.push(currentItineraryVisual.segments_on_map)
           currentItineraryVisual.segments_on_map.on('click', (e) => {
             this.itineraryService.changeSelectedItinerary(currentItineraryVisual.index)
           });
         }
       }
     })
-
-
-
   }
 
   /**
@@ -187,21 +181,25 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
       const endLatLng = itineraryVisual.endLatLng;
       this.map.fitBounds(L.latLngBounds(startLatLng, endLatLng));
 
-      /**
-      L.marker(startLatLng, {
-        icon: L.icon({
-          iconUrl: '/assets/icons/start_marker.png',
-          iconSize: [35, 35]
-        }),
-      }).addTo(this.map)
 
-      L.marker(endLatLng, {
+      let itineraryStartMarker = L.marker(startLatLng, {
         icon: L.icon({
           iconUrl: '/assets/icons/start_marker.png',
           iconSize: [35, 35]
         }),
-      }).addTo(this.map)
-       **/
+      })
+      itineraryStartMarker.addTo(this.map)
+
+      let itineraryEndMarker = L.marker(endLatLng, {
+        icon: L.icon({
+          iconUrl: '/assets/icons/start_marker.png',
+          iconSize: [35, 35]
+        }),
+      })
+      itineraryEndMarker.addTo(this.map)
+
+      this.currentDrewLayers.push(itineraryStartMarker)
+      this.currentDrewLayers.push(itineraryEndMarker)
     }
   }
 

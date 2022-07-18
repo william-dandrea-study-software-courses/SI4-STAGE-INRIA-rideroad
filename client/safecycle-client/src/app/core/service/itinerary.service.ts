@@ -91,6 +91,12 @@ export class ItineraryService {
   }
 
 
+  public cleanMapItinerary(): void {
+    this.itineraryVisual = null;
+    this.$itineraryVisual.next(null);
+  }
+
+
 
   public setMarkerStart(latLon: LatLng | null) {
     this.startMarker = latLon;

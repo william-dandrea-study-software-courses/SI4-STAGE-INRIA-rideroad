@@ -74,12 +74,13 @@ export class NewItineraryBarComponent implements OnInit, OnDestroy {
           this.isFocusOnDestination = false;
           this.destinationControl.setValue(`${pos.latlng.lat} ,  ${pos.latlng.lng}`)
           this.destinationAddress = pos.latlng;
-
+          this.itineraryService.setMarkerStart(this.destinationAddress);
         }
         if (this.isFocusOnDeparture) {
           this.isFocusOnDeparture = false;
           this.departureControl.setValue(`${pos.latlng.lat} ,  ${pos.latlng.lng}`)
           this.departureAddress = pos.latlng;
+          this.itineraryService.setMarkerStart(this.departureAddress);
         }
 
       }
@@ -203,9 +204,7 @@ export class NewItineraryBarComponent implements OnInit, OnDestroy {
 
 
 
-  public getItineraryByIndex() {
 
-  }
 
 
   /**
