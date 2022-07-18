@@ -23,27 +23,15 @@ export class ItineraryCardComponent implements OnInit, OnDestroy {
 
 
   // CHART
-  public lineChartData: ChartConfiguration<'line'>['data'] = {
-    labels: [],
-    datasets: [
-      {
-        data: [],
-        fill: true,
-        tension: 0.5,
-        borderColor: 'black',
-        backgroundColor: 'rgba(255,0,0,0.3)',
-      }
+  public graph = {
+    data: [
+      { x: [0], y: [0], type: 'scatter', mode: 'lines', marker: {} },
     ],
-  };
-  public lineChartOptions: ChartOptions<'line'> = {
-    responsive: false,
-    elements: {
-      point: {
-        radius: 0
-      },
+    layout: {
+      title: 'Altitude',
+      height: 400,
     }
   };
-  public lineChartLegend = false;
   // ===============
 
   constructor(public itineraryService: ItineraryService) {}
@@ -61,8 +49,8 @@ export class ItineraryCardComponent implements OnInit, OnDestroy {
       this.inflationItinerary = this.currentItinerary.itinerary.filtered_ascend
       this.timeItinerary = new Date(this.currentItinerary.itinerary.time * 1000).toISOString().substr(11, 5).replace(':', 'h ') + 'min'
 
-      this.lineChartData.datasets[0].data = this.currentItinerary.itinerary.altitude_profil
-      this.lineChartData.labels = [...Array(this.currentItinerary.itinerary.length).keys()]
+      this.graph.data[0].y = this.currentItinerary.itinerary.altitude_profil
+      this.graph.data[0].x = [...Array(this.currentItinerary.itinerary.length).keys()]
     }
   }
 

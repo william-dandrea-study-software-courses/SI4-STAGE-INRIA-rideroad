@@ -7,6 +7,7 @@ import {SharedModule} from "../../shared/shared.module";
 import { NewItineraryBarComponent } from './new-itinerary-bar/new-itinerary-bar.component';
 import { ItineraryCardComponent } from './intern-sections/itinerary-card/itinerary-card.component';
 import {NgChartsModule} from "ng2-charts";
+import {PlotlyModule} from "angular-plotly.js";
 
 
 @NgModule({
@@ -20,6 +21,7 @@ import {NgChartsModule} from "ng2-charts";
         ItineraryRoutingModule,
         SharedModule,
         NgChartsModule,
+        PlotlyModule,
     ]
 })
 export class ItineraryModule { }
