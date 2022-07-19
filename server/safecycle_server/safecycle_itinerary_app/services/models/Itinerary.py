@@ -6,10 +6,10 @@ from .Path import Path
 class Itinerary:
 
 
-    def __init__(self, time, length, cost, filtered_ascend):
+    def __init__(self, time, length, cost, filtered_ascend, alternative):
         self.time = time
         self.profile = None
-        self.alternative = None
+        self.alternative = alternative
         self.paths: List[Path] = []
         self.cost = cost
         self.length = length

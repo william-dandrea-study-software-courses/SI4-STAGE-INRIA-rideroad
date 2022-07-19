@@ -32,7 +32,7 @@ class ItineraryGeneration:
             profile=profile_variante_array[0]
             variante=profile_variante_array[1]
             alternative = self.berouter_request(profile, variante)
-            return self.__analyse_brouter_request(alternative).toDict()
+            return self.__analyse_brouter_request(alternative, variante).toDict()
 
         profile: str = ""
 
@@ -75,7 +75,7 @@ class ItineraryGeneration:
 
 
 
-    def __analyse_brouter_request(self, request_json):
+    def __analyse_brouter_request(self, request_json, variante):
 
         if request_json == None:
             logger.error(f"Cannot analyse a None Request")
@@ -93,7 +93,7 @@ class ItineraryGeneration:
         length = int(props["track-length"])
         filtered_ascend = int(props["filtered ascend"])
 
-        iti = Itinerary(time, length, cost, filtered_ascend)
+        iti = Itinerary(time, length, cost, filtered_ascend, variante)
 
         def new_path():
             path = Path()
