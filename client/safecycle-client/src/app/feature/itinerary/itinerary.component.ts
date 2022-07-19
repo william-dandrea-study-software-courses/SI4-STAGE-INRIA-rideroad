@@ -9,6 +9,8 @@ import {MatSnackBar} from "@angular/material/snack-bar";
 import {MapClickService} from "../../core/service/map-click.service";
 import {ItineraryVisual} from "../../core/model/itinerary-visual.class";
 import {GeolocalisationService} from "../../core/service/geolocalisation.service";
+import {MatDialog, MatDialogRef} from "@angular/material/dialog";
+import {SpinnerComponent} from "../../shared/components/spinner/spinner.component";
 
 @Component({
   selector: 'app-itinerary',
@@ -30,11 +32,15 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
   private startMarker: Marker | null = null;
   private endMarker: Marker | null = null;
 
-  constructor(private itineraryService: ItineraryService, private mapClickService: MapClickService,private snackBar: MatSnackBar, private geolocalisationService: GeolocalisationService) {}
+  private isLoadingNewItinerarySubscription: Subscription = new Subscription();
+  public isLoadingNewItinerary: boolean = false;
+
+  constructor(private itineraryService: ItineraryService, private mapClickService: MapClickService,private snackBar: MatSnackBar, private geolocalisationService: GeolocalisationService, public dialog: MatDialog) {}
 
   public ngOnInit(): void {
     this.itineraryManager();
     this.setMarkersStartStop();
+    this.setOverlayIfLoadingNewItinerary();
   }
 
   public ngAfterViewInit(): void {
@@ -282,16 +288,28 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
     })
   }
 
+  public setOverlayIfLoadingNewItinerary(): void {
+    this.isLoadingNewItinerarySubscription = this.itineraryService.$isLoadingItineraryOnBackend.subscribe(isLoading => {
+      this.isLoadingNewItinerary = isLoading;
+
+      if (isLoading) {
+        this.dialog.open(SpinnerComponent);
+      }
+
+      if (!isLoading) {
+        this.dialog.closeAll();
+      }
+
+    })
+  }
+
 
   public ngOnDestroy() {
     this.itinerarySubscription.unsubscribe();
     this.selectedItinerarySubscription.unsubscribe();
     this.startMarkerSubscription.unsubscribe();
     this.endMarkerSubscription.unsubscribe();
+    this.isLoadingNewItinerarySubscription.unsubscribe();
   }
 }
-
-
-
-
 

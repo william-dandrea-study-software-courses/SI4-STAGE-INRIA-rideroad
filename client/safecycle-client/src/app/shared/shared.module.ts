@@ -26,6 +26,8 @@ import {RouterModule} from "@angular/router";
 import {MatSelectModule} from "@angular/material/select";
 import {MatTabsModule} from "@angular/material/tabs";
 import {MatGridListModule} from "@angular/material/grid-list";
+import { SpinnerComponent } from './components/spinner/spinner.component';
+import {MatDialogModule} from "@angular/material/dialog";
 
 const modules = [
   CommonModule,
@@ -51,7 +53,8 @@ const modules = [
   MatProgressSpinnerModule,
   MatSelectModule,
   MatTabsModule,
-  MatGridListModule
+  MatGridListModule,
+  MatDialogModule,
 ]
 
 const components = [
@@ -62,6 +65,7 @@ const components = [
   declarations: [
     ...components,
     PageNotFoundComponent,
+    SpinnerComponent,
   ],
   exports: [
     ...modules,

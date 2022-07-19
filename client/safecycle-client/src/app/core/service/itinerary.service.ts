@@ -25,10 +25,17 @@ export class ItineraryService {
   public endMarker: LatLng | null = null;
   public $endMarker: BehaviorSubject<LatLng | null> = new BehaviorSubject<LatLng | null>(null);
 
+  public isLoadingItineraryOnBackend: boolean = false;
+  public $isLoadingItineraryOnBackend: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false)
+
   constructor(private http: HttpClient) { }
 
 
   private getItinerary(longitudeStart: number, latitudeStart: number, longitudeEnd: number, latitudeEnd: number, roadType: number): Observable<ItineraryModel[]> {
+    this.isLoadingItineraryOnBackend = true;
+    this.$isLoadingItineraryOnBackend.next(this.isLoadingItineraryOnBackend);
+
+
     const url = 'http://127.0.0.1:8000/api/itinerary';
 
     let queryParams = new HttpParams();
@@ -47,6 +54,8 @@ export class ItineraryService {
       this.itinerary = v;
       this.$itinerary.next(v);
 
+
+
       this.itineraryVisual = this.itinerary.map((v, i) => new ItineraryVisual(v, i, false))
       this.itineraryVisual.forEach(iti => {
         iti.startLatLng = new LatLng(latitudeStart, longitudeStart)
@@ -58,6 +67,9 @@ export class ItineraryService {
 
       this.$selectedItinerary.next(this.selectedItinerary);
       this.$itineraryVisual.next(this.itineraryVisual);
+
+      this.isLoadingItineraryOnBackend = false;
+      this.$isLoadingItineraryOnBackend.next(this.isLoadingItineraryOnBackend);
     }, error => {
       this.$itinerary.error(error);
 
