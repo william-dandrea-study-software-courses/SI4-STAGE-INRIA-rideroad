@@ -20,15 +20,15 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
   // @ts-ignore
   public map: Map;
 
-  private currentDrewLayers: Layer[] = [];
+  private currentDrewLayersItinerary: Layer[] = [];
 
   private itinerarySubscription: Subscription = new Subscription();
   private selectedItinerarySubscription: Subscription = new Subscription();
   private startMarkerSubscription: Subscription = new Subscription();
   private endMarkerSubscription: Subscription = new Subscription();
 
-  private inputUserStartMarker: Marker | null = null;
-  private inputUserEndMarker: Marker | null = null;
+  private startMarker: Marker | null = null;
+  private endMarker: Marker | null = null;
 
   constructor(private itineraryService: ItineraryService, private mapClickService: MapClickService,private snackBar: MatSnackBar, private geolocalisationService: GeolocalisationService) {}
 
@@ -115,10 +115,10 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
   private generateItineraryPathForMap(itinerariesVisual: ItineraryVisual[]): void {
 
     // We remove the old itineraries from the map
-    this.currentDrewLayers.forEach(currentItineraryLayer => {
+    this.currentDrewLayersItinerary.forEach(currentItineraryLayer => {
       this.map.removeLayer(currentItineraryLayer)
     });
-    this.currentDrewLayers = [];
+    this.currentDrewLayersItinerary = [];
 
     let indexSelectedItinerary = 0;
     // We generate the paths as layers for the map and add them to the currentItineraryLayers array
@@ -162,7 +162,7 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
       if (currentItineraryVisual.segments_on_map != null) {
         if (!currentItineraryVisual.is_selectionned) {
           currentItineraryVisual.segments_on_map.addTo(this.map);
-          this.currentDrewLayers.push(currentItineraryVisual.segments_on_map)
+          this.currentDrewLayersItinerary.push(currentItineraryVisual.segments_on_map)
           currentItineraryVisual.segments_on_map.on('click', (e) => {
             this.itineraryService.changeSelectedItinerary(currentItineraryVisual.index)
           });
@@ -175,7 +175,7 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
       if (currentItineraryVisual.segments_on_map != null) {
         if (currentItineraryVisual.is_selectionned) {
           currentItineraryVisual.segments_on_map.addTo(this.map);
-          this.currentDrewLayers.push(currentItineraryVisual.segments_on_map)
+          this.currentDrewLayersItinerary.push(currentItineraryVisual.segments_on_map)
           currentItineraryVisual.segments_on_map.on('click', (e) => {
             this.itineraryService.changeSelectedItinerary(currentItineraryVisual.index)
           });
@@ -201,30 +201,37 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
    * don't have several times the same marker
    */
   private setItineraryMapView(itineraryVisual: ItineraryVisual) {
+
+    if (this.startMarker != null) {
+      this.startMarker.remove();
+      this.startMarker = null;
+    }
+
+    if (this.endMarker != null) {
+      this.endMarker.remove();
+      this.endMarker = null;
+    }
+
     if (itineraryVisual.startLatLng && itineraryVisual.endLatLng) {
       const startLatLng = itineraryVisual.startLatLng;
       const endLatLng = itineraryVisual.endLatLng;
       this.map.fitBounds(L.latLngBounds(startLatLng, endLatLng));
 
-
-      let itineraryStartMarker = L.marker(startLatLng, {
+      this.startMarker = L.marker(startLatLng, {
         icon: L.icon({
           iconUrl: '/assets/icons/start_marker.png',
           iconSize: [35, 35]
         }),
       })
-      itineraryStartMarker.addTo(this.map)
+      this.startMarker.addTo(this.map)
 
-      let itineraryEndMarker = L.marker(endLatLng, {
+      this.endMarker = L.marker(endLatLng, {
         icon: L.icon({
           iconUrl: '/assets/icons/start_marker.png',
           iconSize: [35, 35]
         }),
       })
-      itineraryEndMarker.addTo(this.map)
-
-      this.currentDrewLayers.push(itineraryStartMarker)
-      this.currentDrewLayers.push(itineraryEndMarker)
+      this.endMarker.addTo(this.map)
     }
   }
 
@@ -236,36 +243,40 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
    */
   private setMarkersStartStop() {
     this.startMarkerSubscription = this.itineraryService.$startMarker.subscribe(value => {
-      if (this.inputUserStartMarker != null) {
-        this.map.removeLayer(this.inputUserStartMarker)
+
+      if (this.startMarker != null) {
+        this.startMarker.remove();
+        this.startMarker = null;
       }
 
       if (value != null) {
-        this.inputUserStartMarker = L.marker(value, {
+        this.startMarker = L.marker(value, {
           icon: L.icon({
             iconUrl: '/assets/icons/start_marker.png',
             iconSize: [35, 35]
           }),
         })
 
-        this.map.addLayer(this.inputUserStartMarker)
+        this.startMarker.addTo(this.map);
         this.map.setView(value);
       }
+
     })
 
     this.endMarkerSubscription = this.itineraryService.$endMarker.subscribe(value => {
-      if (this.inputUserEndMarker != null) {
-        this.map.removeLayer(this.inputUserEndMarker)
+      if (this.endMarker != null) {
+        this.endMarker.remove()
+        this.endMarker = null;
       }
 
       if (value != null) {
-        this.inputUserEndMarker = L.marker(value, {
+        this.endMarker = L.marker(value, {
           icon: L.icon({
             iconUrl: '/assets/icons/start_marker.png',
             iconSize: [35, 35]
           }),
         })
-        this.map.addLayer(this.inputUserEndMarker)
+        this.map.addLayer(this.endMarker)
         this.map.setView(value);
       }
     })
@@ -278,8 +289,6 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
     this.startMarkerSubscription.unsubscribe();
     this.endMarkerSubscription.unsubscribe();
   }
-
-
 }
 
 

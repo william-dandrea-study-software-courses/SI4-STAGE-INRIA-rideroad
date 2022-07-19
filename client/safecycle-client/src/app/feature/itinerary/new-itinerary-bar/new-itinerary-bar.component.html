@@ -45,13 +45,13 @@
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>Road type</mat-label>
       <mat-select formControlName="roadType">
-        <mat-option value="1">Road</mat-option>
-        <mat-option value="2">Dirt</mat-option>
-        <mat-option value="3">Bike path</mat-option>
+        <mat-option value="1" (click)="onRoadTypeChange(1)">Road</mat-option>
+        <mat-option value="2" (click)="onRoadTypeChange(2)">Dirt</mat-option>
+        <mat-option value="3" (click)="onRoadTypeChange(3)">Bike path</mat-option>
       </mat-select>
     </mat-form-field>
 
-    <button mat-raised-button color="primary" class="full-width" (click)="onSearch()">Search</button>
+    <!-- <button mat-raised-button color="primary" class="full-width" (click)="onSearch()">Search</button> -->
 
   </form>
 

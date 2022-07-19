@@ -50,7 +50,7 @@ export class NewItineraryBarComponent implements OnInit, OnDestroy {
     this.itineraryForm = this.formBuilder.group({
       departure: ['', []],
       destination: ['', []],
-      roadType: ['', [Validators.required]],
+      roadType: ["3", [Validators.required]],
     })
   }
 
@@ -69,7 +69,7 @@ export class NewItineraryBarComponent implements OnInit, OnDestroy {
 
 
   /**
-   * Initialize the mapp CLick. When the user select focus on one field (departure or destination), the map will listen
+   * Initialize the map CLick. When the user select focus on one field (departure or destination), the map will listen
    * the position where the user click on the map, and setup the longitude and lattitude with this position for creating
    * new itinerary
    */
@@ -83,13 +83,19 @@ export class NewItineraryBarComponent implements OnInit, OnDestroy {
           this.destinationControl.setValue(`${pos.latlng.lat} ,  ${pos.latlng.lng}`)
           this.destinationAddress = pos.latlng;
           this.itineraryService.setMarkerStart(this.destinationAddress);
+
+          this.watchHotReload();
         }
         if (this.isFocusOnDeparture) {
           this.isFocusOnDeparture = false;
           this.departureControl.setValue(`${pos.latlng.lat} ,  ${pos.latlng.lng}`)
           this.departureAddress = pos.latlng;
           this.itineraryService.setMarkerEnd(this.departureAddress);
+
+          this.watchHotReload();
         }
+
+
       }
     })
   }
@@ -172,6 +178,12 @@ export class NewItineraryBarComponent implements OnInit, OnDestroy {
     });
   }
 
+  private watchHotReload(): void {
+    if (this.departureAddress != null && this.destinationAddress != null) {
+      this.onSearch();
+    }
+  }
+
 
   /**
    * Called when a user click on the address in the list when he search a new adress
@@ -189,6 +201,13 @@ export class NewItineraryBarComponent implements OnInit, OnDestroy {
       this.destinationAddress = new LatLng(Number(address.lat), Number(address.lon));
       this.itineraryService.setMarkerEnd(this.destinationAddress);
     }
+
+    this.watchHotReload();
+  }
+
+  public onRoadTypeChange(value: number): void {
+    this.itineraryForm.controls['roadType'].setValue(String(value))
+    this.watchHotReload();
   }
 
 
