@@ -54,8 +54,6 @@ export class ItineraryService {
       this.itinerary = v;
       this.$itinerary.next(v);
 
-
-
       this.itineraryVisual = this.itinerary.map((v, i) => new ItineraryVisual(v, i, false))
       this.itineraryVisual.forEach(iti => {
         iti.startLatLng = new LatLng(latitudeStart, longitudeStart)

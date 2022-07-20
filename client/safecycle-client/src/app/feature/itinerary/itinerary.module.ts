@@ -8,13 +8,15 @@ import { NewItineraryBarComponent } from './new-itinerary-bar/new-itinerary-bar.
 import { ItineraryCardComponent } from './intern-sections/itinerary-card/itinerary-card.component';
 import {NgChartsModule} from "ng2-charts";
 import {PlotlyModule} from "angular-plotly.js";
+import { MultiCheckpointsFieldsComponent } from './intern-sections/multi-checkpoints-fields/multi-checkpoints-fields.component';
 
 
 @NgModule({
   declarations: [
     ItineraryComponent,
     NewItineraryBarComponent,
-    ItineraryCardComponent
+    ItineraryCardComponent,
+    MultiCheckpointsFieldsComponent
   ],
     imports: [
         CommonModule,

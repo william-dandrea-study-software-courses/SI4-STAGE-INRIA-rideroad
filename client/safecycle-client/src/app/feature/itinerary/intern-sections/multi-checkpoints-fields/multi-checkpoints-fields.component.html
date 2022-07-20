@@ -1,0 +1,39 @@
+
+
+<div id="main-multi-checkpoints-section" >
+
+  <form [formGroup]="checkpointForm" class="full-width">
+    <div formArrayName="checkpoints">
+
+      <div *ngFor="let number of checkpointForm.controls.checkpoints.controls; let i = index" >
+
+        <div class="full-width input-btn-delete-checkpoint">
+          <mat-form-field appearance="outline" >
+            <mat-label>CheckPoint {{i+1}}</mat-label>
+            <mat-icon matSuffix>my_location</mat-icon>
+            <input matInput placeholder="CheckPoint {{i+1}}" formControlName="{{i}}">
+          </mat-form-field>
+
+          <div>
+            <button mat-mini-fab color="warn" (click)="deleteCheckPoint(i)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+
+    </div>
+
+    <button mat-stroked-button class="border-box-sizing full-width" (click)="onAddCheckpoint()">Add checkpoint</button>
+
+  </form>
+
+
+
+
+
+</div>
+
+

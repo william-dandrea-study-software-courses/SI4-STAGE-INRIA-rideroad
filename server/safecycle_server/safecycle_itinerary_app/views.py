@@ -72,8 +72,6 @@ def get_itinerary_with_checkpoints(request):
         multiCheckPoints = MultiCheckPointsItinerary(departure, destination, checkpoints, 3)
         result = multiCheckPoints.search()
 
-
-
         return HttpResponse(json.dumps(result.toDict()))
 
 
