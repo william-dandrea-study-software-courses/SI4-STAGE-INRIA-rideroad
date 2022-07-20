@@ -5,6 +5,7 @@ import {NominatimAddressModel} from "../model/nominatim-address.model";
 import {ItineraryModel} from "../model/itinerary.model";
 import {ItineraryVisual} from "../model/itinerary-visual.class"
 import {LatLng} from "leaflet";
+import {MultiCheckpointsItineraryModel} from "../model/multi-checkpoints-itinerary.model";
 
 @Injectable({
   providedIn: 'root'
@@ -24,8 +25,10 @@ export class ItineraryService {
   public $startMarker: BehaviorSubject<LatLng | null> = new BehaviorSubject<LatLng | null>(null);
   public endMarker: LatLng | null = null;
   public $endMarker: BehaviorSubject<LatLng | null> = new BehaviorSubject<LatLng | null>(null);
-  public checkPointsMarker: LatLng[] = [];
-  public $checkPointsMarker: BehaviorSubject<LatLng[]> = new BehaviorSubject<LatLng[]>([]);
+  public checkPoints: LatLng[] = [];
+  public $checkPoints: BehaviorSubject<LatLng[]> = new BehaviorSubject<LatLng[]>([]);
+  public roadType: number = 0;
+  public $roadType: BehaviorSubject<number> = new BehaviorSubject<number>(0);
 
   public isLoadingItineraryOnBackend: boolean = false;
   public $isLoadingItineraryOnBackend: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false)
@@ -36,7 +39,6 @@ export class ItineraryService {
   private getItinerary(longitudeStart: number, latitudeStart: number, longitudeEnd: number, latitudeEnd: number, roadType: number): Observable<ItineraryModel[]> {
     this.isLoadingItineraryOnBackend = true;
     this.$isLoadingItineraryOnBackend.next(this.isLoadingItineraryOnBackend);
-
 
     const url = 'http://127.0.0.1:8000/api/itinerary';
 
@@ -51,15 +53,36 @@ export class ItineraryService {
   }
 
 
-  public launchSearchItinerary(longitudeStart: number, latitudeStart: number, longitudeEnd: number, latitudeEnd: number, roadType: number) {
-    this.getItinerary(longitudeStart, latitudeStart, longitudeEnd, latitudeEnd, roadType).subscribe(v => {
-      this.itinerary = v;
-      this.$itinerary.next(v);
+  private getItineraryWithCheckPoints(longitudeStart: number, latitudeStart: number, longitudeEnd: number, latitudeEnd: number, roadType: number, checkPoints: LatLng[]): Observable<MultiCheckpointsItineraryModel> {
+    this.isLoadingItineraryOnBackend = true;
+    this.$isLoadingItineraryOnBackend.next(this.isLoadingItineraryOnBackend);
+
+    const url = 'http://127.0.0.1:8000/api/checkpoints-itinerary';
+
+    const body = {
+      departure: [longitudeStart, latitudeStart],
+      destination: [longitudeEnd, latitudeEnd],
+      checkpoints: [
+        ...checkPoints.map(latLng => [latLng.lng, latLng.lat])
+      ],
+      road_type: Number(roadType),
+    }
+
+
+    return this.http.post<MultiCheckpointsItineraryModel>(url, body)
+  }
+
+
+  private launchSearchItinerary(start: LatLng, end: LatLng, roadType: number) {
+
+    this.getItineraryWithCheckPoints(start.lng, start.lat, end.lng, end.lat, roadType, this.checkPoints).subscribe(v => {
+      this.itinerary = v.itineraries;
+      this.$itinerary.next(v.itineraries);
 
       this.itineraryVisual = this.itinerary.map((v, i) => new ItineraryVisual(v, i, false))
       this.itineraryVisual.forEach(iti => {
-        iti.startLatLng = new LatLng(latitudeStart, longitudeStart)
-        iti.endLatLng = new LatLng(latitudeEnd, longitudeEnd)
+        iti.startLatLng = start
+        iti.endLatLng = end
       })
       if (this.itineraryVisual.length > 0) {
         this.changeSelectedItinerary(this.itineraryVisual[0].index);
@@ -102,28 +125,42 @@ export class ItineraryService {
     }
   }
 
-
-  public cleanMapItinerary(): void {
-    this.itineraryVisual = null;
-    this.$itineraryVisual.next(null);
-  }
-
-
-
-  public setMarkerStart(latLon: LatLng | null) {
+  public setStart(latLon: LatLng | null) {
     this.startMarker = latLon;
     this.$startMarker.next(this.startMarker);
+    this.updateItinerary();
   }
 
-  public setMarkerEnd(latLon: LatLng | null) {
+  public setEnd(latLon: LatLng | null) {
     this.endMarker = latLon;
     this.$endMarker.next(this.endMarker);
+    this.updateItinerary();
   }
 
-  public setMarkerCheckPoints(latLonList: LatLng[]) {
-    this.checkPointsMarker = latLonList;
-    this.$checkPointsMarker.next(this.checkPointsMarker);
+  public setRoadType(value: number) {
+    this.roadType = value;
+    this.$roadType.next(this.roadType)
+    this.updateItinerary();
   }
+
+  public setCheckPoints(latLonList: LatLng[]) {
+    this.checkPoints = latLonList;
+    this.$checkPoints.next(this.checkPoints);
+    this.updateItinerary();
+  }
+
+
+  public updateItinerary() {
+
+    if (this.startMarker != null && this.endMarker != null && this.roadType != null) {
+      this.launchSearchItinerary(this.startMarker, this.endMarker, this.roadType);
+    }
+
+  }
+
+
+
+
 
 
 

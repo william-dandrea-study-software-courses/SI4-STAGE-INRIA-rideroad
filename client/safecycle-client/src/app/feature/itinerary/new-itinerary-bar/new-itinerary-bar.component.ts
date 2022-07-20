@@ -62,10 +62,11 @@ export class NewItineraryBarComponent implements OnInit, OnDestroy {
 
     this.initializeDepartureControl();
     this.initializeDestinationControl();
-
+    this.initializeRoadTypeControl();
     this.initializeMapClick();
 
   }
+
 
 
   /**
@@ -82,17 +83,13 @@ export class NewItineraryBarComponent implements OnInit, OnDestroy {
           this.isFocusOnDestination = false;
           this.destinationControl.setValue(`${pos.latlng.lat} ,  ${pos.latlng.lng}`)
           this.destinationAddress = pos.latlng;
-          this.itineraryService.setMarkerStart(this.destinationAddress);
-
-          this.watchHotReload();
+          this.itineraryService.setStart(this.destinationAddress);
         }
         if (this.isFocusOnDeparture) {
           this.isFocusOnDeparture = false;
           this.departureControl.setValue(`${pos.latlng.lat} ,  ${pos.latlng.lng}`)
           this.departureAddress = pos.latlng;
-          this.itineraryService.setMarkerEnd(this.departureAddress);
-
-          this.watchHotReload();
+          this.itineraryService.setEnd(this.departureAddress);
         }
 
 
@@ -178,10 +175,8 @@ export class NewItineraryBarComponent implements OnInit, OnDestroy {
     });
   }
 
-  private watchHotReload(): void {
-    if (this.departureAddress != null && this.destinationAddress != null) {
-      this.onSearch();
-    }
+  private initializeRoadTypeControl() {
+    this.itineraryService.setRoadType(this.itineraryForm.controls['roadType'].value)
   }
 
 
@@ -194,20 +189,19 @@ export class NewItineraryBarComponent implements OnInit, OnDestroy {
     if (place == 0) {
       this.itineraryForm.controls['departure'].setValue(address.display_name);
       this.departureAddress = new LatLng(Number(address.lat), Number(address.lon));
-      this.itineraryService.setMarkerStart(this.departureAddress);
+      this.itineraryService.setStart(this.departureAddress);
     }
     if (place == 1) {
       this.itineraryForm.controls['destination'].setValue(address.display_name);
       this.destinationAddress = new LatLng(Number(address.lat), Number(address.lon));
-      this.itineraryService.setMarkerEnd(this.destinationAddress);
+      this.itineraryService.setEnd(this.destinationAddress);
     }
 
-    this.watchHotReload();
   }
 
   public onRoadTypeChange(value: number): void {
     this.itineraryForm.controls['roadType'].setValue(String(value))
-    this.watchHotReload();
+    this.itineraryService.setRoadType(value);
   }
 
 
@@ -216,13 +210,7 @@ export class NewItineraryBarComponent implements OnInit, OnDestroy {
    */
   public onSearch(): void {
     if (this.departureAddress != null && this.destinationAddress != null) {
-      this.itineraryService.launchSearchItinerary(
-        +this.departureAddress.lng,
-        +this.departureAddress.lat,
-        +this.destinationAddress.lng,
-        +this.destinationAddress.lat,
-        +this.itineraryForm.value['roadType']
-      )
+      this.itineraryService.updateItinerary();
     } else {
       this.itineraryNotFindError()
     }

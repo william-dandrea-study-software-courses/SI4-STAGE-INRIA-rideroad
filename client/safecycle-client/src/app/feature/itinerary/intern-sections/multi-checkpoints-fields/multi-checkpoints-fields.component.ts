@@ -44,7 +44,7 @@ export class MultiCheckpointsFieldsComponent implements OnInit {
     this.addressOptionsList.splice(index, 1)
     this.isLoadingList.splice(index, 1)
     this.checkPoints.splice(index, 1)
-    this.itineraryService.setMarkerCheckPoints(this.checkPoints);
+    this.itineraryService.setCheckPoints(this.checkPoints);
   }
 
 
@@ -80,7 +80,7 @@ export class MultiCheckpointsFieldsComponent implements OnInit {
 
   public onAddressChange(address: NominatimAddressModel, index: number) : void {
     this.checkPoints[index] = new LatLng(Number(address.lat), Number(address.lon));
-    this.itineraryService.setMarkerCheckPoints(this.checkPoints);
+    this.itineraryService.setCheckPoints(this.checkPoints);
   }
 
 

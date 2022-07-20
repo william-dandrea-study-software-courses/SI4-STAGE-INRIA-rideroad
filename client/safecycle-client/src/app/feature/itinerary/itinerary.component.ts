@@ -9,7 +9,7 @@ import {MatSnackBar} from "@angular/material/snack-bar";
 import {MapClickService} from "../../core/service/map-click.service";
 import {ItineraryVisual} from "../../core/model/itinerary-visual.class";
 import {GeolocalisationService} from "../../core/service/geolocalisation.service";
-import {MatDialog, MatDialogRef} from "@angular/material/dialog";
+import {MatDialog} from "@angular/material/dialog";
 import {SpinnerComponent} from "../../shared/components/spinner/spinner.component";
 
 @Component({
@@ -139,18 +139,21 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
       indexSelectedItinerary = itinerariesVisual[index].is_selectionned ? index : indexSelectedItinerary;
 
       for (let path of allPaths) {
-        const allLongLat = path.coords.map(coord => new LatLng(coord.lat, coord.lon, coord.elevation))
+        if (path.coords != null) {
+          const allLongLat = path.coords.map(coord => new LatLng(coord.lat, coord.lon, coord.elevation))
 
-        const color: string = itinerariesVisual[index].is_selectionned ? (path.costs.elevation > 0 ? "#2596be" : "#be4d25") : "#b2b2b2"
+          const color: string = itinerariesVisual[index].is_selectionned ? (path.costs.elevation > 0 ? "#2596be" : "#be4d25") : "#b2b2b2"
 
-        allSegments.push(
-          L.polyline(allLongLat, {
-            color: color,
-            weight: 7,
-            smoothFactor: 1,
-            opacity: opacity,
-          })
-        )
+          allSegments.push(
+            L.polyline(allLongLat, {
+              color: color,
+              weight: 7,
+              smoothFactor: 1,
+              opacity: opacity,
+            })
+          )
+        }
+
       }
 
       itinerariesVisual[index].segments_on_map = L.featureGroup(allSegments);
@@ -306,17 +309,8 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
     })
   }
 
-
-  public ngOnDestroy() {
-    this.itinerarySubscription.unsubscribe();
-    this.selectedItinerarySubscription.unsubscribe();
-    this.startMarkerSubscription.unsubscribe();
-    this.endMarkerSubscription.unsubscribe();
-    this.isLoadingNewItinerarySubscription.unsubscribe();
-  }
-
   private setCheckPointsSubscription() {
-    this.checkPointsMarkersSubscription = this.itineraryService.$checkPointsMarker.subscribe(newCheckPoints => {
+    this.checkPointsMarkersSubscription = this.itineraryService.$checkPoints.subscribe(newCheckPoints => {
 
       if (this.checkPointsMarkers != null) {
         this.checkPointsMarkers.forEach(checkPointMarker => checkPointMarker.remove())
@@ -342,6 +336,15 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
       }
 
     })
+  }
+
+  public ngOnDestroy() {
+    this.itinerarySubscription.unsubscribe();
+    this.selectedItinerarySubscription.unsubscribe();
+    this.startMarkerSubscription.unsubscribe();
+    this.endMarkerSubscription.unsubscribe();
+    this.isLoadingNewItinerarySubscription.unsubscribe();
+    this.checkPointsMarkersSubscription.unsubscribe();
   }
 }
 

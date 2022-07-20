@@ -64,12 +64,14 @@ def get_itinerary_with_checkpoints(request):
 
     if request.method == 'POST':
         body = json.loads(request.body)
+        print(body)
 
         departure = LonLat(longitude=body['departure'][0], latitude=body['departure'][1])
         destination = LonLat(longitude=body['destination'][0], latitude=body['destination'][1])
         checkpoints = [ LonLat(longitude=ch[0], latitude=ch[1]) for ch in body['checkpoints'] ]
+        roadType = body['road_type']
 
-        multiCheckPoints = MultiCheckPointsItinerary(departure, destination, checkpoints, 3)
+        multiCheckPoints = MultiCheckPointsItinerary(departure, destination, checkpoints, roadType)
         result = multiCheckPoints.search()
 
         return HttpResponse(json.dumps(result.toDict()))
