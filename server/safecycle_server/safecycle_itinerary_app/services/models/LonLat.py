@@ -11,6 +11,6 @@ class LonLat:
 
     def toDict(self):
         return {
-            "longitude": self.longitude,
-            "latitude": self.latitude,
+            "lon": self.longitude,
+            "lat": self.latitude,
         }

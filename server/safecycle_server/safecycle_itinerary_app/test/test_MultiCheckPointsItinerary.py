@@ -23,5 +23,7 @@ class TestMultiCheckPointsItinerary(TestCase):
 
         multiCheckPoints = MultiCheckPointsItinerary(start, end, checkPoints, 3)
         # print(json.dumps(multiCheckPoints.search()))
-        print(multiCheckPoints.search())
+
+        result = multiCheckPoints.search()
+        print(result.toDict())
         # multiCheckPoints.search()

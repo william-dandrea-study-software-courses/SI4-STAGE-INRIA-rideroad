@@ -1,11 +1,15 @@
 import json
 
-from django.http import HttpResponse
+from django.http import HttpResponse, QueryDict
 from django.shortcuts import render
 
 # Create your views here.
+from django.views.decorators.csrf import csrf_exempt
+
 from .services.ItineraryGeneration import ItineraryGeneration
+from .services.MultiCheckPointsItinerary import MultiCheckPointsItinerary
 from .services.exceptions.BrouterException import BrouterException
+from .services.models.LonLat import LonLat
 
 
 def say_hello(request):
@@ -46,13 +50,32 @@ def get_itinerary(request):
 
 
 def get_test_itinerary(request):
-    print("yo")
     itinerary = ItineraryGeneration(departure_longitude=-1.762642, departure_latitude=43.373684,
                                     destination_longitude=1.62221,
                                     destination_latitude=43.389117, road_type=1)
 
 
     result = itinerary.berouter_request('trekking', 1)
-
-
     return HttpResponse(result)
+
+
+@csrf_exempt
+def get_itinerary_with_checkpoints(request):
+
+    if request.method == 'POST':
+        body = json.loads(request.body)
+
+        departure = LonLat(longitude=body['departure'][0], latitude=body['departure'][1])
+        destination = LonLat(longitude=body['destination'][0], latitude=body['destination'][1])
+        checkpoints = [ LonLat(longitude=ch[0], latitude=ch[1]) for ch in body['checkpoints'] ]
+
+        multiCheckPoints = MultiCheckPointsItinerary(departure, destination, checkpoints, 3)
+        result = multiCheckPoints.search()
+
+
+
+        return HttpResponse(json.dumps(result.toDict()))
+
+
+    return HttpResponse(json.dumps({'message': "Wrong HTTP request"}), status=405)
+

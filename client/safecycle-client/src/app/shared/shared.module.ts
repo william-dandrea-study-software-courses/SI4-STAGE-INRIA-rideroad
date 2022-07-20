@@ -28,6 +28,7 @@ import {MatTabsModule} from "@angular/material/tabs";
 import {MatGridListModule} from "@angular/material/grid-list";
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import {MatDialogModule} from "@angular/material/dialog";
+import {FlexLayoutModule} from "@angular/flex-layout";
 
 const modules = [
   CommonModule,
@@ -55,6 +56,9 @@ const modules = [
   MatTabsModule,
   MatGridListModule,
   MatDialogModule,
+
+
+  FlexLayoutModule,
 ]
 
 const components = [

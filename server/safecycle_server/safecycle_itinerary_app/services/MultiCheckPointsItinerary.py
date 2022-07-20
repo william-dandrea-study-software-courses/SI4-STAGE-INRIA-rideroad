@@ -1,7 +1,8 @@
 from typing import List
 
-from server.safecycle_server.safecycle_itinerary_app.services.ItineraryGeneration import ItineraryGeneration
-from server.safecycle_server.safecycle_itinerary_app.services.models.LonLat import LonLat
+from .ItineraryGeneration import ItineraryGeneration
+from .models.LonLat import LonLat
+from .models.MultiCheckPointsModel import MultiCheckPointsModel
 
 
 class MultiCheckPointsItinerary:
@@ -27,12 +28,13 @@ class MultiCheckPointsItinerary:
             lastCheckPoint = checkPoint
 
         # Filter the variantes
-        itineraries = {
-            0: itineraries_steps[0][0],
-            1: itineraries_steps[0][1],
-            2: itineraries_steps[0][2],
-            3: itineraries_steps[0][3],
-        }
+        itineraries = [
+            itineraries_steps[0][0],
+            itineraries_steps[0][1],
+            itineraries_steps[0][2],
+            itineraries_steps[0][3],
+        ]
+
 
         for index_step in range(1, len(itineraries_steps)):
             step = itineraries_steps[index_step]
@@ -45,7 +47,12 @@ class MultiCheckPointsItinerary:
                 itineraries[index_alternative]["paths"].append(step[index_alternative]["paths"])
                 itineraries[index_alternative]["altitude_profil"].append(step[index_alternative]["altitude_profil"])
 
-        return itineraries
+        return MultiCheckPointsModel(
+            departure=self.__start,
+            destination=self.__end,
+            checkPoints=self.__checkPoints,
+            itineraries=itineraries,
+        )
 
 
 
