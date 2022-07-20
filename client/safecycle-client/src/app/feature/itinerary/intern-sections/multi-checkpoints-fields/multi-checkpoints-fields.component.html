@@ -10,8 +10,20 @@
         <div class="full-width input-btn-delete-checkpoint">
           <mat-form-field appearance="outline" >
             <mat-label>CheckPoint {{i+1}}</mat-label>
+
+            <input matInput placeholder="CheckPoint {{i+1}}" formControlName="{{i}}" [matAutocomplete]="autoDestination">
+
+            <mat-autocomplete #autoDestination="matAutocomplete">
+
+              <mat-option *ngIf="isLoadingList[i]" class="is-loading">Loading...</mat-option>
+              <ng-container *ngIf="!isLoadingList[i]">
+                <mat-option *ngFor="let address of addressOptionsList[i]" [value]="address.display_name" (click)="onAddressChange(address, i)" (onSelectionChange)="onAddressChange(address, i)">
+                  {{address.display_name}}
+                </mat-option>
+              </ng-container>
+            </mat-autocomplete>
+
             <mat-icon matSuffix>my_location</mat-icon>
-            <input matInput placeholder="CheckPoint {{i+1}}" formControlName="{{i}}">
           </mat-form-field>
 
           <div>
@@ -27,6 +39,8 @@
     </div>
 
     <button mat-stroked-button class="border-box-sizing full-width" (click)="onAddCheckpoint()">Add checkpoint</button>
+
+    <button mat-stroked-button (click)="tst()">tst</button>
 
   </form>
 

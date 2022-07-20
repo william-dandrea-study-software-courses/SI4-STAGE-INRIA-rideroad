@@ -28,9 +28,11 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
   private selectedItinerarySubscription: Subscription = new Subscription();
   private startMarkerSubscription: Subscription = new Subscription();
   private endMarkerSubscription: Subscription = new Subscription();
+  private checkPointsMarkersSubscription: Subscription = new Subscription();
 
   private startMarker: Marker | null = null;
   private endMarker: Marker | null = null;
+  private checkPointsMarkers: Marker[] | null = null;
 
   private isLoadingNewItinerarySubscription: Subscription = new Subscription();
   public isLoadingNewItinerary: boolean = false;
@@ -41,6 +43,7 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
     this.itineraryManager();
     this.setMarkersStartStop();
     this.setOverlayIfLoadingNewItinerary();
+    this.setCheckPointsSubscription();
   }
 
   public ngAfterViewInit(): void {
@@ -310,6 +313,35 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
     this.startMarkerSubscription.unsubscribe();
     this.endMarkerSubscription.unsubscribe();
     this.isLoadingNewItinerarySubscription.unsubscribe();
+  }
+
+  private setCheckPointsSubscription() {
+    this.checkPointsMarkersSubscription = this.itineraryService.$checkPointsMarker.subscribe(newCheckPoints => {
+
+      if (this.checkPointsMarkers != null) {
+        this.checkPointsMarkers.forEach(checkPointMarker => checkPointMarker.remove())
+      }
+
+      this.checkPointsMarkers = []
+
+      if (newCheckPoints != null) {
+
+        newCheckPoints.forEach(newCheckPoint => {
+          const newMarker = L.marker(newCheckPoint, {
+            icon: L.icon({
+              iconUrl: '/assets/icons/start_marker.png',
+              iconSize: [35, 35]
+            }),
+          })
+          this.map.addLayer(newMarker)
+
+          // @ts-ignore
+          this.checkPointsMarkers.push(newMarker)
+
+        })
+      }
+
+    })
   }
 }
 

@@ -24,6 +24,8 @@ export class ItineraryService {
   public $startMarker: BehaviorSubject<LatLng | null> = new BehaviorSubject<LatLng | null>(null);
   public endMarker: LatLng | null = null;
   public $endMarker: BehaviorSubject<LatLng | null> = new BehaviorSubject<LatLng | null>(null);
+  public checkPointsMarker: LatLng[] = [];
+  public $checkPointsMarker: BehaviorSubject<LatLng[]> = new BehaviorSubject<LatLng[]>([]);
 
   public isLoadingItineraryOnBackend: boolean = false;
   public $isLoadingItineraryOnBackend: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false)
@@ -116,6 +118,11 @@ export class ItineraryService {
   public setMarkerEnd(latLon: LatLng | null) {
     this.endMarker = latLon;
     this.$endMarker.next(this.endMarker);
+  }
+
+  public setMarkerCheckPoints(latLonList: LatLng[]) {
+    this.checkPointsMarker = latLonList;
+    this.$checkPointsMarker.next(this.checkPointsMarker);
   }
 
 
