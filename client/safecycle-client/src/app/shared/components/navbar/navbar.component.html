@@ -1,12 +1,26 @@
 
 
 <mat-toolbar color="primary">
-  <span>{{ '{' }} <mat-icon>directions_bike</mat-icon> {{ '}' }} SafeCycle</span>
+  <span>{{ '{' }} <mat-icon>directions_bike</mat-icon> {{ '}' }} <a fxHide.lt-lg>SafeCycle</a></span>
+
   <span class="max-spacer"></span>
 
-  <button mat-button (click)="changePageTo('itinerary')">New itinerary</button>
-  <button mat-button (click)="changePageTo('strategic-point')">Strategic places</button>
-  <button mat-button (click)="changePageTo('gps')">GPS</button>
+  <div fxHide.lt-lg>
+    <button mat-button (click)="changePageTo('itinerary')">New itinerary</button>
+    <button mat-button (click)="changePageTo('strategic-point')">Strategic places</button>
+    <button mat-button (click)="changePageTo('gps')">GPS</button>
+  </div>
+
+
+  <div fxHide.gt-md>
+    <mat-icon [matMenuTriggerFor]="menu">menu</mat-icon>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item (click)="changePageTo('itinerary')"><span>New itinerary</span></button>
+      <button mat-menu-item (click)="changePageTo('strategic-point')"><span>Strategic places</span></button>
+      <button mat-menu-item (click)="changePageTo('gps')"><span>GPS</span></button>
+    </mat-menu>
+  </div>
+
 </mat-toolbar>
 
 

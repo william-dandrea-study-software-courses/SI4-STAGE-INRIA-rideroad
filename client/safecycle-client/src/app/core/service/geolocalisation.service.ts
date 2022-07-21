@@ -15,7 +15,6 @@ export class GeolocalisationService {
    */
   public getLocalisation(onSuccess: Function, onError: Function): void {
     navigator.geolocation.getCurrentPosition((position: GeolocationPosition) => {
-      console.log(position)
       onSuccess(position)
     },(error) =>{
       console.log("Position not allowed")

@@ -1,16 +1,18 @@
-import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
+import {AfterViewInit, ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit} from '@angular/core';
 
 import * as L from 'leaflet';
 import {Map, LatLng, Marker, Layer} from "leaflet";
 import {ItineraryService} from "../../core/service/itinerary.service";
 import {PathModel} from "../../core/model/itinerary.model";
-import {Subscription} from "rxjs";
+import {merge, Observable, startWith, Subscription} from "rxjs";
+import { map } from 'rxjs/operators';
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {MapClickService} from "../../core/service/map-click.service";
 import {ItineraryVisual} from "../../core/model/itinerary-visual.class";
 import {GeolocalisationService} from "../../core/service/geolocalisation.service";
 import {MatDialog} from "@angular/material/dialog";
 import {SpinnerComponent} from "../../shared/components/spinner/spinner.component";
+import {BreakpointObserver, Breakpoints, MediaMatcher} from "@angular/cdk/layout";
 
 @Component({
   selector: 'app-itinerary',
@@ -18,6 +20,10 @@ import {SpinnerComponent} from "../../shared/components/spinner/spinner.componen
   styleUrls: ['./itinerary.component.scss']
 })
 export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
+
+  public getScreenWidth: any;
+  public getScreenHeight: any;
+
 
   // @ts-ignore
   public map: Map;
@@ -37,13 +43,23 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
   private isLoadingNewItinerarySubscription: Subscription = new Subscription();
   public isLoadingNewItinerary: boolean = false;
 
-  constructor(private itineraryService: ItineraryService, private mapClickService: MapClickService,private snackBar: MatSnackBar, private geolocalisationService: GeolocalisationService, public dialog: MatDialog) {}
+  constructor(
+    private itineraryService: ItineraryService,
+    private mapClickService: MapClickService,
+    private snackBar: MatSnackBar,
+    private geolocalisationService: GeolocalisationService,
+    public dialog: MatDialog,
+    private breakpointObserver: BreakpointObserver,
+  ){}
 
   public ngOnInit(): void {
     this.itineraryManager();
     this.setMarkersStartStop();
     this.setOverlayIfLoadingNewItinerary();
     this.setCheckPointsSubscription();
+
+    this.getScreenWidth = window.innerWidth;
+    this.getScreenHeight = window.innerHeight;
   }
 
   public ngAfterViewInit(): void {
@@ -336,6 +352,16 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
       }
 
     })
+  }
+
+
+  @HostListener('window:resize', ['$event'])
+  onWindowResize() {
+    this.getScreenWidth = window.innerWidth;
+    this.getScreenHeight = window.innerHeight;
+    this.map.off();
+    this.map.remove();
+    this.initialisationMap()
   }
 
   public ngOnDestroy() {
