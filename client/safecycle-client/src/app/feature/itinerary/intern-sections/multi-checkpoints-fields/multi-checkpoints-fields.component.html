@@ -23,7 +23,7 @@
               </ng-container>
             </mat-autocomplete>
 
-            <mat-icon matSuffix>my_location</mat-icon>
+            <mat-icon matSuffix (click)="onFocus(i)" [ngClass]="isFocusOn[i] ? 'selected' : 'not-selected'">my_location</mat-icon>
           </mat-form-field>
 
           <div>

@@ -1,17 +1,20 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, FormControl, FormArray} from "@angular/forms";
-import {debounceTime, distinctUntilChanged, filter, finalize, switchMap, tap} from "rxjs";
+import {debounceTime, distinctUntilChanged, filter, finalize, Subscription, switchMap, tap} from "rxjs";
 import {NominatimAddressModel} from "../../../../core/model/nominatim-address.model";
 import {AutoCompletionAddressService} from "../../../../core/service/auto-completion-address.service";
 import {LatLng} from "leaflet";
 import {ItineraryService} from "../../../../core/service/itinerary.service";
+import {MapClickService} from "../../../../core/service/map-click.service";
 
 @Component({
   selector: 'app-multi-checkpoints-fields',
   templateUrl: './multi-checkpoints-fields.component.html',
   styleUrls: ['./multi-checkpoints-fields.component.scss']
 })
-export class MultiCheckpointsFieldsComponent implements OnInit {
+export class MultiCheckpointsFieldsComponent implements OnInit, OnDestroy {
+
+  private mapClickSubscription: Subscription = new Subscription();
 
   public checkpointForm = this.formBuilder.group({
     checkpoints: this.formBuilder.array([])
@@ -19,15 +22,19 @@ export class MultiCheckpointsFieldsComponent implements OnInit {
 
   public addressOptionsList: NominatimAddressModel[][] = []
   public isLoadingList: boolean[] = []
+  public isFocusOn: boolean[] = []
   public checkPoints: LatLng[] = []
 
   constructor(
     private formBuilder: FormBuilder,
     private autoCompletionAddressService: AutoCompletionAddressService,
-    private itineraryService: ItineraryService
+    private itineraryService: ItineraryService,
+    private mapClickService: MapClickService,
   ) { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.initializeMapClick();
+  }
 
 
   public onAddCheckpoint() {
@@ -35,6 +42,7 @@ export class MultiCheckpointsFieldsComponent implements OnInit {
     const formControl = new FormControl();
     this.initializeFormControl(formControl, this.addressOptionsList.length)
     control.push(formControl)
+    this.isFocusOn.push(false)
   }
 
   public deleteCheckPoint(index: number) {
@@ -76,6 +84,27 @@ export class MultiCheckpointsFieldsComponent implements OnInit {
     });
   }
 
+  private initializeMapClick(): void {
+    this.mapClickSubscription = this.mapClickService.$clickPosition.subscribe(pos => {
+      if (pos != null) {
+
+        let indexFocused = -1
+        this.isFocusOn.every(( isFocus, index) => {
+          if (isFocus) {
+            this.checkpointForm.controls['checkpoints'].at(index).setValue(`${pos.latlng.lat} ,  ${pos.latlng.lng}`)
+            this.checkPoints[index] = pos.latlng
+            this.itineraryService.setCheckPoints(this.checkPoints);
+            this.isFocusOn[index] = false
+            return false;
+          }
+          return true;
+        })
+
+
+      }
+    })
+  }
+
 
 
   public onAddressChange(address: NominatimAddressModel, index: number) : void {
@@ -84,10 +113,12 @@ export class MultiCheckpointsFieldsComponent implements OnInit {
   }
 
 
-  public tst() {
-    console.log(this.checkpointForm.value)
-    console.log(this.addressOptionsList)
-    console.log(this.isLoadingList)
+  public onFocus(index: number) {
+    this.isFocusOn[index] = !this.isFocusOn[index];
+  }
+
+  ngOnDestroy(): void {
+    this.mapClickSubscription.unsubscribe();
   }
 
 
