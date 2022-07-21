@@ -32,7 +32,7 @@ class ItineraryGeneration:
             profile=profile_variante_array[0]
             variante=profile_variante_array[1]
             alternative = self.berouter_request(profile, variante)
-            return self.__analyse_brouter_request(alternative, variante).toDict()
+            return self.__analyse_brouter_request(alternative, variante)
 
         profile: str = ""
 

@@ -12,13 +12,12 @@ class MultiCheckPointsModel:
         self.checkPoints: List[LonLat] = checkPoints
         self.itineraries: List[Itinerary] = itineraries
 
-
     def toDict(self):
         return {
             "departure": self.departure.toDict(),
             "destination": self.destination.toDict(),
             "checkPoints": [ch.toDict() for ch in self.checkPoints],
-            "itineraries": self.itineraries,
+            "itineraries": [it.toDict() for it in self.itineraries],
         }
 
         

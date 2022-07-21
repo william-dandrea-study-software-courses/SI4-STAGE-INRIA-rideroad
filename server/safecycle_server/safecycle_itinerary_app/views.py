@@ -40,7 +40,8 @@ def get_itinerary(request):
     try:
         itinerary = ItineraryGeneration(departure_longitude=departure_longitude, departure_latitude=departure_latitude, destination_longitude=destination_longitude, destination_latitude=destination_latitude, road_type=road_type)
         result = itinerary.search()
-        return HttpResponse(json.dumps(result), status=200)
+        dictResult = [it.toDict() for it in result]
+        return HttpResponse(json.dumps(dictResult), status=200)
     except BrouterException:
         return HttpResponse(json.dumps({'message': "Cannot find coordonates in the map"}), status=416)
     except:
@@ -74,7 +75,9 @@ def get_itinerary_with_checkpoints(request):
         multiCheckPoints = MultiCheckPointsItinerary(departure, destination, checkpoints, roadType)
         result = multiCheckPoints.search()
 
-        return HttpResponse(json.dumps(result.toDict()))
+        resultDict = result.toDict()
+
+        return HttpResponse(json.dumps(resultDict))
 
 
     return HttpResponse(json.dumps({'message': "Wrong HTTP request"}), status=405)

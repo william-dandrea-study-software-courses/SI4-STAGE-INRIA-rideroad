@@ -22,7 +22,7 @@ class Itinerary:
             "time": self.time,
             "profile": self.profile,
             "alternative": self.alternative,
-            "paths": [path.toDict() for path in self.paths],
+            "paths": [pat.toDict() for pat in self.paths],
             "cost": self.cost,
             "length": self.length,
             "filtered_ascend": self.filtered_ascend,

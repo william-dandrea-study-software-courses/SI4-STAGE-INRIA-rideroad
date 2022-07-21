@@ -1,6 +1,8 @@
 from typing import List
+from django.core import serializers
 
 from .ItineraryGeneration import ItineraryGeneration
+from .models.Itinerary import Itinerary
 from .models.LonLat import LonLat
 from .models.MultiCheckPointsModel import MultiCheckPointsModel
 
@@ -13,46 +15,22 @@ class MultiCheckPointsItinerary:
         self.__checkPoints = checkPoints
         self.__roadType = roadType
 
-    def search(self):
-
-        itineraries_steps = []
-
-        # Generate the itineraries
-        lastCheckPoint: LonLat = self.__start
-        for index in range(0, len(self.__checkPoints)+1):
-            checkPoint = self.__checkPoints[index] if index < len(self.__checkPoints) else self.__end
-            itineraryGeneration = ItineraryGeneration(lastCheckPoint.longitude, lastCheckPoint.latitude, checkPoint.longitude, checkPoint.latitude, self.__roadType)
-            itinerary = itineraryGeneration.search()
-
-            itineraries_steps.append(itinerary)
-            lastCheckPoint = checkPoint
-
-        # Filter the variantes
-        itineraries = [
-            itineraries_steps[0][0],
-            itineraries_steps[0][1],
-            itineraries_steps[0][2],
-            itineraries_steps[0][3],
-        ]
-
-
-        for index_step in range(1, len(itineraries_steps)):
-            step = itineraries_steps[index_step]
-
-            for index_alternative in range(0, 4):
-                itineraries[index_alternative]["time"] += step[index_alternative]["time"]
-                itineraries[index_alternative]["cost"] += step[index_alternative]["cost"]
-                itineraries[index_alternative]["length"] += step[index_alternative]["length"]
-                itineraries[index_alternative]["filtered_ascend"] += step[index_alternative]["filtered_ascend"]
-                itineraries[index_alternative]["paths"].append(step[index_alternative]["paths"])
-                itineraries[index_alternative]["altitude_profil"].append(step[index_alternative]["altitude_profil"])
-
-        return MultiCheckPointsModel(
+        self.__multiCheckPointModel = MultiCheckPointsModel(
             departure=self.__start,
             destination=self.__end,
             checkPoints=self.__checkPoints,
-            itineraries=itineraries,
+            itineraries=[],
         )
 
+    def search(self):
+
+        itinerary: ItineraryGeneration = ItineraryGeneration(departure_longitude=self.__start.longitude, departure_latitude=self.__start.latitude,
+                                        destination_longitude=self.__end.longitude,
+                                        destination_latitude=self.__end.latitude, road_type=self.__roadType)
+
+        result: List[Itinerary] = itinerary.search()
+        self.__multiCheckPointModel.itineraries = result
 
 
+
+        return self.__multiCheckPointModel
