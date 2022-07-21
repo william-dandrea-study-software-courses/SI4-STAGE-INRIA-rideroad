@@ -48,23 +48,22 @@ class MultiCheckPointsItinerary:
             allItinerariesNoConcatenate.append(itineraries)
             lastCheckpoint = checkPoint
 
+        # Maximum available alternatives
+        maximumAvailableAlternatives = min([len(it) for it in allItinerariesNoConcatenate])
 
-        # Dns un premier temps, on récupére juste la premiere variante
-        finalItinerary: Itinerary = Itinerary(0, 0, 0, 0, 0)
+        # Create the empty itineraries
+        self.__multiCheckPointModel.itineraries = [Itinerary(0, 0, 0, 0, alternative) for alternative in range(maximumAvailableAlternatives)]
 
+        # We explore now the itineraries steps and affect this steps to the correct alternative
         for step in allItinerariesNoConcatenate:
-            currentAlternativeStep: Itinerary = step[0]
-            finalItinerary.time += currentAlternativeStep.time
-            finalItinerary.profile = None
-            finalItinerary.alternative = 0
-            finalItinerary.cost += currentAlternativeStep.cost
-            finalItinerary.length += currentAlternativeStep.length
-            finalItinerary.filtered_ascend += currentAlternativeStep.filtered_ascend
-
-            finalItinerary.altitude_profil.extend(currentAlternativeStep.altitude_profil)
-            finalItinerary.paths.extend(currentAlternativeStep.paths)
-
-        self.__multiCheckPointModel.itineraries.append(finalItinerary)
+            for alternativeStep in step:
+                self.__multiCheckPointModel.itineraries[alternativeStep.alternative].time += alternativeStep.time
+                self.__multiCheckPointModel.itineraries[alternativeStep.alternative].profile = alternativeStep.profile
+                self.__multiCheckPointModel.itineraries[alternativeStep.alternative].cost = alternativeStep.cost
+                self.__multiCheckPointModel.itineraries[alternativeStep.alternative].length = alternativeStep.length
+                self.__multiCheckPointModel.itineraries[alternativeStep.alternative].filtered_ascend = alternativeStep.filtered_ascend
+                self.__multiCheckPointModel.itineraries[alternativeStep.alternative].altitude_profil.extend(alternativeStep.altitude_profil)
+                self.__multiCheckPointModel.itineraries[alternativeStep.alternative].paths.extend(alternativeStep.paths)
 
 
 
