@@ -6,6 +6,7 @@ import {ItineraryModel} from "../model/itinerary.model";
 import {ItineraryVisual} from "../model/itinerary-visual.class"
 import {LatLng} from "leaflet";
 import {MultiCheckpointsItineraryModel} from "../model/multi-checkpoints-itinerary.model";
+import {environment} from "../../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
@@ -40,7 +41,7 @@ export class ItineraryService {
     this.isLoadingItineraryOnBackend = true;
     this.$isLoadingItineraryOnBackend.next(this.isLoadingItineraryOnBackend);
 
-    const url = 'http://127.0.0.1:8000/api/itinerary';
+    const url = environment.backend_url + 'itinerary';
 
     let queryParams = new HttpParams();
     queryParams = queryParams.append("departure_longitude", longitudeStart);

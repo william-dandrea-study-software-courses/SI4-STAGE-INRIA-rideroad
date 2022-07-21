@@ -1,0 +1,15 @@
+
+
+version: "3.9"
+
+services:
+  django:
+    image: safecycle-backend
+    build: ./server/safecycle_server
+    ports:
+      - "8000:8000"
+  angular:
+    image: safecycle-frontend
+    build: ./client/safecycle-client
+    ports:
+      - "8000:5000"
