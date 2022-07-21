@@ -47,9 +47,6 @@ def get_itinerary(request):
     except:
         return HttpResponse(json.dumps({'message': "Error during processing"}), status=424)
 
-
-
-
 def get_test_itinerary(request):
     itinerary = ItineraryGeneration(departure_longitude=-1.762642, departure_latitude=43.373684,
                                     destination_longitude=1.62221,
@@ -78,7 +75,6 @@ def get_itinerary_with_checkpoints(request):
         resultDict = result.toDict()
 
         return HttpResponse(json.dumps(resultDict))
-
 
     return HttpResponse(json.dumps({'message': "Wrong HTTP request"}), status=405)
 
