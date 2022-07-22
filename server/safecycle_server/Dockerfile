@@ -1,15 +1,16 @@
 
-FROM python:3.8-slim-buster
+FROM python:3.10-slim
 
 ENV PYTHONUNBUFFERED=1
 
-WORKDIR /app
+RUN pip install --upgrade pip
 
-COPY requirements.txt requirements.txt
+COPY ./requirements.txt .
 RUN pip install -r requirements.txt
 
-COPY . .
+COPY . /app
 
-EXPOSE 8000
+WORKDIR /app
 
-CMD ["python3", "manage.py", "runserver",  "--noreload"]
+COPY ./entrypoint.sh /
+ENTRYPOINT ["sh", "/entrypoint.sh"]
