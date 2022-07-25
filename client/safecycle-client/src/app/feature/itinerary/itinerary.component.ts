@@ -13,6 +13,7 @@ import {GeolocalisationService} from "../../core/service/geolocalisation.service
 import {MatDialog} from "@angular/material/dialog";
 import {SpinnerComponent} from "../../shared/components/spinner/spinner.component";
 import {BreakpointObserver, Breakpoints, MediaMatcher} from "@angular/cdk/layout";
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-itinerary',
@@ -60,6 +61,8 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.getScreenWidth = window.innerWidth;
     this.getScreenHeight = window.innerHeight;
+
+    console.log(environment.production)
   }
 
   public ngAfterViewInit(): void {
@@ -97,7 +100,7 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
     this.geolocalisationService.getLocalisation((position: GeolocationPosition) => {
       this.map.setView(new LatLng(position.coords.latitude, position.coords.longitude));
     }, () => {
-      this.snackBar.open("Please allow you localisation", '', {duration: 2000,})
+      this.snackBar.open("You didn't allow your localisation", '', {duration: 2000,})
     })
   }
 

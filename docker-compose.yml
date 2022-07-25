@@ -3,13 +3,18 @@
 version: "3.9"
 
 services:
-  django:
-    image: safecycle-server
-    # build: ./server/safecycle_server
-    ports:
-      - "8080:8000"
-  angular:
+  client:
     image: safecycle-client
-    # build: ./client/safecycle-client
+    build: 
+      context: .
+      dockerfile: ./client/safecycle-client/Dockerfile
+
     ports:
-      - "8081:8000"
+      - "8080:80"
+  server:
+    image: safecycle-server
+    build: 
+      context: .
+      dockerfile: ./server/safecycle_server/Dockerfile
+    ports:
+      - "8000:8000"
