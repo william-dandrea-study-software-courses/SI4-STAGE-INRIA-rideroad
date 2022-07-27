@@ -57,6 +57,7 @@ def get_test_itinerary(request):
     return HttpResponse(result)
 
 
+
 @csrf_exempt
 def get_itinerary_with_checkpoints(request):
 

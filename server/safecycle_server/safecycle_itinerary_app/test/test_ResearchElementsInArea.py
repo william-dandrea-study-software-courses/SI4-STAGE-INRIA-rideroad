@@ -8,7 +8,7 @@ from server.safecycle_server.safecycle_itinerary_app.services.models.LonLat impo
 class MyTestCase(unittest.TestCase):
 
     def test_something(self):
-        tst = ResearchElementsInArea(x1=1, y1=4, x2=7, y2=8, rayon=1)
+        tst = ResearchElementsInArea(LonLat(5, 3), LonLat(3, 0), rayon=1)
 
         tst.calculateCoordinatesRectangleBbox()
 
