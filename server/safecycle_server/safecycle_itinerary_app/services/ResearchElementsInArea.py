@@ -40,14 +40,13 @@ class ResearchElementsInArea:
         ys = self.y1
         ye = self.y2
 
-        alphaPrime = np.arctan((ye - ys) / (xe - xs))
-        alpha = (np.pi / 2) + alphaPrime
+        alpha = np.arctan((ye - ys) / (xe - xs))
 
-        xsP = xs + self.__rayon * np.cos(np.pi - alphaPrime)
-        ysP = ys - self.__rayon * np.sin(np.pi - alphaPrime)
+        xsP = xs + self.__rayon * np.cos(np.pi - alpha)
+        ysP = ys - self.__rayon * np.sin(np.pi - alpha)
 
-        xeP = xe - self.__rayon * np.cos(np.pi - alphaPrime)
-        yeP = ye + self.__rayon * np.sin(np.pi - alphaPrime)
+        xeP = xe - self.__rayon * np.cos(np.pi - alpha)
+        yeP = ye + self.__rayon * np.sin(np.pi - alpha)
 
 
         L = np.sqrt(np.square(xeP - xsP) + np.square(yeP - ysP))
@@ -56,55 +55,33 @@ class ResearchElementsInArea:
         """
         Y
         |
-        |                 (x1,y1) --------------------------- (x2,y2)
+        |                 (x1,y1) --------------------------- (x4,y4)
         |                    |                                   |
         |                    |                                   |
         |     ---------- (xsP,ysP) ------------------------- (xeP,yeP) ----------
         |                    |                                   |
         |                    |                                   |
-        |                 (x4,y4) --------------------------- (x3,y3)
+        |                 (x2,y2) --------------------------- (x3,y3)
         |           
         ---------------------------------------------------------------------> X
         
         """
 
-        x1NoRotateRectangle = xsP
-        y1NoRotateRectangle = ysP + self.__rayon
-        x4NoRotateRectangle = xsP
-        y4NoRotateRectangle = ysP - self.__rayon
-
-        x2NoRotateRectangle = xsP + L
-        y2NoRotateRectangle = ysP + self.__rayon
-        x3NoRotateRectangle = xsP + L
-        y3NoRotateRectangle = ysP - self.__rayon
-
-        xCenterLine = (xsP + xeP) / 2
-        yCenterLine = (ysP + yeP) / 2
 
 
-        x1 = xCenterLine + (x1NoRotateRectangle - xCenterLine) * np.cos(alphaPrime) + (yCenterLine - y1NoRotateRectangle) * np.sin(alphaPrime)
-        y1 = yCenterLine - (x1NoRotateRectangle - xCenterLine) * np.sin(alphaPrime) + (yCenterLine - y1NoRotateRectangle) * np.cos(alphaPrime)
 
-        x2 = xCenterLine + (x2NoRotateRectangle - xCenterLine) * np.cos(alphaPrime) + (
-                    yCenterLine - y2NoRotateRectangle) * np.sin(alphaPrime)
-        y2 = yCenterLine - (x2NoRotateRectangle - xCenterLine) * np.sin(alphaPrime) + (
-                    yCenterLine - y2NoRotateRectangle) * np.cos(alphaPrime)
-
-        x3 = xCenterLine + (x3NoRotateRectangle - xCenterLine) * np.cos(alphaPrime) + (
-                    yCenterLine - y3NoRotateRectangle) * np.sin(alphaPrime)
-        y3 = yCenterLine - (x3NoRotateRectangle - xCenterLine) * np.sin(alphaPrime) + (
-                    yCenterLine - y3NoRotateRectangle) * np.cos(alphaPrime)
-
-        x4 = xCenterLine + (x4NoRotateRectangle - xCenterLine) * np.cos(alphaPrime) + (
-                    yCenterLine - y4NoRotateRectangle) * np.sin(alphaPrime)
-        y4 = yCenterLine - (x4NoRotateRectangle - xCenterLine) * np.sin(alphaPrime) + (
-                    yCenterLine - y4NoRotateRectangle) * np.cos(alphaPrime)
+        x1 = xsP + self.__rayon * np.cos(alpha + (np.pi / 2))
+        y1 = ysP + self.__rayon * np.sin(alpha + (np.pi / 2))
+        x2 = xsP + self.__rayon * np.cos(alpha - (np.pi / 2))
+        y2 = ysP + self.__rayon * np.sin(alpha - (np.pi / 2))
+        x4 = xeP + self.__rayon * np.cos(alpha + (np.pi / 2))
+        y4 = yeP + self.__rayon * np.sin(alpha + (np.pi / 2))
+        x3 = xeP + self.__rayon * np.cos(alpha - (np.pi / 2))
+        y3 = yeP + self.__rayon * np.sin(alpha - (np.pi / 2))
 
         plt.plot([xsP, xeP], [ysP, yeP], 'b')
         plt.plot([xs, xe], [ys, ye], 'r')
 
-
-        plt.plot([x1NoRotateRectangle, x2NoRotateRectangle, x3NoRotateRectangle, x4NoRotateRectangle, x1NoRotateRectangle], [y1NoRotateRectangle, y2NoRotateRectangle, y3NoRotateRectangle, y4NoRotateRectangle, y1NoRotateRectangle], 'y')
         plt.plot([x1, x2, x3, x4, x1], [y1, y2, y3, y4, y1], 'g')
 
 
