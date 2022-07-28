@@ -13,6 +13,17 @@ class Path:
         self.coords: List[Coord] = []
 
 
+    def getFirstCoord(self):
+        if len(self.coords) > 0:
+            return self.coords[0]
+        return None
+
+    def getLastCoord(self):
+        if len(self.coords) > 0:
+            return self.coords[-1]
+        return None
+
+
     def addNewCoordinateToPath(self, coord: Coord):
         self.coords.append(coord)
 
@@ -25,10 +36,13 @@ class Path:
         self.length = length
 
 
+
     def toDict(self):
         return {
             "tags": self.tags,
             "length": self.length,
             "costs": self.costs,
             "coords": [coord.toDict() for coord in self.coords],
+            "first_coord": self.coords[0].toDict() if len(self.coords) > 0 else None,
+            "last_coord": self.coords[-1].toDict() if len(self.coords) > 0 else None,
         }

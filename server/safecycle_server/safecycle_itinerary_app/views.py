@@ -8,6 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from .services.ItineraryGeneration import ItineraryGeneration
 from .services.MultiCheckPointsItinerary import MultiCheckPointsItinerary
+from .services.ResearchAmenitiesBbox import ResearchAmenitiesBbox
 from .services.exceptions.BrouterException import BrouterException
 from .services.models.LonLat import LonLat
 
@@ -35,7 +36,7 @@ def get_itinerary(request):
         return HttpResponse("Cannot parse arguments")
 
 
-    print(departure_longitude, departure_latitude, destination_longitude, destination_latitude, road_type)
+    # print(departure_longitude, departure_latitude, destination_longitude, destination_latitude, road_type)
 
     try:
         itinerary = ItineraryGeneration(departure_longitude=departure_longitude, departure_latitude=departure_latitude, destination_longitude=destination_longitude, destination_latitude=destination_latitude, road_type=road_type)
@@ -57,13 +58,12 @@ def get_test_itinerary(request):
     return HttpResponse(result)
 
 
-
 @csrf_exempt
 def get_itinerary_with_checkpoints(request):
 
     if request.method == 'POST':
         body = json.loads(request.body)
-        print(body)
+        # print(body)
 
         departure = LonLat(longitude=body['departure'][0], latitude=body['departure'][1])
         destination = LonLat(longitude=body['destination'][0], latitude=body['destination'][1])
@@ -78,4 +78,26 @@ def get_itinerary_with_checkpoints(request):
         return HttpResponse(json.dumps(resultDict))
 
     return HttpResponse(json.dumps({'message': "Wrong HTTP request"}), status=405)
+
+
+
+def get_strategic_points_in_a_bbox(request):
+    bottom_left_longitude = request.GET.get('bottom_left_longitude')
+    bottom_left_latitude = request.GET.get('bottom_left_latitude')
+    top_right_longitude = request.GET.get('top_right_longitude')
+    top_right_latitude = request.GET.get('top_right_latitude')
+
+    try:
+        bottom_left_longitude = float(bottom_left_longitude)
+        bottom_left_latitude = float(bottom_left_latitude)
+        top_right_longitude = float(top_right_longitude)
+        top_right_latitude = float(top_right_latitude)
+    except:
+        return HttpResponse("Cannot parse arguments")
+
+    r = ResearchAmenitiesBbox(bottom_left_longitude, bottom_left_latitude, top_right_longitude, top_right_latitude)
+
+    return HttpResponse(json.dumps(r.launch()))
+
+
 

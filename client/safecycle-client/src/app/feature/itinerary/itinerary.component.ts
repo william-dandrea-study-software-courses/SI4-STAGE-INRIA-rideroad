@@ -1,7 +1,7 @@
 import {AfterViewInit, ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit} from '@angular/core';
 
 import * as L from 'leaflet';
-import {Map, LatLng, Marker, Layer} from "leaflet";
+import {Map, LatLng, Marker, Layer, LatLngBounds} from "leaflet";
 import {ItineraryService} from "../../core/service/itinerary.service";
 import {PathModel} from "../../core/model/itinerary.model";
 import {merge, Observable, startWith, Subscription} from "rxjs";
@@ -62,7 +62,7 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
     this.getScreenWidth = window.innerWidth;
     this.getScreenHeight = window.innerHeight;
 
-    console.log(environment.production)
+
   }
 
   public ngAfterViewInit(): void {
@@ -122,6 +122,7 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
    */
   private itineraryManager(): void {
     this.itinerarySubscription = this.itineraryService.$itineraryVisual.subscribe(itinerariesVisual => {
+      console.log(itinerariesVisual)
 
       if (itinerariesVisual != null && itinerariesVisual.length > 0){
         // We set the start point
@@ -129,12 +130,22 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
 
         // Now, we get the selected itinerary
         this.generateItineraryPathForMap(itinerariesVisual)
+
+        this.generateRectangleBbox(itinerariesVisual)
       }
     }, error => {
       this.itineraryNotFindError(error)
     })
   }
 
+  private generateRectangleBbox(itinerariesVisual: ItineraryVisual[]) {
+
+    itinerariesVisual[0].itinerary.paths.forEach(path => {
+      L.circleMarker(new LatLng(path.coords[0].lat, path.coords[0].lon)).addTo(this.map)
+    })
+
+
+  }
 
   /**
    * This method show the itineraries, 'underline' the selected itinerary and show the not selected ones in grey

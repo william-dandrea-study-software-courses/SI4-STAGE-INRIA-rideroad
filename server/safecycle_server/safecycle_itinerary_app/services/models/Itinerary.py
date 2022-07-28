@@ -15,6 +15,8 @@ class Itinerary:
         self.length = length
         self.filtered_ascend = filtered_ascend
         self.altitude_profil: List[float] = []
+        self.amenities: List = []
+
 
 
     def toDict(self):
@@ -27,4 +29,5 @@ class Itinerary:
             "length": self.length,
             "filtered_ascend": self.filtered_ascend,
             "altitude_profil": self.altitude_profil,
+            "amenities": self.amenities
         }

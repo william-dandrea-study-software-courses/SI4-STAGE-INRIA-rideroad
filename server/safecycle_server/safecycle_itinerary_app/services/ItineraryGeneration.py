@@ -6,8 +6,11 @@ import requests
 from requests import Session
 import logging
 
+from . import utils
+from .ResearchElementsInArea import ResearchElementsInArea
 from .exceptions.BrouterException import BrouterException
 from .models import RoadTypeEnum
+from .models.AmenityEnum import AmenityEnum
 from .models.Coord import Coord
 from .models.Itinerary import Itinerary
 from .models.Path import Path
@@ -54,7 +57,18 @@ class ItineraryGeneration:
 
         itinerarys = [f.result() for f in itinerarys]
 
+
+
         return itinerarys
+
+
+
+
+
+
+
+
+
 
     def berouter_request(self, profile: str, alternative: int):
         url = 'http://brouter.de/brouter?'
@@ -104,6 +118,7 @@ class ItineraryGeneration:
         messages_iteration = iter(messages)
         current_message = next(messages_iteration)
 
+
         for index_initial_coordinate, initial_coordinate in enumerate(coordinates):
 
             longitude_from_initial_coordinate: float = initial_coordinate[0]
@@ -129,14 +144,49 @@ class ItineraryGeneration:
                 for key, name in dict(CostPerKm="per_km", ElevCost="elevation", TurnCost="turn", NodeCost="node", InitialCost="initial").items():
                     current_path.costs[name] = float(current_message[key])
 
-
                 try:
                     current_message = next(messages_iteration)
                     current_path = new_path()
                     current_path.coords.append(coordinate)
+
                 except StopIteration:
                     if index_initial_coordinate < len(coordinates) - 1:
                         logger.error("There was still coordinates!")
                     break
 
+        # self.generateAmenities(iti)
         return iti
+
+
+    def generateAmenities(self, itinerary: Itinerary):
+
+        paths: List[Coord] = [res.getFirstCoord() for res in itinerary.paths]
+        paths.append(itinerary.paths[-1].getLastCoord())
+        amenities: List[AmenityEnum] = [AmenityEnum.DRINKING_WATER, AmenityEnum.BENCH]
+
+        def process_fn(inputs):
+            index = inputs[0]
+            r = ResearchElementsInArea(path=paths[index: index + 30], radius=100, amenities=amenities)
+            return r.launch()
+
+
+        executor = ThreadPoolExecutor(max_workers=2)
+
+        amenitiesResult = []
+        for index in range(0, len(paths), 30):
+            future = executor.submit(process_fn, [index])
+            amenitiesResult.append(future)
+
+        itinerary.amenities = [f.result() for f in amenitiesResult]
+
+
+
+        """
+        paths: List[Coord] = [res.getFirstCoord() for res in itinerary.paths]
+        paths.append(itinerary.paths[-1].getLastCoord())
+
+        amenities: List[AmenityEnum] = [AmenityEnum.DRINKING_WATER, AmenityEnum.BENCH]
+
+        r = ResearchElementsInArea(path=paths, radius=100, amenities=amenities)
+        itinerary.amenities = r.launch()
+        """

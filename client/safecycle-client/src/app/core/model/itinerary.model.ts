@@ -17,6 +17,8 @@ export interface PathModel {
   length: number;
   costs: CostModel;
   coords: LatLonElevationModel[]
+  first_coord: number | null,
+  last_coord: number | null,
 }
 
 

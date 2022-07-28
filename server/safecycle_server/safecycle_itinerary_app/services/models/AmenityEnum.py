@@ -2,6 +2,7 @@ from enum import Enum
 
 
 class AmenityEnum(str, Enum):
+
     BAR = "bar"
     BIERGARTEN = "biergarten"
     CAFE = "cafe"
