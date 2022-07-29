@@ -1,4 +1,5 @@
 import json
+from typing import List
 
 from django.http import HttpResponse, QueryDict
 from django.shortcuts import render
@@ -10,6 +11,8 @@ from .services.ItineraryGeneration import ItineraryGeneration
 from .services.MultiCheckPointsItinerary import MultiCheckPointsItinerary
 from .services.ResearchAmenitiesBbox import ResearchAmenitiesBbox
 from .services.exceptions.BrouterException import BrouterException
+from .services.models.TourismEnum import TourismEnum
+from .services.models.AmenityEnum import AmenityEnum
 from .services.models.LonLat import LonLat
 
 
@@ -95,8 +98,11 @@ def get_strategic_points_in_a_bbox(request):
     except:
         return HttpResponse("Cannot parse arguments")
 
-    r = ResearchAmenitiesBbox(bottom_left_longitude, bottom_left_latitude, top_right_longitude, top_right_latitude)
+    amenities: List[AmenityEnum] = [AmenityEnum.DRINKING_WATER, AmenityEnum.RESTAURANT, AmenityEnum.BICYCLE_REPAIR_STATION, AmenityEnum.SHELTER, AmenityEnum.TOILETS]
+    # amenities: List[AmenityEnum] = [AmenityEnum.DRINKING_WATER, AmenityEnum.RESTAURANT, AmenityEnum.BICYCLE_REPAIR_STATION, AmenityEnum.SHELTER, AmenityEnum.TOILETS]
+    tourism: List[TourismEnum] = [TourismEnum.CAMP_SITE]
 
+    r = ResearchAmenitiesBbox(bottom_left_longitude = bottom_left_longitude, bottom_left_latitude = bottom_left_latitude, top_right_longitude = top_right_longitude, top_right_latitude = top_right_latitude, amenities=amenities, tourism=tourism)
     return HttpResponse(json.dumps(r.launch()))
 
 

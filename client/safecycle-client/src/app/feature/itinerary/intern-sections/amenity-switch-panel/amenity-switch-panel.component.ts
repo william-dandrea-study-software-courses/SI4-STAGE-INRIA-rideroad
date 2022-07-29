@@ -1,4 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
+import {AmenityTitle, AmenityService} from "../../../../core/service/amenity.service";
+
+
 
 @Component({
   selector: 'app-amenity-switch-panel',
@@ -7,9 +11,19 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AmenitySwitchPanelComponent implements OnInit {
 
-  constructor() { }
+  public amenities: AmenityTitle[] = []
+
+  constructor(private amenityService: AmenityService) { }
 
   ngOnInit(): void {
+    this.amenityService.$amenities.subscribe(amenities => {
+      this.amenities = amenities;
+    })
+  }
+
+
+  public onSelect(amenity: AmenityTitle) {
+    this.amenityService.selectAmenity(amenity)
   }
 
 }

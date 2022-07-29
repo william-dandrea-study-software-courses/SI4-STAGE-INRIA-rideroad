@@ -1,5 +1,9 @@
 
-<div class="main-div">
 
-</div>
-<p>amenity-switch-panel works!</p>
+<mat-chip-list [multiple]="true">
+  <mat-chip *ngFor="let amenity of amenities" (click)="onSelect(amenity)" [selected]="amenity.isSelected">
+    {{amenity.name}}
+  </mat-chip>
+</mat-chip-list>
+
+

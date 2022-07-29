@@ -14,6 +14,7 @@ import {MatDialog} from "@angular/material/dialog";
 import {SpinnerComponent} from "../../shared/components/spinner/spinner.component";
 import {BreakpointObserver, Breakpoints, MediaMatcher} from "@angular/cdk/layout";
 import { environment } from 'src/environments/environment';
+import {AmenityService} from "../../core/service/amenity.service";
 
 @Component({
   selector: 'app-itinerary',
@@ -47,10 +48,12 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(
     private itineraryService: ItineraryService,
     private mapClickService: MapClickService,
+    private amenityService: AmenityService,
     private snackBar: MatSnackBar,
     private geolocalisationService: GeolocalisationService,
     public dialog: MatDialog,
     private breakpointObserver: BreakpointObserver,
+
   ){}
 
   public ngOnInit(): void {
@@ -91,6 +94,13 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.centerOnUserPosition();
     this.setClickOnMap();
+    this.getMapBounds();
+  }
+
+  private getMapBounds() {
+    this.map.on('moveend', (v) => {
+      this.amenityService.changeMapBounds(this.map.getBounds())
+    })
   }
 
   /**
