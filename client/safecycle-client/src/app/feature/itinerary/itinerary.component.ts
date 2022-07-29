@@ -82,12 +82,16 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
       this.amenititiesLayers = [];
 
       amenitiesResult.forEach(amenity => {
-        const layer = L.circleMarker(new LatLng(amenity.lat, amenity.lon))
+        const layer = L.marker(new LatLng(amenity.lat, amenity.lon), {
+          icon: L.icon({
+            iconUrl: this.amenityService.getIconUrl(amenity.tags.amenity),
+            iconSize: [35, 35]
+          }),
+        })
+
         this.map.addLayer(layer)
         this.amenititiesLayers.push(layer)
       });
-
-
     })
   }
 

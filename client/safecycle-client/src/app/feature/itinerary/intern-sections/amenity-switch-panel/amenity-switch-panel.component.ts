@@ -26,4 +26,8 @@ export class AmenitySwitchPanelComponent implements OnInit {
     this.amenityService.selectAmenity(amenity)
   }
 
+  public onSearch() {
+    this.amenityService.downloadAmenities();
+  }
+
 }
