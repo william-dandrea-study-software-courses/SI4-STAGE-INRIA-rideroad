@@ -83,27 +83,34 @@ def get_itinerary_with_checkpoints(request):
     return HttpResponse(json.dumps({'message': "Wrong HTTP request"}), status=405)
 
 
-
+@csrf_exempt
 def get_strategic_points_in_a_bbox(request):
-    bottom_left_longitude = request.GET.get('bottom_left_longitude')
-    bottom_left_latitude = request.GET.get('bottom_left_latitude')
-    top_right_longitude = request.GET.get('top_right_longitude')
-    top_right_latitude = request.GET.get('top_right_latitude')
 
-    try:
-        bottom_left_longitude = float(bottom_left_longitude)
-        bottom_left_latitude = float(bottom_left_latitude)
-        top_right_longitude = float(top_right_longitude)
-        top_right_latitude = float(top_right_latitude)
-    except:
-        return HttpResponse("Cannot parse arguments")
+    if request.method == 'POST':
+        body = json.loads(request.body)
+        print(body)
 
-    amenities: List[AmenityEnum] = [AmenityEnum.DRINKING_WATER, AmenityEnum.RESTAURANT, AmenityEnum.BICYCLE_REPAIR_STATION, AmenityEnum.SHELTER, AmenityEnum.TOILETS]
-    # amenities: List[AmenityEnum] = [AmenityEnum.DRINKING_WATER, AmenityEnum.RESTAURANT, AmenityEnum.BICYCLE_REPAIR_STATION, AmenityEnum.SHELTER, AmenityEnum.TOILETS]
-    tourism: List[TourismEnum] = [TourismEnum.CAMP_SITE]
+        bottom_left_longitude = body['bottom_left_longitude']
+        bottom_left_latitude = body['bottom_left_latitude']
+        top_right_longitude = body['top_right_longitude']
+        top_right_latitude = body['top_right_latitude']
 
-    r = ResearchAmenitiesBbox(bottom_left_longitude = bottom_left_longitude, bottom_left_latitude = bottom_left_latitude, top_right_longitude = top_right_longitude, top_right_latitude = top_right_latitude, amenities=amenities, tourism=tourism)
-    return HttpResponse(json.dumps(r.launch()))
+        amenities = body['amenities']
+
+        try:
+            bottom_left_longitude = float(bottom_left_longitude)
+            bottom_left_latitude = float(bottom_left_latitude)
+            top_right_longitude = float(top_right_longitude)
+            top_right_latitude = float(top_right_latitude)
+        except:
+            return HttpResponse("Cannot parse arguments")
+
+        # amenities: List[AmenityEnum] = [AmenityEnum.DRINKING_WATER, AmenityEnum.RESTAURANT, AmenityEnum.BICYCLE_REPAIR_STATION, AmenityEnum.SHELTER, AmenityEnum.TOILETS]
+        # amenities: List[AmenityEnum] = [AmenityEnum.DRINKING_WATER, AmenityEnum.RESTAURANT, AmenityEnum.BICYCLE_REPAIR_STATION, AmenityEnum.SHELTER, AmenityEnum.TOILETS]
+        # tourism: List[TourismEnum] = [TourismEnum.CAMP_SITE]
+
+        r = ResearchAmenitiesBbox(bottom_left_longitude = bottom_left_longitude, bottom_left_latitude = bottom_left_latitude, top_right_longitude = top_right_longitude, top_right_latitude = top_right_latitude, amenities=amenities)
+        return HttpResponse(json.dumps(r.launch()))
 
 
 

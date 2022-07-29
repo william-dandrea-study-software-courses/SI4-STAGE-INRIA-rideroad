@@ -16,7 +16,7 @@ export class AmenitySwitchPanelComponent implements OnInit {
   constructor(private amenityService: AmenityService) { }
 
   ngOnInit(): void {
-    this.amenityService.$amenities.subscribe(amenities => {
+    this.amenityService.$amenitiesTitle.subscribe(amenities => {
       this.amenities = amenities;
     })
   }

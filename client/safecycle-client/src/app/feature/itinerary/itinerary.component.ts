@@ -61,6 +61,7 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
     this.setMarkersStartStop();
     this.setOverlayIfLoadingNewItinerary();
     this.setCheckPointsSubscription();
+    this.setAmenities();
 
     this.getScreenWidth = window.innerWidth;
     this.getScreenHeight = window.innerHeight;
@@ -71,6 +72,26 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
   public ngAfterViewInit(): void {
     this.initialisationMap();
   }
+
+
+  private amenititiesLayers: Layer[] = [];
+
+  private setAmenities() {
+    this.amenityService.$amenitiesResult.subscribe(amenitiesResult => {
+      this.amenititiesLayers.forEach(ame => this.map.removeLayer(ame))
+      this.amenititiesLayers = [];
+
+      amenitiesResult.forEach(amenity => {
+        const layer = L.circleMarker(new LatLng(amenity.lat, amenity.lon))
+        this.map.addLayer(layer)
+        this.amenititiesLayers.push(layer)
+      });
+
+
+    })
+  }
+
+
 
   /**
    * This method initialize the map with OpenStreetMap and LeafLet. At first, we center the map on our current position
@@ -85,7 +106,7 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
 
     const tiles = L.tileLayer('https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png', {
       maxZoom: 18,
-      minZoom: 3,
+      minZoom: 8,
       attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
       detectRetina: true
     });
@@ -99,7 +120,10 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private getMapBounds() {
     this.map.on('moveend', (v) => {
-      this.amenityService.changeMapBounds(this.map.getBounds())
+      console.log(this.map.getZoom())
+      if (this.map.getZoom() >= 14) {
+        this.amenityService.changeMapBounds(this.map.getBounds())
+      }
     })
   }
 
@@ -141,7 +165,7 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
         // Now, we get the selected itinerary
         this.generateItineraryPathForMap(itinerariesVisual)
 
-        this.generateRectangleBbox(itinerariesVisual)
+        // this.generateRectangleBbox(itinerariesVisual)
       }
     }, error => {
       this.itineraryNotFindError(error)
