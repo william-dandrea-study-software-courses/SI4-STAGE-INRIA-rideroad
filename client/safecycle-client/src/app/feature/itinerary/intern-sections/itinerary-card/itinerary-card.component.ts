@@ -73,6 +73,10 @@ export class ItineraryCardComponent implements OnInit, OnDestroy {
       this.itineraryService.changeSelectedItinerary(this.currentItinerary.index)
   }
 
+  public launchItinerary(): void {
+    console.log("Launch")
+  }
+
   ngOnDestroy(): void {
     this.currentItinerarySubscription.unsubscribe();
   }

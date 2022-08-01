@@ -4,7 +4,7 @@
 
   <app-navbar></app-navbar>
 
-  <mat-drawer-container class="main-container-map"  *ngIf="getScreenWidth >= 1280">
+  <mat-drawer-container class="main-container-map"  *ngIf="getScreenWidth >= 1180">
 
     <mat-drawer mode="side" opened class="main-inputs-section">
       <app-new-itinerary-bar></app-new-itinerary-bar>
@@ -17,7 +17,7 @@
   </mat-drawer-container>
 
 
-  <section *ngIf="getScreenWidth < 1280" class="phone-display-itinerary full-height"  fxLayout="column" fxLayoutAlign=" stretch" >
+  <section *ngIf="getScreenWidth < 1180" class="phone-display-itinerary full-height"  fxLayout="column" fxLayoutAlign=" stretch" >
 
     <div id="map" fxFlex="60"></div>
 

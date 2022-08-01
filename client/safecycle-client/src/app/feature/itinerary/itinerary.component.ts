@@ -1,7 +1,7 @@
 import {AfterViewInit, ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit} from '@angular/core';
 
 import * as L from 'leaflet';
-import {Map, LatLng, Marker, Layer, LatLngBounds} from "leaflet";
+import {Map, LatLng, Marker, Layer, LatLngBounds, Content} from "leaflet";
 import {ItineraryService} from "../../core/service/itinerary.service";
 import {PathModel} from "../../core/model/itinerary.model";
 import {merge, Observable, startWith, Subscription} from "rxjs";
@@ -89,6 +89,14 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
           }),
         })
 
+        const popup = L.popup({
+          autoClose: false,
+        }).setContent(JSON.stringify(amenity.tags))
+
+        layer.bindPopup(popup, {
+          closeButton: false
+        })
+
         this.map.addLayer(layer)
         this.amenititiesLayers.push(layer)
       });
@@ -112,7 +120,7 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
       maxZoom: 18,
       minZoom: 8,
       attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-      detectRetina: true
+      detectRetina: true,
     });
 
     tiles.addTo(this.map);

@@ -1,7 +1,7 @@
 
-<div class="itinerary-card-intern-container" (click)="onSelectedItinerary()">
+<div class="itinerary-card-intern-container" >
 
-  <h3 [ngClass]="isSelected() ? 'selected-card-title' : ''">Itinerary {{ getIndex() }}</h3>
+  <h3 (click)="onSelectedItinerary()" [ngClass]="isSelected() ? 'selected-card-title' : ''">Itinerary {{ +getIndex() + 1 }}</h3>
 
   <mat-tab-group>
     <mat-tab label="Details">
@@ -20,6 +20,8 @@
           <div class="details-tail-infos">{{ this.inflationItinerary }} m</div>
         </div>
       </div>
+
+      <button mat-raised-button class="full-width" (click)="launchItinerary()">Launch itinerary</button>
 
     </mat-tab>
     <mat-tab label="Inflection">
