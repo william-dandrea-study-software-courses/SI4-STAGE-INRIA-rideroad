@@ -128,6 +128,40 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
     this.centerOnUserPosition();
     this.setClickOnMap();
     this.getMapBounds();
+    this.addLegend()
+
+  }
+
+  private addLegend() {
+    const legend = new (L.Control.extend({
+      options: { position: 'bottomright'}
+    }));
+
+    const vm = this;
+    legend.onAdd = function (map) {
+
+      const div = L.DomUtil.create('div', 'legend' );
+
+      const labels = [
+        {name: 'Dirt Road', color: "#8f5858"},
+        {name: 'Bike Road', color: "#759bc9"},
+        {name: 'Regular Road', color: "#484848"},
+        {name: 'Pedestrian Road', color: "#4f7c40"},
+      ];
+
+
+      div.innerHTML = '<div style="background-color: white"><b>Legend</b></div>';
+      for (let i = 0; i < labels.length; i++) {
+        div.innerHTML += `<i style="background-color: ${labels[i].color}; height: 10px; width: 10px;>"> &nbsp; &nbsp; </i>` + '  ' +  labels[i].name + '<br/>';
+      }
+
+      div.style.backgroundColor = "#FFF"
+      div.style.padding = "20px"
+
+      return div;
+    };
+
+    legend.addTo(this.map);
   }
 
   private getMapBounds() {
@@ -218,16 +252,30 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
         if (path.coords != null) {
           const allLongLat = path.coords.map(coord => new LatLng(coord.lat, coord.lon, coord.elevation))
 
-          const color: string = itinerariesVisual[index].is_selectionned ? (path.costs.elevation > 0 ? "#2596be" : "#be4d25") : "#b2b2b2"
+          let color: string = "#b2b2b2"
 
-          allSegments.push(
-            L.polyline(allLongLat, {
-              color: color,
-              weight: 7,
-              smoothFactor: 1,
-              opacity: opacity,
-            })
-          )
+          if (itinerariesVisual[index].is_selectionned) {
+
+            if (this.itineraryService.isDirtPath(path.tags['highway'])) {
+              color = "#8f5858"
+            } else if (this.itineraryService.isPedestrianPath(path.tags['highway'])) {
+              color = "#4f7c40"
+            } else if (this.itineraryService.isBikePath(path.tags['highway'])) {
+              color = "#759bc9"
+            } else {
+              color = "#484848"
+            }
+          }
+
+
+          const currentSegment =  L.polyline(allLongLat, {
+            color: color,
+            weight: 7,
+            smoothFactor: 1,
+            opacity: opacity,
+          })
+
+          allSegments.push(currentSegment)
         }
 
       }

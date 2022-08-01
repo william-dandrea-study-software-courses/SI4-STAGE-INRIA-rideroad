@@ -94,6 +94,14 @@ export class ItineraryService {
 
       this.isLoadingItineraryOnBackend = false;
       this.$isLoadingItineraryOnBackend.next(this.isLoadingItineraryOnBackend);
+
+      v.itineraries.forEach(v => {
+        v.paths.forEach(p => {
+          console.log(p.tags)
+        })
+      })
+
+
     }, error => {
       this.$itinerary.error(error);
 
@@ -158,6 +166,21 @@ export class ItineraryService {
     }
 
   }
+
+
+
+  public isBikePath(highway: string): boolean {
+    return highway === "cycleway"
+  }
+
+  public isPedestrianPath(highway: string): boolean {
+    return highway === "footway"|| highway === "pedestrian" || highway === "step";
+  }
+
+  public isDirtPath(highway: string): boolean {
+    return highway === "abandoned"|| highway === "bridleway" || highway === "proposed";
+  }
+
 
 
 
