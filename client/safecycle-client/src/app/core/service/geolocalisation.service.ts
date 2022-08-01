@@ -17,11 +17,26 @@ export class GeolocalisationService {
     navigator.geolocation.getCurrentPosition((position: GeolocationPosition) => {
       onSuccess(position)
     },(error) =>{
-      console.log("Position not allowed")
       onError()
     },{
       timeout:10000
     })
   }
+
+
+  public handleLocalisationPermission(onGranted: Function, onPrompt: Function, onDenied: Function): void {
+    navigator.permissions.query({name: 'geolocation'}).then((permissionStatus) => {
+      if (permissionStatus.state == 'granted') {
+        onGranted()
+      }
+      if (permissionStatus.state == 'prompt') {
+        onPrompt()
+      }
+      if (permissionStatus.state == 'denied') {
+        onDenied()
+      }
+    })
+  }
+
 
 }

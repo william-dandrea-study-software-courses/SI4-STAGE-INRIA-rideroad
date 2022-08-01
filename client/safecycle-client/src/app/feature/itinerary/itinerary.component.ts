@@ -112,7 +112,7 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
    */
   private initialisationMap(): void {
     this.map = L.map('map', {
-      center: [ 43.482957, -1.762642 ],
+      center: [ 48.86077, 2.29519 ],
       zoom: 14,
     });
 

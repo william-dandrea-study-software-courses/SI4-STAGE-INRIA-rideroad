@@ -29,6 +29,7 @@ import {MatGridListModule} from "@angular/material/grid-list";
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import {MatDialogModule} from "@angular/material/dialog";
 import {FlexLayoutModule} from "@angular/flex-layout";
+import { DialogPopupOverComponent } from './components/dialog-popup-over/dialog-popup-over.component';
 
 const modules = [
   CommonModule,
@@ -70,6 +71,7 @@ const components = [
     ...components,
     PageNotFoundComponent,
     SpinnerComponent,
+    DialogPopupOverComponent,
   ],
   exports: [
     ...modules,

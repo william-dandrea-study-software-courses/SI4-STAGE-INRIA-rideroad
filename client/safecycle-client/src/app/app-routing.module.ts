@@ -7,6 +7,10 @@ const routes: Routes = [
     path: "itinerary",
     loadChildren: () => import('./feature/itinerary/itinerary.module').then(m => m.ItineraryModule),
   },
+  {
+    path: "gps",
+    loadChildren: () => import('./feature/gps/gps.module').then(m => m.GpsModule),
+  },
 
   {
     path: "**",

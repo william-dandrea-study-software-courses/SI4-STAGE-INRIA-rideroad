@@ -2,10 +2,19 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { GpsRoutingModule } from './gps-routing.module';
+import { GpsDirectionBarComponent } from './gps-direction-bar/gps-direction-bar.component';
+import { GpsDetailsBarComponent } from './gps-details-bar/gps-details-bar.component';
+import { GpsMapComponent } from './gps-map/gps-map.component';
+import {GpsComponent} from "./gps.component";
 
 
 @NgModule({
-  declarations: [],
+  declarations: [
+    GpsComponent,
+    GpsDirectionBarComponent,
+    GpsDetailsBarComponent,
+    GpsMapComponent
+  ],
   imports: [
     CommonModule,
     GpsRoutingModule
