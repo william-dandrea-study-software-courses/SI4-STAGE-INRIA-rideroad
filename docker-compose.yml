@@ -1,20 +1,24 @@
-
-
 version: "3.9"
 
 services:
-  client:
-    image: safecycle-client
-    build: 
-      context: .
-      dockerfile: ./client/safecycle-client/Dockerfile
 
-    ports:
-      - "8080:80"
-  server:
+  safecycle-server:
+    # build: ./server/safecycle_server/Dockerfile
     image: safecycle-server
-    build: 
-      context: .
-      dockerfile: ./server/safecycle_server/Dockerfile
+    container_name: safecycle-server
     ports:
-      - "8000:8000"
+      - "8080:8080"
+
+  safecycle-client:
+    # build: ./client/safecycle-client/Dockerfile
+    image: safecycle-client
+    container_name: safecycle-client
+    ports:
+      - "4200:80"
+    links:
+      - safecycle-server
+
+networks:
+  default:
+    name: nginxproxymanager_default
+    external: true

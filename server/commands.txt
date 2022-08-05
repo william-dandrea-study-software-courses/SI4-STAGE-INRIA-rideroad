@@ -1,2 +1,0 @@
-docker build --tag safecycle-backend-django .
-docker run --publish 8000:8000 safecycle-backend-django

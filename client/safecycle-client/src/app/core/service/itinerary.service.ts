@@ -58,7 +58,7 @@ export class ItineraryService {
     this.isLoadingItineraryOnBackend = true;
     this.$isLoadingItineraryOnBackend.next(this.isLoadingItineraryOnBackend);
 
-    const url = 'http://127.0.0.1:8000/api/checkpoints-itinerary';
+    const url = environment.backend_url + 'checkpoints-itinerary';
 
     const body = {
       departure: [longitudeStart, latitudeStart],

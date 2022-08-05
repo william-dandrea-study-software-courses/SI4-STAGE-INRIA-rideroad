@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  backend_url: "http://127.0.0.1:8000/api/",
+  backend_url: "https://api.safecycle.dandrea-william.fr/api/",
 };
