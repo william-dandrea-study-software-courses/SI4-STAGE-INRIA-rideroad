@@ -4,6 +4,8 @@ import {ItineraryModel} from "../../../../core/model/itinerary.model";
 import {Subscription} from "rxjs";
 import {ChartConfiguration, ChartOptions} from "chart.js";
 import {ItineraryVisual} from "../../../../core/model/itinerary-visual.class";
+import {GpsService} from "../../../../core/service/gps.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-itinerary-card',
@@ -34,7 +36,10 @@ export class ItineraryCardComponent implements OnInit, OnDestroy {
   };
   // ===============
 
-  constructor(public itineraryService: ItineraryService) {}
+  constructor(public itineraryService: ItineraryService,
+              private gpsService: GpsService,
+              private router: Router,
+              ) {}
 
   ngOnInit(): void {
     this.setClassVariables();
@@ -75,6 +80,12 @@ export class ItineraryCardComponent implements OnInit, OnDestroy {
 
   public launchItinerary(): void {
     console.log("Launch")
+    if (this.currentItinerary != null) {
+      this.gpsService.setItinerary(this.currentItinerary)
+      this.router.navigate(['gps'])
+    } else {
+      console.log("Cannot Launch Itinerary")
+    }
   }
 
   ngOnDestroy(): void {

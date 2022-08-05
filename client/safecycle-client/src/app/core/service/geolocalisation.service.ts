@@ -1,23 +1,30 @@
 import { Injectable } from '@angular/core';
+import {BehaviorSubject} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
 })
 export class GeolocalisationService {
 
-  constructor() { }
+  public currentPosition: GeolocationPosition | null = null;
+  public currentPosition$: BehaviorSubject<GeolocationPosition | null> = new BehaviorSubject<GeolocationPosition | null>(null);
 
+  constructor() {
+    this.getLocalisation();
+  }
 
   /**
    * Get the current geoLocalisation of the user
-   * @param onSuccess : user authorize the localisation feature, you get the position from onSuccess
-   * @param onError : user don't authorize the localisation feature
    */
-  public getLocalisation(onSuccess: Function, onError: Function): void {
+  public getLocalisation(): void {
     navigator.geolocation.getCurrentPosition((position: GeolocationPosition) => {
-      onSuccess(position)
+      this.currentPosition = position;
+      this.currentPosition$.next(this.currentPosition)
+      // onSuccess(position)
     },(error) =>{
-      onError()
+      this.currentPosition = null;
+      this.currentPosition$.next(this.currentPosition)
+      // onError();
     },{
       timeout:10000
     })

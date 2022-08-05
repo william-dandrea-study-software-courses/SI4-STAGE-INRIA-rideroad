@@ -177,10 +177,18 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
    * Method used for initiate the center on the map on the user location, but the user need to allow localisation
    */
   private centerOnUserPosition() {
-    this.geolocalisationService.getLocalisation((position: GeolocationPosition) => {
-      this.map.setView(new LatLng(position.coords.latitude, position.coords.longitude));
-    }, () => {
-      this.snackBar.open("You didn't allow your localisation", '', {duration: 2000,})
+    // this.geolocalisationService.getLocalisation((position: GeolocationPosition) => {
+    //   this.map.setView(new LatLng(position.coords.latitude, position.coords.longitude));
+    // }, () => {
+    //   this.snackBar.open("You didn't allow your localisation", '', {duration: 2000,})
+    // })
+
+    this.geolocalisationService.currentPosition$.subscribe(position => {
+      if (position) {
+        this.map.setView(new LatLng(position.coords.latitude, position.coords.longitude));
+      } else {
+        this.snackBar.open("You didn't allow your localisation", '', {duration: 2000,})
+      }
     })
   }
 

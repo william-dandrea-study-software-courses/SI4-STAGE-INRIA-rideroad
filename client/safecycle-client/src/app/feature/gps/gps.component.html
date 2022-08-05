@@ -1,5 +1,5 @@
 
-<section id="main-gps-page">
+<section id="main-gps-page" *ngIf="positionAllowed">
   <app-gps-direction-bar></app-gps-direction-bar>
 
 
@@ -9,4 +9,6 @@
   <app-gps-details-bar></app-gps-details-bar>
 </section>
 
-
+<section *ngIf="!positionAllowed">
+  Please allow your localisation
+</section>

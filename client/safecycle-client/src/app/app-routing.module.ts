@@ -4,6 +4,10 @@ import {PageNotFoundComponent} from "./shared/pages/page-not-found/page-not-foun
 
 const routes: Routes = [
   {
+    path: "",
+    loadChildren: () => import('./feature/itinerary/itinerary.module').then(m => m.ItineraryModule),
+  },
+  {
     path: "itinerary",
     loadChildren: () => import('./feature/itinerary/itinerary.module').then(m => m.ItineraryModule),
   },
@@ -11,7 +15,6 @@ const routes: Routes = [
     path: "gps",
     loadChildren: () => import('./feature/gps/gps.module').then(m => m.GpsModule),
   },
-
   {
     path: "**",
     component: PageNotFoundComponent,

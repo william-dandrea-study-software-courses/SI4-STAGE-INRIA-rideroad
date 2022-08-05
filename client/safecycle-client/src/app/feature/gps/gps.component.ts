@@ -17,17 +17,32 @@ export class GpsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.geolocalisationService.getLocalisation((position: GeolocationPosition) => {
-      console.log(position)
-      this.positionAllowed = true
-      this.dialog.closeAll()
-    }, () => {
-      this.positionAllowed = false
-      this.dialog.open(DialogPopupOverComponent, {
-        width: '250px',
-        disableClose: true,
-      })
+
+    this.geolocalisationService.currentPosition$.subscribe(position => {
+      if (position) {
+        console.log(position)
+        this.positionAllowed = true
+        this.dialog.closeAll()
+      } else {
+        this.positionAllowed = false
+        this.dialog.open(DialogPopupOverComponent, {
+          width: '250px',
+          disableClose: true,
+        })
+      }
     })
+
+    // this.geolocalisationService.getLocalisation((position: GeolocationPosition) => {
+    //   console.log(position)
+    //   this.positionAllowed = true
+    //   this.dialog.closeAll()
+    // }, () => {
+    //   this.positionAllowed = false
+    //   this.dialog.open(DialogPopupOverComponent, {
+    //     width: '250px',
+    //     disableClose: true,
+    //   })
+    // })
 
 
   }
