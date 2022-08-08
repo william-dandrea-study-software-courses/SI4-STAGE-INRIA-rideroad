@@ -7,6 +7,7 @@ import {ItineraryVisual} from "../model/itinerary-visual.class"
 import {LatLng} from "leaflet";
 import {MultiCheckpointsItineraryModel} from "../model/multi-checkpoints-itinerary.model";
 import {environment} from "../../../environments/environment";
+import {NewUserItineraryInfosClass} from "../model/new-user-itinerary-infos.class";
 
 @Injectable({
   providedIn: 'root'
@@ -22,14 +23,8 @@ export class ItineraryService {
   public selectedItinerary: ItineraryVisual | null = null;
   public $selectedItinerary: BehaviorSubject<ItineraryVisual | null> = new BehaviorSubject<ItineraryVisual | null>(null);
 
-  public startMarker: LatLng | null = null;
-  public $startMarker: BehaviorSubject<LatLng | null> = new BehaviorSubject<LatLng | null>(null);
-  public endMarker: LatLng | null = null;
-  public $endMarker: BehaviorSubject<LatLng | null> = new BehaviorSubject<LatLng | null>(null);
-  public checkPoints: LatLng[] = [];
-  public $checkPoints: BehaviorSubject<LatLng[]> = new BehaviorSubject<LatLng[]>([]);
-  public roadType: number = 0;
-  public $roadType: BehaviorSubject<number> = new BehaviorSubject<number>(0);
+  public newItineraryUserInfos: NewUserItineraryInfosClass = new NewUserItineraryInfosClass();
+  public newItineraryUserInfos$: BehaviorSubject<NewUserItineraryInfosClass> = new BehaviorSubject<NewUserItineraryInfosClass>(this.newItineraryUserInfos);
 
   public isLoadingItineraryOnBackend: boolean = false;
   public $isLoadingItineraryOnBackend: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false)
@@ -74,9 +69,9 @@ export class ItineraryService {
   }
 
 
-  private launchSearchItinerary(start: LatLng, end: LatLng, roadType: number) {
+  private launchSearchItinerary(start: LatLng, end: LatLng, roadType: number, checkpoints: LatLng[]) {
 
-    this.getItineraryWithCheckPoints(start.lng, start.lat, end.lng, end.lat, roadType, this.checkPoints).subscribe(v => {
+    this.getItineraryWithCheckPoints(start.lng, start.lat, end.lng, end.lat, roadType, checkpoints).subscribe(v => {
       this.itinerary = v.itineraries;
       this.$itinerary.next(v.itineraries);
 
@@ -95,11 +90,6 @@ export class ItineraryService {
       this.isLoadingItineraryOnBackend = false;
       this.$isLoadingItineraryOnBackend.next(this.isLoadingItineraryOnBackend);
 
-      v.itineraries.forEach(v => {
-        v.paths.forEach(p => {
-          console.log(p.tags)
-        })
-      })
 
 
     }, error => {
@@ -135,36 +125,36 @@ export class ItineraryService {
   }
 
   public setStart(latLon: LatLng | null) {
-    this.startMarker = latLon;
-    this.$startMarker.next(this.startMarker);
+
+    this.newItineraryUserInfos.startMarker = latLon;
+    this.newItineraryUserInfos$.next(this.newItineraryUserInfos);
     this.updateItinerary();
   }
 
   public setEnd(latLon: LatLng | null) {
-    this.endMarker = latLon;
-    this.$endMarker.next(this.endMarker);
+    this.newItineraryUserInfos.endMarker = latLon;
+    this.newItineraryUserInfos$.next(this.newItineraryUserInfos);
     this.updateItinerary();
   }
 
   public setRoadType(value: number) {
-    this.roadType = value;
-    this.$roadType.next(this.roadType)
+    this.newItineraryUserInfos.roadType = value;
+    this.newItineraryUserInfos$.next(this.newItineraryUserInfos);
     this.updateItinerary();
   }
 
   public setCheckPoints(latLonList: LatLng[]) {
-    this.checkPoints = latLonList;
-    this.$checkPoints.next(this.checkPoints);
+    this.newItineraryUserInfos.checkPoints = latLonList;
+    this.newItineraryUserInfos$.next(this.newItineraryUserInfos);
     this.updateItinerary();
   }
 
 
   public updateItinerary() {
-
-    if (this.startMarker != null && this.endMarker != null && this.roadType != null) {
-      this.launchSearchItinerary(this.startMarker, this.endMarker, this.roadType);
+    if (this.newItineraryUserInfos.isPossibleToGenerateItinerary()) {
+      // @ts-ignore
+      this.launchSearchItinerary(this.newItineraryUserInfos.startMarker, this.newItineraryUserInfos.endMarker, this.newItineraryUserInfos.roadType, this.newItineraryUserInfos.checkPoints);
     }
-
   }
 
 

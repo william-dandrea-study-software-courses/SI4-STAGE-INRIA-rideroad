@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnDestroy, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {
   debounceTime,
@@ -17,6 +17,7 @@ import {ItineraryModel} from "../../../core/model/itinerary.model";
 import {MapClickService} from "../../../core/service/map-click.service";
 import {LatLng} from "leaflet";
 import {ItineraryVisual} from "../../../core/model/itinerary-visual.class";
+import {GeolocalisationService} from "../../../core/service/geolocalisation.service";
 
 @Component({
   selector: 'app-new-itinerary-bar',
@@ -24,6 +25,7 @@ import {ItineraryVisual} from "../../../core/model/itinerary-visual.class";
   styleUrls: ['./new-itinerary-bar.component.scss']
 })
 export class NewItineraryBarComponent implements OnInit, OnDestroy {
+
 
   private departureAddress: null | LatLng = null;
   private destinationAddress: null | LatLng  = null;
@@ -46,7 +48,7 @@ export class NewItineraryBarComponent implements OnInit, OnDestroy {
   public mapClickSubscription: Subscription = new Subscription();
   public currentClickPosition: LatLng | null = null;
 
-  constructor(private formBuilder: FormBuilder, private autoCompletionAddressService: AutoCompletionAddressService, private snackBar: MatSnackBar, private itineraryService: ItineraryService, private mapClickService: MapClickService) {
+  constructor(private formBuilder: FormBuilder, private autoCompletionAddressService: AutoCompletionAddressService, private snackBar: MatSnackBar, private itineraryService: ItineraryService, private mapClickService: MapClickService, private geolocalisationService: GeolocalisationService) {
     this.itineraryForm = this.formBuilder.group({
       departure: ['', []],
       destination: ['', []],
@@ -217,8 +219,16 @@ export class NewItineraryBarComponent implements OnInit, OnDestroy {
   }
 
 
+  private isFollowing: boolean = false;
 
+  public onTest() {
+    this.isFollowing = !this.isFollowing
 
+    if (this.isFollowing)
+      this.geolocalisationService.startFollowingPosition()
+    else
+      this.geolocalisationService.stopFollowingPosition()
+  }
 
 
   /**

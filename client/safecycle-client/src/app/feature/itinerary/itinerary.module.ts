@@ -10,6 +10,7 @@ import {NgChartsModule} from "ng2-charts";
 import {PlotlyModule} from "angular-plotly.js";
 import { MultiCheckpointsFieldsComponent } from './intern-sections/multi-checkpoints-fields/multi-checkpoints-fields.component';
 import { AmenitySwitchPanelComponent } from './intern-sections/amenity-switch-panel/amenity-switch-panel.component';
+import { ItineraryMapComponent } from './itinerary-map/itinerary-map.component';
 
 
 @NgModule({
@@ -18,7 +19,8 @@ import { AmenitySwitchPanelComponent } from './intern-sections/amenity-switch-pa
     NewItineraryBarComponent,
     ItineraryCardComponent,
     MultiCheckpointsFieldsComponent,
-    AmenitySwitchPanelComponent
+    AmenitySwitchPanelComponent,
+    ItineraryMapComponent
   ],
     imports: [
         CommonModule,

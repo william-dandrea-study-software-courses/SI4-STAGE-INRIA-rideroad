@@ -69,6 +69,8 @@ export class AmenityService {
         this.http.post<AmenityModel[]>(url, JSON.stringify(body)).subscribe(amenities => {
           this.amenitiesResult = amenities;
           this.$amenitiesResult.next(this.amenitiesResult);
+
+          console.log(amenities)
         }, error => {
           console.log({error})
         })

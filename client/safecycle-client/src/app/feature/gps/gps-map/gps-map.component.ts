@@ -1,6 +1,7 @@
 import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
 import * as L from "leaflet";
-import {LatLng, Layer, Map, Marker} from "leaflet";
+import {DivIcon, LatLng, Layer, Map, Marker} from "leaflet";
+import 'leaflet-rotatedmarker';
 import {ItineraryVisual} from "../../../core/model/itinerary-visual.class";
 import {GpsService} from "../../../core/service/gps.service";
 import {GeolocalisationService} from "../../../core/service/geolocalisation.service";
@@ -20,7 +21,7 @@ export class GpsMapComponent implements OnInit, AfterViewInit, OnDestroy {
   private currentPosition: GeolocationPosition | null = null;
 
   private segmentsOnMap: Layer[] = [];
-  private currentNavigationMarker: Layer | null = null;
+  private currentNavigationMarker: Marker | null = null;
 
   constructor(private gpsService: GpsService, private geolocalisationService: GeolocalisationService) { }
 
@@ -39,8 +40,8 @@ export class GpsMapComponent implements OnInit, AfterViewInit, OnDestroy {
 
   public ngAfterViewInit(): void {
     this.initialisationMap();
-    this.showItinerary();
-    this.setMarkerOnCurrentPosition();
+
+
   }
 
 
@@ -57,17 +58,18 @@ export class GpsMapComponent implements OnInit, AfterViewInit, OnDestroy {
 
         const currentPositionForMarker: LatLng = new LatLng(this.currentPosition.coords.latitude, this.currentPosition.coords.longitude)
 
-        this.currentNavigationMarker = L.marker(currentPositionForMarker, {
-          icon: L.icon({
-            iconUrl: '/assets/icons/assistant_navigation.svg',
-            iconSize: [35, 35]
+        const rotation = this.currentPosition.coords.heading ? this.currentPosition.coords.heading : 0;
+
+        this.currentNavigationMarker = new L.Marker(currentPositionForMarker, {
+          icon: new L.Icon({
+            iconUrl: "/assets/icons/assistant_navigation.svg"
           }),
-        });
+          rotationAngle: rotation
+        })
 
         this.currentNavigationMarker.addTo(this.map)
       }
     })
-
   }
 
 
@@ -85,13 +87,16 @@ export class GpsMapComponent implements OnInit, AfterViewInit, OnDestroy {
     });
 
     const tiles = L.tileLayer('https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png', {
-      maxZoom: 18,
+      maxZoom: 19,
       minZoom: 8,
       attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
       detectRetina: true,
     });
 
     tiles.addTo(this.map);
+
+    this.setMarkerOnCurrentPosition();
+    this.showItinerary();
   }
 
   private showItinerary(): void {

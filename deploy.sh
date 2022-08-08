@@ -41,6 +41,8 @@ if [ "$choise" == "2" ] || [ "$choise" == "3" ]; then
 fi
 
 
+# scp ./safecycle-client-image.tar ./safecycle-server-image.tar  ubuntu@51.38.71.146:/home/ubuntu
+
 
 
 
