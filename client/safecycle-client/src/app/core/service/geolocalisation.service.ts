@@ -13,7 +13,8 @@ export class GeolocalisationService {
   public centerOnUser: boolean = true;
   public centerOnUser$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(this.centerOnUser);
 
-  private timerCurrentPositionSubscription: Subscription = new Subscription();
+  private geolocation: Geolocation = navigator.geolocation;
+  private geolocationWatchId: number = 0;
 
   constructor() {
     this.getLocalisation();
@@ -26,15 +27,16 @@ export class GeolocalisationService {
 
 
   public startFollowingPosition() {
-    this.timerCurrentPositionSubscription = timer(0, 1000).pipe(
-      map(() => {
-        this.getLocalisation();
-      })
-    ).subscribe()
+    this.geolocationWatchId = this.geolocation.watchPosition((position) => {
+      this.currentPosition = position;
+      this.currentPosition$.next(this.currentPosition);
+    }, (error) => {
+      console.log(error);
+    })
   }
 
   public stopFollowingPosition() {
-    this.timerCurrentPositionSubscription.unsubscribe();
+    this.geolocation.clearWatch(this.geolocationWatchId);
   }
 
   /**

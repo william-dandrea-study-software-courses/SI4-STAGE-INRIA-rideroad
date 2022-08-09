@@ -12,11 +12,10 @@ read choise
 
 if [ "$choise" == "1" ] || [ "$choise" == "3" ]; then 
     cd "$PWD"/server/safecycle_server
-    echo "$PWD"
+    docker image rm safecycle-server
     docker build -t safecycle-server .
 
     cd "$PWD"/../../docker_images/
-    echo "$PWD"
 
     rm -rf ./safecycle-server-image.tar
 
@@ -27,6 +26,7 @@ fi
 
 if [ "$choise" == "2" ] || [ "$choise" == "3" ]; then 
     cd "$PWD"/client/safecycle-client
+    docker image rm safecycle-client
     docker build -t safecycle-client .
 
 

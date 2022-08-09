@@ -30,8 +30,6 @@ export class GpsMapComponent implements OnInit, AfterViewInit, OnDestroy {
       this.currentItinerary = itinerary;
     });
 
-
-
     if (this.map) {
       this.map.off();
       this.map.remove();
