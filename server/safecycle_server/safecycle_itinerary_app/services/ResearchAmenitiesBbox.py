@@ -23,13 +23,11 @@ class ResearchAmenitiesBbox:
 
     def launch(self):
 
+        overpass = Overpass()
         bbox = [self.__bottom_left_latitude, self.__bottom_left_longitude, self.__top_right_latitude, self.__top_right_longitude]
 
         query = query_builder_bbox(bbox=bbox, amenitySelectors=self.__amenities, tourismSelectors=self.__tourism)
-
-        print(query)
-        overpass = Overpass()
-        result = overpass.query(query).toJSON()['elements']
+        result = overpass.query(query, timeout=10).toJSON()['elements']
 
         return result
 

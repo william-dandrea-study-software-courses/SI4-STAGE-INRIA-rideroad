@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {BehaviorSubject} from "rxjs";
 import {LatLngBounds} from "leaflet";
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {environment} from "../../../environments/environment";
 import {AmenityEnum, AmenityModel} from "../model/amenity.model";
 
@@ -9,6 +9,12 @@ export interface AmenityTitle {
   name: string;
   isSelected: boolean;
   type: AmenityEnum;
+}
+
+export class AmenityError extends Error {
+  constructor(error: string) {
+    super(error);
+  }
 }
 
 
@@ -33,6 +39,10 @@ export class AmenityService {
   private mapBoundsForAmenities: LatLngBounds | null = null;
   public $mapBoundsForAmenities: BehaviorSubject<LatLngBounds | null> = new BehaviorSubject<LatLngBounds | null>(this.mapBoundsForAmenities)
 
+
+  private isLoadingAmenities: boolean | AmenityError = false;
+  public $isLoadingAmenities: BehaviorSubject<boolean | AmenityError> = new BehaviorSubject<boolean | AmenityError>(this.isLoadingAmenities)
+
   constructor(private http: HttpClient) {
 
   }
@@ -53,28 +63,38 @@ export class AmenityService {
 
 
   public downloadAmenities() {
-      if (this.amenitiesTitle.length != 0 && this.mapBoundsForAmenities != null) {
-        const url = environment.backend_url + 'amenitities-bbox';
 
-        // ?bottom_left_longitude=7.062080&bottom_left_latitude=43.509184&top_right_longitude=7.192886&top_right_latitude=43.610193
-
-        let body: any = {};
-        body['bottom_left_longitude'] = this.mapBoundsForAmenities.getSouthWest().lng;
-        body["bottom_left_latitude"] = this.mapBoundsForAmenities.getSouthWest().lat;
-        body["top_right_longitude"] = this.mapBoundsForAmenities.getNorthEast().lng;
-        body["top_right_latitude"] = this.mapBoundsForAmenities.getNorthEast().lat;
-        body["amenities"] = this.amenitiesTitle.filter(am => am.isSelected).map(am => am.type);
+    if (this.amenitiesTitle.length != 0 && this.mapBoundsForAmenities != null) {
+      const url = environment.backend_url + 'amenitities-bbox';
 
 
-        this.http.post<AmenityModel[]>(url, JSON.stringify(body)).subscribe(amenities => {
-          this.amenitiesResult = amenities;
-          this.$amenitiesResult.next(this.amenitiesResult);
+      this.isLoadingAmenities = true;
+      this.$isLoadingAmenities.next(this.isLoadingAmenities);
 
-          console.log(amenities)
-        }, error => {
-          console.log({error})
-        })
-      }
+      // ?bottom_left_longitude=7.062080&bottom_left_latitude=43.509184&top_right_longitude=7.192886&top_right_latitude=43.610193
+
+      let body: any = {};
+      body['bottom_left_longitude'] = this.mapBoundsForAmenities.getSouthWest().lng;
+      body["bottom_left_latitude"] = this.mapBoundsForAmenities.getSouthWest().lat;
+      body["top_right_longitude"] = this.mapBoundsForAmenities.getNorthEast().lng;
+      body["top_right_latitude"] = this.mapBoundsForAmenities.getNorthEast().lat;
+      body["amenities"] = this.amenitiesTitle.filter(am => am.isSelected).map(am => am.type);
+
+
+      this.http.post<AmenityModel[]>(url, JSON.stringify(body)).subscribe(amenities => {
+        this.amenitiesResult = amenities;
+        this.$amenitiesResult.next(this.amenitiesResult);
+
+        this.isLoadingAmenities = false;
+        this.$isLoadingAmenities.next(this.isLoadingAmenities);
+
+        console.log(amenities)
+      }, error => {
+
+        this.isLoadingAmenities = new AmenityError("Cannot load amenities : " + error);
+        this.$isLoadingAmenities.next(this.isLoadingAmenities);
+      })
+    }
   }
 
 

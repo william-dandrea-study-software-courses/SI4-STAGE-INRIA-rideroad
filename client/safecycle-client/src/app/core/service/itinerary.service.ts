@@ -9,6 +9,13 @@ import {MultiCheckpointsItineraryModel} from "../model/multi-checkpoints-itinera
 import {environment} from "../../../environments/environment";
 import {NewUserItineraryInfosClass} from "../model/new-user-itinerary-infos.class";
 
+export class ItineraryError extends Error {
+  constructor(error: string) {
+    super(error);
+  }
+}
+
+
 @Injectable({
   providedIn: 'root'
 })
@@ -26,8 +33,8 @@ export class ItineraryService {
   public newItineraryUserInfos: NewUserItineraryInfosClass = new NewUserItineraryInfosClass();
   public newItineraryUserInfos$: BehaviorSubject<NewUserItineraryInfosClass> = new BehaviorSubject<NewUserItineraryInfosClass>(this.newItineraryUserInfos);
 
-  public isLoadingItineraryOnBackend: boolean = false;
-  public $isLoadingItineraryOnBackend: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false)
+  public isLoadingItineraryOnBackend: boolean | ItineraryError = false;
+  public $isLoadingItineraryOnBackend: BehaviorSubject<boolean | ItineraryError> = new BehaviorSubject<boolean | ItineraryError>(false)
 
   constructor(private http: HttpClient) { }
 
@@ -90,10 +97,12 @@ export class ItineraryService {
       this.isLoadingItineraryOnBackend = false;
       this.$isLoadingItineraryOnBackend.next(this.isLoadingItineraryOnBackend);
 
-
-
     }, error => {
-      this.$itinerary.error(error);
+
+      this.isLoadingItineraryOnBackend = new ItineraryError("Cannot generate the itinerary");
+      this.$isLoadingItineraryOnBackend.next(this.isLoadingItineraryOnBackend);
+
+      console.log("yo")
 
       this.itinerary = null;
       this.$itinerary = new BehaviorSubject<ItineraryModel[] | null>(null);

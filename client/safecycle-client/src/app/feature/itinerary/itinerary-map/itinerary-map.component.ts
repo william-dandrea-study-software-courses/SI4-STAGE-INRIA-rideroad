@@ -42,7 +42,7 @@ export class ItineraryMapComponent implements OnInit, AfterViewInit, OnDestroy {
   private clickPosition: LeafletMouseEvent | null = null;
   private itinerariesVisual: ItineraryVisual[] | null = null;
   private itineraryUserInfos: NewUserItineraryInfosClass | null = null;
-  private isLoadingItinerary: boolean = false;
+  private isLoadingItinerary: boolean | Error = false;
 
   // Elements on map
   private currentNavigationMarker: L.Marker | null = null;
@@ -95,6 +95,7 @@ export class ItineraryMapComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
     this.initializeMap();
+    this.addLegend();
   }
 
   private newCurrentPositionValue(currentPosition: GeolocationPosition | null): void {
@@ -155,15 +156,18 @@ export class ItineraryMapComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  private newIsLoadingItineraryValue(isLoadingItinerary: boolean): void {
+  private newIsLoadingItineraryValue(isLoadingItinerary: boolean | Error): void {
     this.isLoadingItinerary = isLoadingItinerary;
 
-    if (this.isLoadingItinerary) {
-      this.dialog.open(SpinnerComponent);
-    }
 
-    if (!this.isLoadingItinerary) {
+
+    if (isLoadingItinerary === true) {
+      this.dialog.open(SpinnerComponent);
+    } else if(isLoadingItinerary === false) {
       this.dialog.closeAll();
+    } else {
+      this.dialog.closeAll();
+      this.snackBar.open(isLoadingItinerary.message + ", please try again", "Ok", {duration: 3000})
     }
   }
 
@@ -354,11 +358,47 @@ export class ItineraryMapComponent implements OnInit, AfterViewInit, OnDestroy {
 
     // Set the click on the map
     this.map.on('click', (v: LeafletMouseEvent) => {this.mapClickService.setClickPosition(v);});
+
+    this.map.on('moveend', (v: LeafletMouseEvent) => {this.amenityService.changeMapBounds(this.map.getBounds())})
+
+  }
+
+  private addLegend() {
+    const legend = new (L.Control.extend({
+      options: { position: 'bottomright'}
+    }));
+
+    legend.onAdd = function (map) {
+      const div = L.DomUtil.create('div', 'legend' );
+
+      const labels = [
+        {name: 'Dirt Road', color: "#8f5858"},
+        {name: 'Bike Road', color: "#759bc9"},
+        {name: 'Regular Road', color: "#484848"},
+        {name: 'Pedestrian Road', color: "#4f7c40"},
+      ];
+
+
+      div.innerHTML = '<div style="background-color: white"><b>Legend</b></div>';
+      for (let i = 0; i < labels.length; i++) {
+        div.innerHTML += `<i style="background-color: ${labels[i].color}; height: 10px; width: 10px;>"> &nbsp; &nbsp; </i>` + '  ' +  labels[i].name + '<br/>';
+      }
+
+      div.style.backgroundColor = "#FFF"
+      div.style.padding = "20px"
+
+      return div;
+    };
+
+    legend.addTo(this.map);
   }
 
 
 
-  ngOnDestroy(): void {
+
+
+
+    ngOnDestroy(): void {
     this.currentPositionSubscription.unsubscribe();
     this.centerOnUserSubscription.unsubscribe();
     this.amenitiesResultSubscription.unsubscribe();

@@ -8,4 +8,5 @@
 
 <button mat-stroked-button style="margin-top: 20px" class="full-width" (click)="onSearch()">Search in the area</button>
 
+<mat-progress-bar mode="indeterminate" class="full-width" *ngIf="isLoadingAmenities === true"></mat-progress-bar>
 
