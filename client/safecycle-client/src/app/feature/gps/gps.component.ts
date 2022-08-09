@@ -32,18 +32,6 @@ export class GpsComponent implements OnInit {
       }
     })
 
-    // this.geolocalisationService.getLocalisation((position: GeolocationPosition) => {
-    //   console.log(position)
-    //   this.positionAllowed = true
-    //   this.dialog.closeAll()
-    // }, () => {
-    //   this.positionAllowed = false
-    //   this.dialog.open(DialogPopupOverComponent, {
-    //     width: '250px',
-    //     disableClose: true,
-    //   })
-    // })
-
 
   }
 

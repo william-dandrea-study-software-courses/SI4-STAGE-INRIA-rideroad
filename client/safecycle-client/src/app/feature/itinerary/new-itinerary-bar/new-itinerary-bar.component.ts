@@ -60,13 +60,20 @@ export class NewItineraryBarComponent implements OnInit, OnDestroy {
     this.currentItinerarySubscription = this.itineraryService.$itineraryVisual.subscribe(v => {
       this.currentItinerary = v;
       this.indexesCurrentItinerary = Array.from(Array(v?.length).keys())
-    })
+    });
 
     this.initializeDepartureControl();
     this.initializeDestinationControl();
     this.initializeRoadTypeControl();
     this.initializeMapClick();
 
+    this.geolocalisationService.currentPosition$.subscribe(currentPosition => {
+      if (currentPosition != null) {
+        this.departureControl.setValue(`Your position : ${currentPosition.coords.latitude} ,  ${currentPosition.coords.longitude}`)
+        this.departureAddress = new LatLng(currentPosition.coords.latitude, currentPosition.coords.longitude);
+        this.itineraryService.setStart(this.departureAddress);
+      }
+    })
   }
 
 
@@ -85,13 +92,13 @@ export class NewItineraryBarComponent implements OnInit, OnDestroy {
           this.isFocusOnDestination = false;
           this.destinationControl.setValue(`${pos.latlng.lat} ,  ${pos.latlng.lng}`)
           this.destinationAddress = pos.latlng;
-          this.itineraryService.setStart(this.destinationAddress);
+          this.itineraryService.setEnd(this.destinationAddress);
         }
         if (this.isFocusOnDeparture) {
           this.isFocusOnDeparture = false;
           this.departureControl.setValue(`${pos.latlng.lat} ,  ${pos.latlng.lng}`)
           this.departureAddress = pos.latlng;
-          this.itineraryService.setEnd(this.departureAddress);
+          this.itineraryService.setStart(this.departureAddress);
         }
 
 
