@@ -1,0 +1,951 @@
+{
+    "time": 141,
+    "profile": null,
+    "alternative": 1,
+    "paths": [
+        {
+            "tags": {
+                "reversedirection": "yes",
+                "highway": "residential",
+                "surface": "asphalt",
+                "cycleway": "no",
+                "oneway": "no"
+            },
+            "length": "14",
+            "costs": {
+                "per_km": 1150,
+                "elevation": 0,
+                "turn": 0,
+                "node": 0,
+                "initial": 0
+            },
+            "coords": [
+                {
+                    "lat": 43.569233,
+                    "lon": 7.114203,
+                    "elevation": 11.75
+                },
+                {
+                    "lat": 43.569271,
+                    "lon": 7.11405,
+                    "elevation": 12.25
+                }
+            ],
+            "first_coord": {
+                "lat": 43.569233,
+                "lon": 7.114203,
+                "elevation": 11.75
+            },
+            "last_coord": {
+                "lat": 43.569271,
+                "lon": 7.11405,
+                "elevation": 12.25
+            }
+        },
+        {
+            "tags": {
+                "reversedirection": "yes",
+                "highway": "residential",
+                "surface": "asphalt",
+                "cycleway": "no",
+                "oneway": "no"
+            },
+            "length": "16",
+            "costs": {
+                "per_km": 1150,
+                "elevation": 0,
+                "turn": 0,
+                "node": 0,
+                "initial": 0
+            },
+            "coords": [
+                {
+                    "lat": 43.569271,
+                    "lon": 7.11405,
+                    "elevation": 12.25
+                },
+                {
+                    "lat": 43.569306,
+                    "lon": 7.113869,
+                    "elevation": 12.25
+                }
+            ],
+            "first_coord": {
+                "lat": 43.569271,
+                "lon": 7.11405,
+                "elevation": 12.25
+            },
+            "last_coord": {
+                "lat": 43.569306,
+                "lon": 7.113869,
+                "elevation": 12.25
+            }
+        },
+        {
+            "tags": {
+                "reversedirection": "yes",
+                "highway": "secondary",
+                "surface": "asphalt",
+                "oneway": "no"
+            },
+            "length": "32",
+            "costs": {
+                "per_km": 1650,
+                "elevation": 0,
+                "turn": 104,
+                "node": 0,
+                "initial": 0
+            },
+            "coords": [
+                {
+                    "lat": 43.569306,
+                    "lon": 7.113869,
+                    "elevation": 12.25
+                },
+                {
+                    "lat": 43.569179,
+                    "lon": 7.113833,
+                    "elevation": 12
+                },
+                {
+                    "lat": 43.56911,
+                    "lon": 7.113778,
+                    "elevation": 11.75
+                },
+                {
+                    "lat": 43.569069,
+                    "lon": 7.113711,
+                    "elevation": 11.75
+                }
+            ],
+            "first_coord": {
+                "lat": 43.569306,
+                "lon": 7.113869,
+                "elevation": 12.25
+            },
+            "last_coord": {
+                "lat": 43.569069,
+                "lon": 7.113711,
+                "elevation": 11.75
+            }
+        },
+        {
+            "tags": {
+                "reversedirection": "yes",
+                "highway": "secondary",
+                "surface": "asphalt",
+                "oneway": "no"
+            },
+            "length": "86",
+            "costs": {
+                "per_km": 1650,
+                "elevation": 0,
+                "turn": 0,
+                "node": 0,
+                "initial": 0
+            },
+            "coords": [
+                {
+                    "lat": 43.569069,
+                    "lon": 7.113711,
+                    "elevation": 11.75
+                },
+                {
+                    "lat": 43.569044,
+                    "lon": 7.113671,
+                    "elevation": 11.75
+                },
+                {
+                    "lat": 43.568605,
+                    "lon": 7.112873,
+                    "elevation": 12
+                }
+            ],
+            "first_coord": {
+                "lat": 43.569069,
+                "lon": 7.113711,
+                "elevation": 11.75
+            },
+            "last_coord": {
+                "lat": 43.568605,
+                "lon": 7.112873,
+                "elevation": 12
+            }
+        },
+        {
+            "tags": {
+                "reversedirection": "yes",
+                "highway": "secondary",
+                "surface": "asphalt",
+                "oneway": "no"
+            },
+            "length": "22",
+            "costs": {
+                "per_km": 1650,
+                "elevation": 0,
+                "turn": 1,
+                "node": 0,
+                "initial": 0
+            },
+            "coords": [
+                {
+                    "lat": 43.568605,
+                    "lon": 7.112873,
+                    "elevation": 12
+                },
+                {
+                    "lat": 43.568574,
+                    "lon": 7.112832,
+                    "elevation": 12
+                },
+                {
+                    "lat": 43.568459,
+                    "lon": 7.1127,
+                    "elevation": 11.5
+                }
+            ],
+            "first_coord": {
+                "lat": 43.568605,
+                "lon": 7.112873,
+                "elevation": 12
+            },
+            "last_coord": {
+                "lat": 43.568459,
+                "lon": 7.1127,
+                "elevation": 11.5
+            }
+        },
+        {
+            "tags": {
+                "reversedirection": "yes",
+                "highway": "secondary",
+                "surface": "asphalt",
+                "oneway": "no"
+            },
+            "length": "4",
+            "costs": {
+                "per_km": 1650,
+                "elevation": 0,
+                "turn": 1,
+                "node": 0,
+                "initial": 0
+            },
+            "coords": [
+                {
+                    "lat": 43.568459,
+                    "lon": 7.1127,
+                    "elevation": 11.5
+                },
+                {
+                    "lat": 43.568441,
+                    "lon": 7.112671,
+                    "elevation": 11.5
+                }
+            ],
+            "first_coord": {
+                "lat": 43.568459,
+                "lon": 7.1127,
+                "elevation": 11.5
+            },
+            "last_coord": {
+                "lat": 43.568441,
+                "lon": 7.112671,
+                "elevation": 11.5
+            }
+        },
+        {
+            "tags": {
+                "highway": "secondary",
+                "surface": "asphalt",
+                "oneway": "yes",
+                "route_bicycle_icn": "yes"
+            },
+            "length": "19",
+            "costs": {
+                "per_km": 1000,
+                "elevation": 0,
+                "turn": 0,
+                "node": 0,
+                "initial": 0
+            },
+            "coords": [
+                {
+                    "lat": 43.568441,
+                    "lon": 7.112671,
+                    "elevation": 11.5
+                },
+                {
+                    "lat": 43.568406,
+                    "lon": 7.112597,
+                    "elevation": 11.25
+                },
+                {
+                    "lat": 43.568396,
+                    "lon": 7.112556,
+                    "elevation": 11.25
+                },
+                {
+                    "lat": 43.568388,
+                    "lon": 7.112526,
+                    "elevation": 11.25
+                },
+                {
+                    "lat": 43.568386,
+                    "lon": 7.112486,
+                    "elevation": 11.25
+                }
+            ],
+            "first_coord": {
+                "lat": 43.568441,
+                "lon": 7.112671,
+                "elevation": 11.5
+            },
+            "last_coord": {
+                "lat": 43.568386,
+                "lon": 7.112486,
+                "elevation": 11.25
+            }
+        },
+        {
+            "tags": {
+                "highway": "secondary",
+                "surface": "asphalt",
+                "oneway": "yes",
+                "route_bicycle_icn": "yes"
+            },
+            "length": "20",
+            "costs": {
+                "per_km": 1000,
+                "elevation": 0,
+                "turn": 0,
+                "node": 0,
+                "initial": 0
+            },
+            "coords": [
+                {
+                    "lat": 43.568386,
+                    "lon": 7.112486,
+                    "elevation": 11.25
+                },
+                {
+                    "lat": 43.56838,
+                    "lon": 7.112373,
+                    "elevation": 11
+                },
+                {
+                    "lat": 43.568333,
+                    "lon": 7.112475,
+                    "elevation": 10.75
+                }
+            ],
+            "first_coord": {
+                "lat": 43.568386,
+                "lon": 7.112486,
+                "elevation": 11.25
+            },
+            "last_coord": {
+                "lat": 43.568333,
+                "lon": 7.112475,
+                "elevation": 10.75
+            }
+        },
+        {
+            "tags": {
+                "highway": "secondary",
+                "surface": "asphalt",
+                "oneway": "yes",
+                "route_bicycle_icn": "yes"
+            },
+            "length": "9",
+            "costs": {
+                "per_km": 1000,
+                "elevation": 0,
+                "turn": 0,
+                "node": 0,
+                "initial": 0
+            },
+            "coords": [
+                {
+                    "lat": 43.568333,
+                    "lon": 7.112475,
+                    "elevation": 10.75
+                },
+                {
+                    "lat": 43.568322,
+                    "lon": 7.112519,
+                    "elevation": 10.75
+                },
+                {
+                    "lat": 43.568323,
+                    "lon": 7.112572,
+                    "elevation": 10.75
+                }
+            ],
+            "first_coord": {
+                "lat": 43.568333,
+                "lon": 7.112475,
+                "elevation": 10.75
+            },
+            "last_coord": {
+                "lat": 43.568323,
+                "lon": 7.112572,
+                "elevation": 10.75
+            }
+        },
+        {
+            "tags": {
+                "reversedirection": "yes",
+                "highway": "tertiary",
+                "surface": "asphalt",
+                "route_bicycle_icn": "yes"
+            },
+            "length": "12",
+            "costs": {
+                "per_km": 1000,
+                "elevation": 0,
+                "turn": 0,
+                "node": 0,
+                "initial": 0
+            },
+            "coords": [
+                {
+                    "lat": 43.568323,
+                    "lon": 7.112572,
+                    "elevation": 10.75
+                },
+                {
+                    "lat": 43.568221,
+                    "lon": 7.112618,
+                    "elevation": 10.25
+                }
+            ],
+            "first_coord": {
+                "lat": 43.568323,
+                "lon": 7.112572,
+                "elevation": 10.75
+            },
+            "last_coord": {
+                "lat": 43.568221,
+                "lon": 7.112618,
+                "elevation": 10.25
+            }
+        },
+        {
+            "tags": {
+                "reversedirection": "yes",
+                "highway": "tertiary",
+                "surface": "asphalt",
+                "route_bicycle_icn": "yes"
+            },
+            "length": "4",
+            "costs": {
+                "per_km": 1000,
+                "elevation": 0,
+                "turn": 0,
+                "node": 0,
+                "initial": 0
+            },
+            "coords": [
+                {
+                    "lat": 43.568221,
+                    "lon": 7.112618,
+                    "elevation": 10.25
+                },
+                {
+                    "lat": 43.568195,
+                    "lon": 7.112629,
+                    "elevation": 10
+                }
+            ],
+            "first_coord": {
+                "lat": 43.568221,
+                "lon": 7.112618,
+                "elevation": 10.25
+            },
+            "last_coord": {
+                "lat": 43.568195,
+                "lon": 7.112629,
+                "elevation": 10
+            }
+        },
+        {
+            "tags": {
+                "reversedirection": "yes",
+                "highway": "tertiary",
+                "surface": "asphalt",
+                "route_bicycle_icn": "yes"
+            },
+            "length": "40",
+            "costs": {
+                "per_km": 1000,
+                "elevation": 0,
+                "turn": 0,
+                "node": 0,
+                "initial": 0
+            },
+            "coords": [
+                {
+                    "lat": 43.568195,
+                    "lon": 7.112629,
+                    "elevation": 10
+                },
+                {
+                    "lat": 43.568088,
+                    "lon": 7.112687,
+                    "elevation": 9.5
+                },
+                {
+                    "lat": 43.567903,
+                    "lon": 7.112887,
+                    "elevation": 8.75
+                }
+            ],
+            "first_coord": {
+                "lat": 43.568195,
+                "lon": 7.112629,
+                "elevation": 10
+            },
+            "last_coord": {
+                "lat": 43.567903,
+                "lon": 7.112887,
+                "elevation": 8.75
+            }
+        },
+        {
+            "tags": {
+                "reversedirection": "yes",
+                "highway": "tertiary",
+                "surface": "asphalt",
+                "route_bicycle_icn": "yes"
+            },
+            "length": "12",
+            "costs": {
+                "per_km": 1000,
+                "elevation": 0,
+                "turn": 0,
+                "node": 0,
+                "initial": 0
+            },
+            "coords": [
+                {
+                    "lat": 43.567903,
+                    "lon": 7.112887,
+                    "elevation": 8.75
+                },
+                {
+                    "lat": 43.567819,
+                    "lon": 7.112977,
+                    "elevation": 8.5
+                }
+            ],
+            "first_coord": {
+                "lat": 43.567903,
+                "lon": 7.112887,
+                "elevation": 8.75
+            },
+            "last_coord": {
+                "lat": 43.567819,
+                "lon": 7.112977,
+                "elevation": 8.5
+            }
+        },
+        {
+            "tags": {
+                "highway": "tertiary",
+                "surface": "asphalt",
+                "oneway": "yes",
+                "lcn": "yes",
+                "route_bicycle_icn": "yes"
+            },
+            "length": "88",
+            "costs": {
+                "per_km": 1000,
+                "elevation": 0,
+                "turn": 0,
+                "node": 0,
+                "initial": 0
+            },
+            "coords": [
+                {
+                    "lat": 43.567819,
+                    "lon": 7.112977,
+                    "elevation": 8.5
+                },
+                {
+                    "lat": 43.567741,
+                    "lon": 7.113136,
+                    "elevation": 8.25
+                },
+                {
+                    "lat": 43.567523,
+                    "lon": 7.113638,
+                    "elevation": 8
+                },
+                {
+                    "lat": 43.56741,
+                    "lon": 7.11388,
+                    "elevation": 7.75
+                }
+            ],
+            "first_coord": {
+                "lat": 43.567819,
+                "lon": 7.112977,
+                "elevation": 8.5
+            },
+            "last_coord": {
+                "lat": 43.56741,
+                "lon": 7.11388,
+                "elevation": 7.75
+            }
+        },
+        {
+            "tags": {
+                "highway": "tertiary",
+                "surface": "asphalt",
+                "oneway": "no",
+                "lcn": "yes"
+            },
+            "length": "66",
+            "costs": {
+                "per_km": 1050,
+                "elevation": 0,
+                "turn": 0,
+                "node": 0,
+                "initial": 0
+            },
+            "coords": [
+                {
+                    "lat": 43.56741,
+                    "lon": 7.11388,
+                    "elevation": 7.75
+                },
+                {
+                    "lat": 43.567049,
+                    "lon": 7.114517,
+                    "elevation": 8
+                }
+            ],
+            "first_coord": {
+                "lat": 43.56741,
+                "lon": 7.11388,
+                "elevation": 7.75
+            },
+            "last_coord": {
+                "lat": 43.567049,
+                "lon": 7.114517,
+                "elevation": 8
+            }
+        },
+        {
+            "tags": {
+                "highway": "tertiary",
+                "surface": "asphalt",
+                "oneway": "no",
+                "lcn": "yes"
+            },
+            "length": "59",
+            "costs": {
+                "per_km": 1050,
+                "elevation": 0,
+                "turn": 0,
+                "node": 0,
+                "initial": 0
+            },
+            "coords": [
+                {
+                    "lat": 43.567049,
+                    "lon": 7.114517,
+                    "elevation": 8
+                },
+                {
+                    "lat": 43.566996,
+                    "lon": 7.114611,
+                    "elevation": 8.25
+                },
+                {
+                    "lat": 43.566806,
+                    "lon": 7.114946,
+                    "elevation": 9
+                },
+                {
+                    "lat": 43.566731,
+                    "lon": 7.115078,
+                    "elevation": 9.25
+                }
+            ],
+            "first_coord": {
+                "lat": 43.567049,
+                "lon": 7.114517,
+                "elevation": 8
+            },
+            "last_coord": {
+                "lat": 43.566731,
+                "lon": 7.115078,
+                "elevation": 9.25
+            }
+        },
+        {
+            "tags": {
+                "highway": "tertiary",
+                "surface": "asphalt",
+                "oneway": "no",
+                "lcn": "yes"
+            },
+            "length": "68",
+            "costs": {
+                "per_km": 1050,
+                "elevation": 0,
+                "turn": 0,
+                "node": 0,
+                "initial": 0
+            },
+            "coords": [
+                {
+                    "lat": 43.566731,
+                    "lon": 7.115078,
+                    "elevation": 9.25
+                },
+                {
+                    "lat": 43.566553,
+                    "lon": 7.1154,
+                    "elevation": 10.5
+                },
+                {
+                    "lat": 43.566365,
+                    "lon": 7.115745,
+                    "elevation": 12.75
+                }
+            ],
+            "first_coord": {
+                "lat": 43.566731,
+                "lon": 7.115078,
+                "elevation": 9.25
+            },
+            "last_coord": {
+                "lat": 43.566365,
+                "lon": 7.115745,
+                "elevation": 12.75
+            }
+        },
+        {
+            "tags": {
+                "highway": "tertiary",
+                "surface": "asphalt",
+                "oneway": "no",
+                "lcn": "yes"
+            },
+            "length": "15",
+            "costs": {
+                "per_km": 1050,
+                "elevation": 0,
+                "turn": 0,
+                "node": 0,
+                "initial": 0
+            },
+            "coords": [
+                {
+                    "lat": 43.566365,
+                    "lon": 7.115745,
+                    "elevation": 12.75
+                },
+                {
+                    "lat": 43.56629,
+                    "lon": 7.115893,
+                    "elevation": 14
+                }
+            ],
+            "first_coord": {
+                "lat": 43.566365,
+                "lon": 7.115745,
+                "elevation": 12.75
+            },
+            "last_coord": {
+                "lat": 43.56629,
+                "lon": 7.115893,
+                "elevation": 14
+            }
+        },
+        {
+            "tags": {
+                "highway": "tertiary",
+                "surface": "asphalt",
+                "cycleway": "no",
+                "oneway": "no"
+            },
+            "length": "43",
+            "costs": {
+                "per_km": 1450,
+                "elevation": 0,
+                "turn": 59,
+                "node": 0,
+                "initial": 0
+            },
+            "coords": [
+                {
+                    "lat": 43.56629,
+                    "lon": 7.115893,
+                    "elevation": 14
+                },
+                {
+                    "lat": 43.566184,
+                    "lon": 7.115854,
+                    "elevation": 14.25
+                },
+                {
+                    "lat": 43.565929,
+                    "lon": 7.115774,
+                    "elevation": 14.75
+                }
+            ],
+            "first_coord": {
+                "lat": 43.56629,
+                "lon": 7.115893,
+                "elevation": 14
+            },
+            "last_coord": {
+                "lat": 43.565929,
+                "lon": 7.115774,
+                "elevation": 14.75
+            }
+        },
+        {
+            "tags": {
+                "highway": "tertiary",
+                "surface": "asphalt",
+                "cycleway": "no",
+                "oneway": "no"
+            },
+            "length": "149",
+            "costs": {
+                "per_km": 1450,
+                "elevation": 0,
+                "turn": 1,
+                "node": 0,
+                "initial": 0
+            },
+            "coords": [
+                {
+                    "lat": 43.565929,
+                    "lon": 7.115774,
+                    "elevation": 14.75
+                },
+                {
+                    "lat": 43.565726,
+                    "lon": 7.115734,
+                    "elevation": 14.75
+                },
+                {
+                    "lat": 43.56517,
+                    "lon": 7.115648,
+                    "elevation": 13.25
+                },
+                {
+                    "lat": 43.565062,
+                    "lon": 7.115641,
+                    "elevation": 13.25
+                },
+                {
+                    "lat": 43.564954,
+                    "lon": 7.115639,
+                    "elevation": 12.75
+                },
+                {
+                    "lat": 43.564863,
+                    "lon": 7.115655,
+                    "elevation": 12.5
+                },
+                {
+                    "lat": 43.56464,
+                    "lon": 7.115726,
+                    "elevation": 12.25
+                }
+            ],
+            "first_coord": {
+                "lat": 43.565929,
+                "lon": 7.115774,
+                "elevation": 14.75
+            },
+            "last_coord": {
+                "lat": 43.56464,
+                "lon": 7.115726,
+                "elevation": 12.25
+            }
+        },
+        {
+            "tags": {},
+            "length": 0,
+            "costs": {},
+            "coords": [
+                {
+                    "lat": 43.56464,
+                    "lon": 7.115726,
+                    "elevation": 12.25
+                },
+                {
+                    "lat": 43.56446,
+                    "lon": 7.115811,
+                    "elevation": 12.25
+                }
+            ],
+            "first_coord": {
+                "lat": 43.56464,
+                "lon": 7.115726,
+                "elevation": 12.25
+            },
+            "last_coord": {
+                "lat": 43.56446,
+                "lon": 7.115811,
+                "elevation": 12.25
+            }
+        }
+    ],
+    "cost": 1364,
+    "length": 800,
+    "filtered_ascend": 3,
+    "altitude_profil": [
+        11.75,
+        12.25,
+        12.25,
+        12,
+        11.75,
+        11.75,
+        11.75,
+        12,
+        12,
+        11.5,
+        11.5,
+        11.25,
+        11.25,
+        11.25,
+        11.25,
+        11,
+        10.75,
+        10.75,
+        10.75,
+        10.25,
+        10,
+        9.5,
+        8.75,
+        8.5,
+        8.25,
+        8,
+        7.75,
+        8,
+        8.25,
+        9,
+        9.25,
+        10.5,
+        12.75,
+        14,
+        14.25,
+        14.75,
+        14.75,
+        13.25,
+        13.25,
+        12.75,
+        12.5,
+        12.25,
+        12.25
+    ],
+    "amenities": []
+}

@@ -1,6 +1,6 @@
 import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
 import * as L from "leaflet";
-import {DivIcon, LatLng, Layer, Map, Marker} from "leaflet";
+import {DivIcon, FeatureGroup, LatLng, Layer, Map, Marker} from "leaflet";
 import 'leaflet-rotatedmarker';
 import {ItineraryVisual} from "../../../core/model/itinerary-visual.class";
 import {GpsService} from "../../../core/service/gps.service";
@@ -22,6 +22,13 @@ export class GpsMapComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private segmentsOnMap: Layer[] = [];
   private currentNavigationMarker: Marker | null = null;
+
+
+  // TEST =====
+  private listOfPathsTest: LatLng[] = []
+  // TEST =====
+
+
 
   constructor(private gpsService: GpsService, private geolocalisationService: GeolocalisationService) { }
 
@@ -85,7 +92,7 @@ export class GpsMapComponent implements OnInit, AfterViewInit, OnDestroy {
     });
 
     const tiles = L.tileLayer('https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png', {
-      maxZoom: 19,
+      maxZoom: 25,
       minZoom: 8,
       attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
       detectRetina: true,
@@ -99,10 +106,35 @@ export class GpsMapComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private showItinerary(): void {
 
-    if (this.currentItinerary != null && this.currentItinerary.segments_on_map != null) {
-      this.currentItinerary.segments_on_map.addTo(this.map)
-      this.segmentsOnMap.push(this.currentItinerary.segments_on_map)
+
+    if (this.currentItinerary != null) {
+
+      console.log(this.currentItinerary)
+
+      const allSegments: L.Polyline[] = [];
+      let colorSwitch: boolean = true;
+      this.currentItinerary.itinerary.paths.forEach(path => {
+        const allLongLat = path.coords.map(coord => new LatLng(coord.lat, coord.lon, coord.elevation))
+
+        let color: string = colorSwitch ? "#ff0000" : "#0022ff";
+        let opacity: number = 1.0;
+        colorSwitch = !colorSwitch;
+
+        const line: L.Polyline = L.polyline(allLongLat, { color: color,  weight: 7,  smoothFactor: 1,  opacity: opacity,})
+        const valueString = JSON.stringify(path.tags) + "<br>" + JSON.stringify(path.directions)
+
+        line.bindTooltip(valueString);
+
+
+        allSegments.push( line );
+      });
+
+      this.segmentsOnMap.forEach(seg => seg.removeFrom(this.map));
+      this.segmentsOnMap.push(L.featureGroup(allSegments));
+      this.segmentsOnMap.forEach(seg => seg.addTo(this.map));
     }
+
+
 
 
   }

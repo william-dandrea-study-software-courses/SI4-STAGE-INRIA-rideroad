@@ -7,6 +7,7 @@ from requests import Session
 import logging
 
 from . import utils
+from .DirectionInfosGenerator import DirectionInfosGenerator
 from .ResearchElementsInArea import ResearchElementsInArea
 from .exceptions.BrouterException import BrouterException
 from .models import RoadTypeEnum
@@ -144,18 +145,58 @@ class ItineraryGeneration:
                 for key, name in dict(CostPerKm="per_km", ElevCost="elevation", TurnCost="turn", NodeCost="node", InitialCost="initial").items():
                     current_path.costs[name] = float(current_message[key])
 
+
                 try:
                     current_message = next(messages_iteration)
                     current_path = new_path()
                     current_path.coords.append(coordinate)
-
                 except StopIteration:
                     if index_initial_coordinate < len(coordinates) - 1:
                         logger.error("There was still coordinates!")
                     break
 
         # self.generateAmenities(iti)
+        self.generateDirections(iti)
         return iti
+
+
+
+    def generateDirections(self, itinerary: Itinerary):
+        # directionInfosGenerator = DirectionInfosGenerator(current_path.getFirstCoord(), current_path.getLastCoord())
+        # current_path.setDirectionInfos(directionInfosGenerator.getDirections())
+
+        print("dir")
+        directions = []
+
+        if len(itinerary.paths) > 1:
+            for pathIndex in range(0, len(itinerary.paths) - 1):
+                current_path = itinerary.paths[pathIndex]
+                next_path = itinerary.paths[pathIndex + 1]
+
+                directionInfosGenerator = DirectionInfosGenerator(current_path.getFirstCoord(), current_path.getLastCoord())
+                dirs = directionInfosGenerator.getDirections(removeDepartAndDestination = True)
+                current_path.addDirectionInfos(dirs)
+                print(dirs)
+
+
+                if len(current_path.coords) >= 3 and len(next_path.coords) >= 3:
+                    directionInfosGeneratorMiddle = DirectionInfosGenerator(current_path.coords[-2], current_path.coords[+2])
+                    dirs = directionInfosGeneratorMiddle.getDirections(removeDepartAndDestination = True)
+                    print(dirs)
+                    current_path.addDirectionInfos(dirs)
+
+
+
+
+
+        print(directions)
+
+
+
+
+
+
+
 
 
     def generateAmenities(self, itinerary: Itinerary):
