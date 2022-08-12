@@ -13,6 +13,7 @@ from .exceptions.BrouterException import BrouterException
 from .models import RoadTypeEnum
 from .models.AmenityEnum import AmenityEnum
 from .models.Coord import Coord
+from .models.DirectionModel import OSMRResponse
 from .models.Itinerary import Itinerary
 from .models.Path import Path
 
@@ -109,6 +110,7 @@ class ItineraryGeneration:
         filtered_ascend = int(props["filtered ascend"])
 
         iti = Itinerary(time, length, cost, filtered_ascend, variante)
+        print(variante)
 
         def new_path():
             path = Path()
@@ -165,31 +167,43 @@ class ItineraryGeneration:
         # directionInfosGenerator = DirectionInfosGenerator(current_path.getFirstCoord(), current_path.getLastCoord())
         # current_path.setDirectionInfos(directionInfosGenerator.getDirections())
 
-        print("dir")
         directions = []
 
-        if len(itinerary.paths) > 1:
+        firstCoord = itinerary.paths[0].getFirstCoord()
+        lastCoord = itinerary.paths[-1].getLastCoord()
+        checkpoints = [coor.getLastCoord() for coor in itinerary.paths[:-1]]
+
+        directionInfosGenerator = DirectionInfosGenerator(firstCoord, lastCoord, checkpoints)
+        dirs: OSMRResponse = directionInfosGenerator.getDirections(removeDepartAndDestination=False)
+
+        print(dirs.routes[0].legs[0].distance)
+
+
+
+
+
+
+
+        """if len(itinerary.paths) > 1:
             for pathIndex in range(0, len(itinerary.paths) - 1):
                 current_path = itinerary.paths[pathIndex]
                 next_path = itinerary.paths[pathIndex + 1]
+                last_path = itinerary.paths[pathIndex - 1]
 
                 directionInfosGenerator = DirectionInfosGenerator(current_path.getFirstCoord(), current_path.getLastCoord())
                 dirs = directionInfosGenerator.getDirections(removeDepartAndDestination = True)
                 current_path.addDirectionInfos(dirs)
-                print(dirs)
 
 
-                if len(current_path.coords) >= 3 and len(next_path.coords) >= 3:
-                    directionInfosGeneratorMiddle = DirectionInfosGenerator(current_path.coords[-2], current_path.coords[+2])
+                if len(current_path.coords) > 2 and len(next_path.coords) > 2:
+
+                    directionInfosGeneratorMiddle = DirectionInfosGenerator(current_path.coords[-2], next_path.coords[+2])
                     dirs = directionInfosGeneratorMiddle.getDirections(removeDepartAndDestination = True)
-                    print(dirs)
                     current_path.addDirectionInfos(dirs)
 
+        """
 
 
-
-
-        print(directions)
 
 
 
