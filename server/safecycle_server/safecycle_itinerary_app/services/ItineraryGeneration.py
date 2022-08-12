@@ -167,41 +167,18 @@ class ItineraryGeneration:
         # directionInfosGenerator = DirectionInfosGenerator(current_path.getFirstCoord(), current_path.getLastCoord())
         # current_path.setDirectionInfos(directionInfosGenerator.getDirections())
 
-        directions = []
-
         firstCoord = itinerary.paths[0].getFirstCoord()
         lastCoord = itinerary.paths[-1].getLastCoord()
         checkpoints = [coor.getLastCoord() for coor in itinerary.paths[:-1]]
 
         directionInfosGenerator = DirectionInfosGenerator(firstCoord, lastCoord, checkpoints)
-        dirs: OSMRResponse = directionInfosGenerator.getDirections(removeDepartAndDestination=False)
+        directions_response: OSMRResponse = directionInfosGenerator.getDirections(removeDepartAndDestination=False)
+        direction_legs = directions_response.routes[0].legs
 
-        print(dirs.routes[0].legs[0].distance)
+        for index, path in enumerate(itinerary.paths):
+            steps = direction_legs[index].steps
+            path.setDirectionInfos(steps)
 
-
-
-
-
-
-
-        """if len(itinerary.paths) > 1:
-            for pathIndex in range(0, len(itinerary.paths) - 1):
-                current_path = itinerary.paths[pathIndex]
-                next_path = itinerary.paths[pathIndex + 1]
-                last_path = itinerary.paths[pathIndex - 1]
-
-                directionInfosGenerator = DirectionInfosGenerator(current_path.getFirstCoord(), current_path.getLastCoord())
-                dirs = directionInfosGenerator.getDirections(removeDepartAndDestination = True)
-                current_path.addDirectionInfos(dirs)
-
-
-                if len(current_path.coords) > 2 and len(next_path.coords) > 2:
-
-                    directionInfosGeneratorMiddle = DirectionInfosGenerator(current_path.coords[-2], next_path.coords[+2])
-                    dirs = directionInfosGeneratorMiddle.getDirections(removeDepartAndDestination = True)
-                    current_path.addDirectionInfos(dirs)
-
-        """
 
 
 

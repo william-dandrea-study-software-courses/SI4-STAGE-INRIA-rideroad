@@ -59,12 +59,13 @@ class DirectionInfosGenerator:
 
         url: str = f"https://routing.openstreetmap.de/routed-bike/route/v1/driving/{self.startLocation.lon},{self.startLocation.lat};{checkpointsStr};{self.endLocation.lon},{self.endLocation.lat}?overview=false&alternatives=false&steps=true"
 
+
         print(url)
         request_manager = requests.get(url, timeout=2)
 
         if request_manager.status_code == 200:
             logger.info("Request worked")
             return request_manager.json()
-
-        logger.error(f"Request {url} failed")
-        raise Exception("Cannot Load routing")
+        else:
+            logger.error(f"Request {url} failed")
+            raise Exception("Cannot Load routing")

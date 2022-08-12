@@ -11,17 +11,20 @@
     </mat-drawer>
 
     <mat-drawer-content>
-      <app-itinerary-map></app-itinerary-map>
+      <app-itinerary-map [map]="this.map"></app-itinerary-map>
     </mat-drawer-content>
 
   </mat-drawer-container>
 
 
-  <section *ngIf="getScreenWidth < 1180" class="phone-display-itinerary full-height"  fxLayout="column" fxLayoutAlign=" stretch" >
+  <section *ngIf="getScreenWidth < 1180" class="phone-display-itinerary full-width" >
 
-    <div id="map" fxFlex="60"></div>
+    <div id="mapContainer">
+      <app-itinerary-map  class="full-height" [map]="this.map"></app-itinerary-map>
+    </div>
 
-    <app-new-itinerary-bar fxFlex="40"></app-new-itinerary-bar>
+
+    <app-new-itinerary-bar></app-new-itinerary-bar>
 
   </section>
 

@@ -3,11 +3,11 @@ from typing import List
 from .LonLat import LonLat
 
 class IntersectionOSMR:
-    def __init__(self, out: int, entry: List[bool], bearings: List[int], location: List[float], inV: int):
+    def __init__(self, out: int, entry: List[bool], bearings: List[int], location: LonLat, inV: int):
         self.out: int = out
         self.entry: List[bool] = entry
         self.bearings: List[int] = bearings
-        self.location: List[float] = location
+        self.location: LonLat = location
         self.inV: int = inV     # Possibly null
 
     def toDict(self):
@@ -15,7 +15,7 @@ class IntersectionOSMR:
             "out": self.out,
             "entry": self.entry,
             "bearings": self.bearings,
-            "location": self.location,
+            "location": self.location.toDict(),
             "inV": self.inV,
         }
 
@@ -33,7 +33,7 @@ class ManeuverOSMR:
         return {
             "bearing_after": self.bearing_after,
             "bearing_before": self.bearing_before,
-            "location": self.location,
+            "location": self.location.toDict(),
             "type": self.type,
             "modifier": self.modifier,
             "exit": self.exit,
@@ -118,7 +118,7 @@ class WaypointOSMR:
             "hint": self.hint,
             "distance": self.distance,
             "name": self.name,
-            "location": self.location,
+            "location": self.location.toDict(),
         }
 
 
@@ -193,13 +193,13 @@ class OSMRDeserializer:
                     intersections: List[IntersectionOSMR] = []
                     intersections__step = step.get("intersections")
                     for intersection in intersections__step:
-                        out: int = intersection.get("out")
-                        entry: List[bool] = intersection.get("entry")
-                        bearings: List[int] = intersection.get("bearings")
-                        location: List[float] = intersection.get("location")
-                        inV: int = intersection.get("in")
+                        out__intersection: int = intersection.get("out")
+                        entry__intersection: List[bool] = intersection.get("entry")
+                        bearings__intersection: List[int] = intersection.get("bearings")
+                        location__intersection: LonLat = LonLat(intersection.get("location")[0], intersection.get("location")[1])
+                        inV__intersection: int = intersection.get("in")
 
-                        intersections.append(IntersectionOSMR(out, entry, bearings, location, inV))
+                        intersections.append(IntersectionOSMR(out__intersection, entry__intersection, bearings__intersection, location__intersection, inV__intersection))
 
                     steps.append(StepOSMR(geometry__step, maneuver__step, mode__step, driving_side__step, name__step, intersections, weight__step, duration__step, distance__step, ref__step, rotary_name__step))
 
@@ -210,63 +210,3 @@ class OSMRDeserializer:
 
         return OSMRResponse(code__response, routes, waypoints)
 
-
-
-
-
-
-
-
-
-
-
-
-"""
-class Maneuver
-{
-int bearing_after;
-int bearing_before;
-List[float] location;
-str type;
-str modifier;
-int? exit;
-}
-
-class Intersection
-{
-int out;
-List[boolean] entry;
-List[int] bearings;
-List[float] location;
-int? in;
-}
-
-class Step
-{
-str geometry;
-Maneuver maneuver;
-str mode;
-str driving_side;
-str name;
-List[Intersection] intersections;
-float weight;
-float duration;
-float distance;
-str ref;
-str rotary_name;
-}
-
-class Leg
-{
-List[Step] steps;
-str summary;
-float weight;
-float duration;
-float distance;
-}
-
-
-
-
-
-"""

@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
+import {AfterViewInit, Component, HostListener, Input, OnDestroy, OnInit} from '@angular/core';
 import * as L from 'leaflet';
 import {Subscription} from "rxjs";
 import {ATTRIBUTION_MAP, URL_TILE_LAYER} from "../../../../config";
@@ -24,7 +24,7 @@ import {SpinnerComponent} from "../../../shared/components/spinner/spinner.compo
 export class ItineraryMapComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // @ts-ignore
-  public map: Map;
+  @Input() public map: Map;
 
   // Subscriptions
   private currentPositionSubscription: Subscription = new Subscription();
@@ -50,7 +50,8 @@ export class ItineraryMapComponent implements OnInit, AfterViewInit, OnDestroy {
   private itinerariesLayers: L.Layer[] = [];
   private amenitiesLayers: L.Layer[] = [];
 
-
+  public getScreenWidth: any;
+  public getScreenHeight: any;
 
   constructor(
     private amenityService: AmenityService,
@@ -91,11 +92,14 @@ export class ItineraryMapComponent implements OnInit, AfterViewInit, OnDestroy {
     this.isLoadingNewItinerarySubscription = this.itineraryService.$isLoadingItineraryOnBackend.subscribe(isLoadingItinerary => {
       this.newIsLoadingItineraryValue(isLoadingItinerary);
     })
+
+    this.getScreenWidth = window.innerWidth;
+    this.getScreenHeight = window.innerHeight;
   }
 
   ngAfterViewInit(): void {
     this.initializeMap();
-    this.addLegend();
+
   }
 
   private newCurrentPositionValue(currentPosition: GeolocationPosition | null): void {
@@ -144,6 +148,7 @@ export class ItineraryMapComponent implements OnInit, AfterViewInit, OnDestroy {
 
     if (this.itinerariesVisual != null) {
       this.showItinerary(this.itinerariesVisual);
+      console.log(this.itinerariesVisual)
     }
   }
 
@@ -361,6 +366,8 @@ export class ItineraryMapComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.map.on('moveend', (v: LeafletMouseEvent) => {this.amenityService.changeMapBounds(this.map.getBounds())})
 
+    this.addLegend();
+
   }
 
   private addLegend() {
@@ -394,6 +401,16 @@ export class ItineraryMapComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
 
+  @HostListener('window:resize', ['$event'])
+  onWindowResize() {
+
+    this.getScreenWidth = window.innerWidth;
+    this.getScreenHeight = window.innerHeight;
+
+    this.map.off();
+    this.map.remove();
+    this.initializeMap();
+  }
 
 
 

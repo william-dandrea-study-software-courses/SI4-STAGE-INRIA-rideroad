@@ -1,6 +1,7 @@
 from typing import Dict, List
 
 from .Coord import Coord
+from .DirectionModel import StepOSMR
 
 
 class Path:
@@ -11,6 +12,7 @@ class Path:
         self.length = 0
         self.costs = dict()
         self.coords: List[Coord] = []
+        self.directionInfos: List[StepOSMR] = []
 
 
     def getFirstCoord(self):
@@ -35,12 +37,15 @@ class Path:
     def setLength(self, length: float):
         self.length = length
 
+    def setDirectionInfos(self, directions: List[StepOSMR]):
+        self.directionInfos = directions
 
     def toDict(self):
         return {
             "tags": self.tags,
             "length": self.length,
             "costs": self.costs,
+            "directions": [direc.toDict() for direc in self.directionInfos],
             "coords": [coord.toDict() for coord in self.coords],
             "first_coord": self.coords[0].toDict() if len(self.coords) > 0 else None,
             "last_coord": self.coords[-1].toDict() if len(self.coords) > 0 else None,
