@@ -65,7 +65,7 @@ export class ItineraryCardComponent implements OnInit, OnDestroy {
           dirt = dirt + Number(path.length) //length should be a number according to its model but it is actually not the case... hack to avoid string concatenation
         } else if (this.itineraryService.isPedestrianPath(path.tags['highway'])) {
           pedestrian = pedestrian + Number(path.length)
-        } else if (this.itineraryService.isBikePath(path.tags['highway'])) {
+        } else if (this.itineraryService.isBikePath(path)) {
           bike= bike + Number(path.length)
         } else {
           road = road+Number(path.length)

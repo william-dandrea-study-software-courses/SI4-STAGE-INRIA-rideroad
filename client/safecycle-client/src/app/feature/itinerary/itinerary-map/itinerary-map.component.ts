@@ -252,7 +252,7 @@ export class ItineraryMapComponent implements OnInit, AfterViewInit, OnDestroy {
           color = "#8f5858"
         } else if (this.itineraryService.isPedestrianPath(path.tags['highway'])) {
           color = "#4f7c40"
-        } else if (this.itineraryService.isBikePath(path.tags['highway'])) {
+        } else if (this.itineraryService.isBikePath(path)) {
           color = "#759bc9"
         } else {
           color = "#484848"
