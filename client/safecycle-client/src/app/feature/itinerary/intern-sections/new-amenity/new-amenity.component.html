@@ -1,0 +1,6 @@
+<mat-form-field appearance="outline" [formGroup]="form" class="full-width">
+  <mat-label>Click on map</mat-label>
+  <input matInput placeholder="Click on map for add a new amenity" class="full-width" formControlName="location">
+  <mat-icon matSuffix (click)="onFocus()" [ngClass]="isFocusOn ? 'selected' : 'not-selected'">my_location</mat-icon>
+  <mat-hint>Click on the new amenity position</mat-hint>
+</mat-form-field>

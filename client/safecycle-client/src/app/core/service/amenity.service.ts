@@ -39,9 +39,11 @@ export class AmenityService {
   private mapBoundsForAmenities: LatLngBounds | null = null;
   public $mapBoundsForAmenities: BehaviorSubject<LatLngBounds | null> = new BehaviorSubject<LatLngBounds | null>(this.mapBoundsForAmenities)
 
-
   private isLoadingAmenities: boolean | AmenityError = false;
   public $isLoadingAmenities: BehaviorSubject<boolean | AmenityError> = new BehaviorSubject<boolean | AmenityError>(this.isLoadingAmenities)
+
+
+
 
   constructor(private http: HttpClient) {
 

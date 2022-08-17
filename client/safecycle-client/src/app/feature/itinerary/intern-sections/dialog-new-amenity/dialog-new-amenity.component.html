@@ -1,0 +1,60 @@
+
+<section>
+
+  <h1>Add new amenity</h1>
+
+  <mat-tab-group>
+    <mat-tab label="Drinking Water">
+
+      <form class="example-form">
+
+        <mat-radio-group>
+          <mat-radio-button class="example-margin" value="primary">
+            Primary
+          </mat-radio-button>
+          <mat-radio-button class="example-margin" value="accent">
+            Accent
+          </mat-radio-button>
+          <mat-radio-button class="example-margin" value="warn">
+            Warn
+          </mat-radio-button>
+        </mat-radio-group>
+
+      </form>
+
+
+
+    </mat-tab>
+    <mat-tab label="Repair Station"> Repair Station </mat-tab>
+    <mat-tab label="Shelter"> Shelter </mat-tab>
+    <mat-tab label="Toilets"> Toilets </mat-tab>
+  </mat-tab-group>
+
+
+
+  <form class="example-form">
+    <mat-form-field class="example-full-width" appearance="fill">
+      <mat-label>Number</mat-label>
+      <input type="text"
+             placeholder="Pick one"
+             aria-label="Pick an amenity"
+             matInput
+             [formControl]="myControl"
+             [matAutocomplete]="auto">
+      <mat-autocomplete #auto="matAutocomplete">
+        <mat-option *ngFor="let option of editableAmenities" [value]="option.name">
+          {{option.name}}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+  </form>
+
+
+
+  <button mat-raised-button (click)="onValidate()">Validate</button>
+
+
+
+
+
+</section>

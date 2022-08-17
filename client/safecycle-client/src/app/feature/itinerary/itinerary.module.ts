@@ -11,6 +11,9 @@ import {PlotlyModule} from "angular-plotly.js";
 import { MultiCheckpointsFieldsComponent } from './intern-sections/multi-checkpoints-fields/multi-checkpoints-fields.component';
 import { AmenitySwitchPanelComponent } from './intern-sections/amenity-switch-panel/amenity-switch-panel.component';
 import { ItineraryMapComponent } from './itinerary-map/itinerary-map.component';
+import { NewAmenityComponent } from './intern-sections/new-amenity/new-amenity.component';
+import { DialogNewAmenityComponent } from './intern-sections/dialog-new-amenity/dialog-new-amenity.component';
+import {MatRadioModule} from "@angular/material/radio";
 
 
 @NgModule({
@@ -20,7 +23,9 @@ import { ItineraryMapComponent } from './itinerary-map/itinerary-map.component';
     ItineraryCardComponent,
     MultiCheckpointsFieldsComponent,
     AmenitySwitchPanelComponent,
-    ItineraryMapComponent
+    ItineraryMapComponent,
+    NewAmenityComponent,
+    DialogNewAmenityComponent
   ],
     imports: [
         CommonModule,
@@ -28,6 +33,7 @@ import { ItineraryMapComponent } from './itinerary-map/itinerary-map.component';
         SharedModule,
         NgChartsModule,
         PlotlyModule,
+        MatRadioModule,
     ]
 })
 export class ItineraryModule { }
