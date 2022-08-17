@@ -5,6 +5,7 @@ import 'leaflet-rotatedmarker';
 import {ItineraryVisual} from "../../../core/model/itinerary-visual.class";
 import {GpsService} from "../../../core/service/gps.service";
 import {GeolocalisationService} from "../../../core/service/geolocalisation.service";
+import {Subscription} from "rxjs";
 
 declare var require: any
 const osrmTextInstructions = require('osrm-text-instructions')('v5');
@@ -16,6 +17,9 @@ const osrmTextInstructions = require('osrm-text-instructions')('v5');
   styleUrls: ['./gps-map.component.scss']
 })
 export class GpsMapComponent implements OnInit, AfterViewInit, OnDestroy {
+
+  private itinerarySubscription: Subscription | null = null;
+  private currentPositionSubscription: Subscription | null = null;
 
   // @ts-ignore
   public map: Map;
@@ -37,14 +41,11 @@ export class GpsMapComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(private gpsService: GpsService, private geolocalisationService: GeolocalisationService) { }
 
   ngOnInit(): void {
-    this.gpsService.$itinerary.subscribe(itinerary => {
+    this.itinerarySubscription = this.gpsService.$itinerary.subscribe(itinerary => {
       this.currentItinerary = itinerary;
     });
 
-    if (this.map) {
-      this.map.off();
-      this.map.remove();
-    }
+
   }
 
   public ngAfterViewInit(): void {
@@ -54,7 +55,8 @@ export class GpsMapComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private setMarkerOnCurrentPosition() {
 
-    this.geolocalisationService.currentPosition$.subscribe(currentPosition => {
+    if (this.currentPositionSubscription) {this.currentPositionSubscription.unsubscribe()}
+    this.currentPositionSubscription = this.geolocalisationService.currentPosition$.subscribe(currentPosition => {
       this.currentPosition = currentPosition;
 
       if (this.currentPosition) {
@@ -95,7 +97,7 @@ export class GpsMapComponent implements OnInit, AfterViewInit, OnDestroy {
     });
 
     const tiles = L.tileLayer('https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png', {
-      maxZoom: 25,
+      maxZoom: 18,
       minZoom: 8,
       attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
       detectRetina: true,
@@ -145,6 +147,8 @@ export class GpsMapComponent implements OnInit, AfterViewInit, OnDestroy {
 
 
   ngOnDestroy(): void {
+    if (this.itinerarySubscription) {this.itinerarySubscription.unsubscribe()}
+    if (this.currentPositionSubscription) {this.currentPositionSubscription.unsubscribe()}
   }
 
 
