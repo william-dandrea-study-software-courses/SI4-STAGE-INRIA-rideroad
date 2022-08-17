@@ -6,18 +6,18 @@
   width: 100%;
   border-radius: 5px;
   box-sizing: border-box;
-
-  box-shadow: 3px 3px 3px lightgrey;
-  padding: 10px;
+  // box-shadow: 3px 3px 3px lightgrey;
+  padding: 8px;
 }
 
 .details-grid-container {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  grid-gap: 5px;
-  margin-top: 10px;
-  margin-bottom: 10px;
+  grid-gap: 2px;
+  margin-top: 5px;
+  margin-bottom: 5px;
 }
+
 
 .details-tail {
   background: #ffffff;
@@ -25,20 +25,41 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  border-radius: 5px;
-  box-shadow: 1px 1px 5px lightgrey;
-  padding: 10px;
+  border-radius: 2px;
+  // box-shadow: 1px 1px 5px lightgrey;
+  padding: 5px;
 }
 
 .details-tail-name {
-  font-size: 18px;
-}
-
-.details-tail-infos {
   font-size: 12px;
 }
 
+.details-tail-infos {
+  font-size: 18px;
+}
 
-.selected-card-title {
-  background-color: yellow;
+
+.selected-card {
+  background: #b4dcfc;
+}
+
+.centered {
+  text-align: center;
+}
+
+//tab stuff
+
+::ng-deep.mat-tab-label.mat-tab-label-active:not(.mat-tab-disabled),
+::ng-deep.mat-tab-label.mat-tab-label-active.cdk-keyboard-focused:not(.mat-tab-disabled) {
+  background-color: #ffffff ;
+  font-weight: 700;
+  color: black;
+  opacity: 1;
+}
+
+.details-path-type{
+  height:20px;
+  width:10%; 
+  display:inline-block;
+  font-size:0.5em
 }

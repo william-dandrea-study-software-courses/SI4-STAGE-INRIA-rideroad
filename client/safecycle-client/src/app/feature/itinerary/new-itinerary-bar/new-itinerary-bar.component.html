@@ -1,9 +1,18 @@
 
 <section class="intern-main-section-searchbar">
-
-  <h1>Search Amenities</h1>
-
-  <app-amenity-switch-panel></app-amenity-switch-panel>
+  <mat-expansion-panel hideToggle>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        <h1>Amenities</h1>
+      </mat-panel-title>
+      <mat-panel-description>
+       look for amenities in the area
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+      <!-- primary content -->
+      <app-amenity-switch-panel></app-amenity-switch-panel>
+  </mat-expansion-panel>
+  
   <hr class="rounded">
 
   <h1>New itinerary</h1>
@@ -59,7 +68,7 @@
 
   </form>
 
-  <button mat-raised-button color="primary" class="full-width" (click)="onTest()">Test</button>
+  <!-- <button mat-raised-button color="primary" class="full-width" (click)="onTest()">Test</button> -->
 
   <hr class="rounded">
 

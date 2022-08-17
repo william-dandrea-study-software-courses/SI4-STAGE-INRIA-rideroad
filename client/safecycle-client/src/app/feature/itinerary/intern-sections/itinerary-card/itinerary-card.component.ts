@@ -22,6 +22,7 @@ export class ItineraryCardComponent implements OnInit, OnDestroy {
   public lengthItineraryInKm: number | null = 0;
   public timeItinerary: string | null = null;
   public inflationItinerary: number | null = 0;
+  public percentageRouteProfile: number[] = [0,0,0,0];  //in order: bike; dirt; pedestrian; road
 
 
   // CHART
@@ -56,6 +57,26 @@ export class ItineraryCardComponent implements OnInit, OnDestroy {
 
       this.graph.data[0].y = this.currentItinerary.itinerary.altitude_profil
       this.graph.data[0].x = [...Array(this.currentItinerary.itinerary.length).keys()]
+
+      let bike: number = 0, dirt: number = 0, pedestrian: number = 0, road: number = 0
+
+      this.currentItinerary.itinerary.paths.forEach(path => {
+        if (this.itineraryService.isDirtPath(path.tags['highway'])) {
+          dirt = dirt + Number(path.length) //length should be a number according to its model but it is actually not the case... hack to avoid string concatenation
+        } else if (this.itineraryService.isPedestrianPath(path.tags['highway'])) {
+          pedestrian = pedestrian + Number(path.length)
+        } else if (this.itineraryService.isBikePath(path.tags['highway'])) {
+          bike= bike + Number(path.length)
+        } else {
+          road = road+Number(path.length)
+        }
+      
+      });
+      this.percentageRouteProfile[0]= ((100*bike) / this.currentItinerary.itinerary.length)
+      this.percentageRouteProfile[1]= ((100*dirt) / this.currentItinerary.itinerary.length)
+      this.percentageRouteProfile[2]= ((100*pedestrian) / this.currentItinerary.itinerary.length)
+      this.percentageRouteProfile[3]= ((100*road) / this.currentItinerary.itinerary.length)
+
     }
   }
 

@@ -1,7 +1,7 @@
 
-<div class="itinerary-card-intern-container" >
+<div class="itinerary-card-intern-container" (click)="onSelectedItinerary()" [ngClass]="isSelected() ? 'selected-card' : 'itinerary-card-intern-container'" >
 
-  <h3 (click)="onSelectedItinerary()" [ngClass]="isSelected() ? 'selected-card-title' : ''">Itinerary {{ +getIndex() + 1 }}</h3>
+  <h3 class="centered">Itinerary {{ +getIndex() + 1 }}</h3>
 
   <mat-tab-group>
     <mat-tab label="Details">
@@ -17,11 +17,16 @@
         </div>
         <div class="details-tail">
           <div class="details-tail-name">Inflection</div>
-          <div class="details-tail-infos">{{ this.inflationItinerary }} m</div>
+          <div class="details-tail-infos">+{{ this.inflationItinerary }} m</div>
         </div>
       </div>
-
-      <button mat-raised-button class="full-width" (click)="launchItinerary()">Launch itinerary</button>
+      <div>
+        <span class="details-path-type" style="background-color:#759bc9"  [ngStyle]="{'width':this.percentageRouteProfile[0]+'%'}" title="protected : {{(this.percentageRouteProfile[0]*(this.currentItinerary?.itinerary?.length ?? 0)/100000).toFixed(2)}}km"></span>
+        <span class="details-path-type" style="background-color:#8f5858"  [ngStyle]="{'width':this.percentageRouteProfile[1]+'%'}" title="dirt : {{(this.percentageRouteProfile[1]*(this.currentItinerary?.itinerary?.length ?? 0)/100000).toFixed(2)}}km"></span>
+        <span class="details-path-type" style="background-color:#484848"  [ngStyle]="{'width':this.percentageRouteProfile[3]+'%'}" title="road : {{(this.percentageRouteProfile[3]*(this.currentItinerary?.itinerary?.length ?? 0)/100000).toFixed(2)}}km"></span>
+        <span class="details-path-type" style="background-color:#4f7c40"  [ngStyle]="{'width':this.percentageRouteProfile[2]+'%'}" title="pedestrian : {{(this.percentageRouteProfile[2]*(this.currentItinerary?.itinerary?.length ?? 0)/100000).toFixed(2)}}km"></span>
+      </div>
+      <button mat-raised-button class="full-width" (click)="launchItinerary()">Navigate</button>
 
     </mat-tab>
     <mat-tab label="Inflection">
@@ -32,7 +37,7 @@
         </div>
       </div>
     </mat-tab>
-    <mat-tab label="Meteo"> Meteo </mat-tab>
+    <!-- <mat-tab label="Meteo"> Meteo </mat-tab> -->
   </mat-tab-group>
 
 
