@@ -16,7 +16,7 @@ class IntersectionOSMR:
             "entry": self.entry,
             "bearings": self.bearings,
             "location": self.location.toDict(),
-            "inV": self.inV,
+            "in": self.inV,
         }
 
 

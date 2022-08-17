@@ -1,1 +1,18 @@
-<p>gps-direction-bar works!</p>
+
+
+<section class="full-width full-height center-on-div-column " *ngIf="!isArrived">
+
+  In {{distanceUntilNextPoint}}m, {{nextNavigationPoint?.description}}
+
+</section>
+
+<section class="full-width full-height center-on-div-column" *ngIf="isArrived">
+
+  You are arrived!
+  <button mat-raised-button color="warn" (click)="leaveGpsMode()">Leave</button>
+
+</section>
+
+
+
+

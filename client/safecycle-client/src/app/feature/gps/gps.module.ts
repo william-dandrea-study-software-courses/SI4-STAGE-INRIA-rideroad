@@ -6,6 +6,7 @@ import { GpsDirectionBarComponent } from './gps-direction-bar/gps-direction-bar.
 import { GpsDetailsBarComponent } from './gps-details-bar/gps-details-bar.component';
 import { GpsMapComponent } from './gps-map/gps-map.component';
 import {GpsComponent} from "./gps.component";
+import {SharedModule} from "../../shared/shared.module";
 
 
 @NgModule({
@@ -17,7 +18,8 @@ import {GpsComponent} from "./gps.component";
   ],
   imports: [
     CommonModule,
-    GpsRoutingModule
+    GpsRoutingModule,
+    SharedModule
   ]
 })
 export class GpsModule { }

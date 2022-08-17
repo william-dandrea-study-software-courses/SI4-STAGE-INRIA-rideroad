@@ -59,8 +59,6 @@ class ItineraryGeneration:
 
         itinerarys = [f.result() for f in itinerarys]
 
-
-
         return itinerarys
 
 

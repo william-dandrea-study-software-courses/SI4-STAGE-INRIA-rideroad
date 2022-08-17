@@ -1,3 +1,4 @@
+import {LonLatModel} from "./multi-checkpoints-itinerary.model";
 
 
 export interface ItineraryModel {
@@ -32,7 +33,7 @@ export interface PathModel {
 export interface ManeuverModel {
   bearing_after: number;
   bearing_before: number;
-  location: number[];
+  location: LonLatModel;
   type: string;
   modifier: string;
   exit?: number;

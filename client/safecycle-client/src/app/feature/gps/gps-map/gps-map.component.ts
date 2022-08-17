@@ -6,6 +6,10 @@ import {ItineraryVisual} from "../../../core/model/itinerary-visual.class";
 import {GpsService} from "../../../core/service/gps.service";
 import {GeolocalisationService} from "../../../core/service/geolocalisation.service";
 
+declare var require: any
+const osrmTextInstructions = require('osrm-text-instructions')('v5');
+
+
 @Component({
   selector: 'app-gps-map',
   templateUrl: './gps-map.component.html',
@@ -45,8 +49,6 @@ export class GpsMapComponent implements OnInit, AfterViewInit, OnDestroy {
 
   public ngAfterViewInit(): void {
     this.initialisationMap();
-
-
   }
 
 
@@ -73,6 +75,7 @@ export class GpsMapComponent implements OnInit, AfterViewInit, OnDestroy {
         })
 
         this.currentNavigationMarker.addTo(this.map)
+        this.map.setView(currentPositionForMarker)
       }
     })
   }
@@ -88,7 +91,7 @@ export class GpsMapComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.map = L.map('gps-map', {
       center: coordinatesCenter,
-      zoom: 14,
+      zoom: 18,
     });
 
     const tiles = L.tileLayer('https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png', {
@@ -112,19 +115,18 @@ export class GpsMapComponent implements OnInit, AfterViewInit, OnDestroy {
       console.log(this.currentItinerary)
 
       const allSegments: L.Polyline[] = [];
-      let colorSwitch: boolean = true;
+
       this.currentItinerary.itinerary.paths.forEach(path => {
         const allLongLat = path.coords.map(coord => new LatLng(coord.lat, coord.lon, coord.elevation))
 
-        let color: string = colorSwitch ? "#ff0000" : "#0022ff";
+        let color: string = "#8291ff";
         let opacity: number = 1.0;
-        colorSwitch = !colorSwitch;
+
 
         const line: L.Polyline = L.polyline(allLongLat, { color: color,  weight: 7,  smoothFactor: 1,  opacity: opacity,})
-        const valueString = JSON.stringify(path.tags) + "<br>" + JSON.stringify(path.directions)
+        const valueString = JSON.stringify(path.tags) + "<br>"
 
         line.bindTooltip(valueString);
-
 
         allSegments.push( line );
       });
@@ -133,11 +135,14 @@ export class GpsMapComponent implements OnInit, AfterViewInit, OnDestroy {
       this.segmentsOnMap.push(L.featureGroup(allSegments));
       this.segmentsOnMap.forEach(seg => seg.addTo(this.map));
     }
-
-
-
-
   }
+
+
+
+
+
+
+
 
   ngOnDestroy(): void {
   }

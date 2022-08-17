@@ -42,3 +42,18 @@ hr.rounded {
 .not-selected {
   color: black;
 }
+
+
+.center-on-div-column {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+}

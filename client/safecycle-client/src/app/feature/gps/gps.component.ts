@@ -2,6 +2,8 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {GeolocalisationService} from "../../core/service/geolocalisation.service";
 import {MatDialog} from "@angular/material/dialog";
 import {DialogPopupOverComponent} from "../../shared/components/dialog-popup-over/dialog-popup-over.component";
+import {Router} from "@angular/router";
+import {ItineraryService} from "../../core/service/itinerary.service";
 
 @Component({
   selector: 'app-gps',
@@ -13,7 +15,7 @@ export class GpsComponent implements OnInit, OnDestroy {
   public positionAllowed: boolean = false
   public currentPosition: GeolocationPosition | null = null;
 
-  constructor(private geolocalisationService: GeolocalisationService, public dialog: MatDialog) {}
+  constructor(private geolocalisationService: GeolocalisationService, private itineraryService: ItineraryService, public dialog: MatDialog, private router: Router) {}
 
   ngOnInit(): void {
 
@@ -22,6 +24,11 @@ export class GpsComponent implements OnInit, OnDestroy {
     this.geolocalisationService.currentPosition$.subscribe(position => {
       this.newPositionValue(position)
     });
+
+
+    if (this.itineraryService.selectedItinerary == null) {
+      this.router.navigate(['itinerary']);
+    }
   }
 
 

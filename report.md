@@ -100,7 +100,13 @@ améliorer un projet déjà existant.
 
 #### Technologie retenue en partie front-end
 
+Le but de la partie front-end est de délivrer à l'utilisateur une interface facile d'utilisation, et la plus optimisé
+possible, afin de lui permettre de consulter et naviguer sur la map en temps réel. 
 
-
-
-
+Nous avions le choix entre plusieurs technologies :
+- Développer le front-end uniquement en HTML / CSS / JAVASCRIPT
+- Utiliser un framework ou librairie JavaScript
+  
+mais cette méthode est un peu ancienne et plus trop
+  optimisé, cette options aurait pu être implémenté directement dans Flask. Cependant, l'architecture du code aurait été
+  bien trop complexe et très peu maintenable au fur et a mesure des itérations

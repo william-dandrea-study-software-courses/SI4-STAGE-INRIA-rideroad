@@ -81,7 +81,8 @@ export class ItineraryCardComponent implements OnInit, OnDestroy {
   public launchItinerary(): void {
     console.log("Launch")
     if (this.currentItinerary != null) {
-      this.gpsService.setItinerary(this.currentItinerary)
+      this.gpsService.setItinerary(this.currentItinerary);
+      this.gpsService.launchNavigation(true);
       this.router.navigate(['gps'])
     } else {
       console.log("Cannot Launch Itinerary")
