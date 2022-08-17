@@ -2,7 +2,7 @@
 
 <section class="full-width full-height center-on-div-column " *ngIf="!isArrived">
 
-  In {{distanceUntilNextPoint}}m, {{nextNavigationPoint?.description}}
+  In {{distanceUntilNextPoint  | roundkm }}, {{nextNavigationPoint?.description}}
 
 </section>
 

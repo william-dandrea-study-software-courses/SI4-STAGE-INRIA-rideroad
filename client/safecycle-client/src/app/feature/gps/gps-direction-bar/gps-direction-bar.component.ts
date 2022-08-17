@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, Pipe} from '@angular/core';
 import {GpsService} from "../../../core/service/gps.service";
 import {NavigationPointsModel} from "../../../core/model/navigation-points.model";
 import {Subscription} from "rxjs";
@@ -57,4 +57,21 @@ export class GpsDirectionBarComponent implements OnInit, OnDestroy {
   }
 
 
+}
+
+@Pipe({name: 'roundkm'})
+export class RoundPipe {
+  transform (input:number | undefined): string {
+
+    if (input) {
+      if (input <= 1000) {
+        return String(Math.floor(input)) + " m"
+      } else {
+        const value: number = input / 1000
+        return String(value.toFixed(1)) + " km"
+      }
+    }
+
+    return ""
+  }
 }
