@@ -4,54 +4,106 @@
   <h1>Add new amenity</h1>
 
   <mat-tab-group>
-    <mat-tab label="Drinking Water">
+    <mat-tab label="Drinking Water">                                            <!-- amenity : drinking_water -->
 
-      <form class="example-form">
+      <h2 class="mt-10">Add new water point to OpenStreetMap</h2>
 
-        <mat-radio-group>
-          <mat-radio-button class="example-margin" value="primary">
-            Primary
-          </mat-radio-button>
-          <mat-radio-button class="example-margin" value="accent">
-            Accent
-          </mat-radio-button>
-          <mat-radio-button class="example-margin" value="warn">
-            Warn
-          </mat-radio-button>
-        </mat-radio-group>
+      <p>
+        Is the water point private or public?                                 <!-- access : yes / private -->
+        <mat-button-toggle-group name="drinking_water_access">
+          <mat-button-toggle value="private">Private</mat-button-toggle>
+          <mat-button-toggle value="public">Public</mat-button-toggle>
+        </mat-button-toggle-group>
+      </p>
 
-      </form>
+      <p>
+        Is the water point paid or free?                                      <!-- fee : yes / no -->
+        <mat-button-toggle-group name="drinking_water_fee">
+          <mat-button-toggle value="yes">Yes</mat-button-toggle>
+          <mat-button-toggle value="no">No</mat-button-toggle>
+        </mat-button-toggle-group>
+      </p>
 
+    </mat-tab>
+
+
+    <mat-tab label="Repair Station">                                          <!-- amenity : bicycle_repair_station -->
+      <h2 class="mt-10">Add new water point to OpenStreetMap</h2>
+
+      <p>
+        Is the water point paid or free?                                      <!-- fee : yes / no -->
+        <mat-button-toggle-group name="repair_station_fee">
+          <mat-button-toggle value="paid">Paid</mat-button-toggle>
+          <mat-button-toggle value="free">Free</mat-button-toggle>
+        </mat-button-toggle-group>
+      </p>
+
+      <p>
+        Services available :                                                    <!-- attribute: value -->
+        <mat-chip-list [multiple]="true">
+          <mat-chip *ngFor="let bikeServiceRepairStation of bikeServicesRepairStation" (click)="onSelectRepairStation(bikeServiceRepairStation)" [selected]="bikeServiceRepairStation.isSelected">
+            {{bikeServiceRepairStation.name}}
+          </mat-chip>
+        </mat-chip-list>
+      </p>
+
+    </mat-tab>
+    <mat-tab label="Shelter">
+
+      <p>
+        Is the shelter contains a bench?                                  <!-- bench : yes / no -->
+        <mat-button-toggle-group name="shelter_bench">
+          <mat-button-toggle value="yes">Yes</mat-button-toggle>
+          <mat-button-toggle value="no">No</mat-button-toggle>
+        </mat-button-toggle-group>
+      </p>
+
+      <p>
+        Is the shelter contains a bin?                                      <!-- bin : yes / no -->
+        <mat-button-toggle-group name="shelter_bin">
+          <mat-button-toggle value="yes">Yes</mat-button-toggle>
+          <mat-button-toggle value="no">No</mat-button-toggle>
+        </mat-button-toggle-group>
+      </p>
+
+    </mat-tab>
+    <mat-tab label="Toilets">
+
+      <p>
+        Toilets type?                                  <!-- toilets:disposal : bucket / flush -->
+        <mat-button-toggle-group name="toilets_disposal">
+          <mat-button-toggle value="flush">Flush</mat-button-toggle>
+          <mat-button-toggle value="dry">Dry</mat-button-toggle>
+        </mat-button-toggle-group>
+      </p>
+
+      <p>
+        Is the water point private or public?                                 <!-- access : yes / private -->
+        <mat-button-toggle-group name="toilets_access">
+          <mat-button-toggle value="private">Private</mat-button-toggle>
+          <mat-button-toggle value="public">Public</mat-button-toggle>
+        </mat-button-toggle-group>
+      </p>
+
+      <p>
+        Gender?
+        <mat-button-toggle-group name="toilets_gender">
+          <mat-button-toggle value="male">Male></mat-button-toggle>              <!-- male : yes -->
+          <mat-button-toggle value="female">Female</mat-button-toggle>              <!-- female : yes -->
+          <mat-button-toggle value="unisex">Unisex</mat-button-toggle>                <!-- unisex : yes -->
+        </mat-button-toggle-group>
+      </p>
 
 
     </mat-tab>
-    <mat-tab label="Repair Station"> Repair Station </mat-tab>
-    <mat-tab label="Shelter"> Shelter </mat-tab>
-    <mat-tab label="Toilets"> Toilets </mat-tab>
   </mat-tab-group>
 
 
 
-  <form class="example-form">
-    <mat-form-field class="example-full-width" appearance="fill">
-      <mat-label>Number</mat-label>
-      <input type="text"
-             placeholder="Pick one"
-             aria-label="Pick an amenity"
-             matInput
-             [formControl]="myControl"
-             [matAutocomplete]="auto">
-      <mat-autocomplete #auto="matAutocomplete">
-        <mat-option *ngFor="let option of editableAmenities" [value]="option.name">
-          {{option.name}}
-        </mat-option>
-      </mat-autocomplete>
-    </mat-form-field>
-  </form>
 
 
-
-  <button mat-raised-button (click)="onValidate()">Validate</button>
+  <div style="height: 30px"></div>
+  <button mat-raised-button color="primary" (click)="onValidate()">Validate</button>
 
 
 
