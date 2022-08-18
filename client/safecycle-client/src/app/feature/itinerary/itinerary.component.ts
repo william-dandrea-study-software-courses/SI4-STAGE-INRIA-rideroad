@@ -23,8 +23,6 @@ import {AmenityService} from "../../core/service/amenity.service";
 })
 export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
 
-  // @ts-ignore
-  public map: Map;
 
   public getScreenWidth: any;
   public getScreenHeight: any;

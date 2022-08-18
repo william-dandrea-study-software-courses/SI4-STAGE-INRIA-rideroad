@@ -24,7 +24,7 @@ import {SpinnerComponent} from "../../../shared/components/spinner/spinner.compo
 export class ItineraryMapComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // @ts-ignore
-  @Input() public map: Map;
+  public map: Map;
 
   // Subscriptions
   private currentPositionSubscription: Subscription = new Subscription();
@@ -65,42 +65,63 @@ export class ItineraryMapComponent implements OnInit, AfterViewInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.currentPositionSubscription = this.geolocalisationService.currentPosition$.subscribe(currentPosition => {
-      this.newCurrentPositionValue(currentPosition);
-    });
-
-    this.centerOnUserSubscription = this.geolocalisationService.centerOnUser$.subscribe(centerOnUser => {
-      this.newCenterOnUserValue(centerOnUser);
-    });
-
-    this.amenitiesResultSubscription = this.amenityService.$amenitiesResult.subscribe(amenitiesResult => {
-      this.newAmenitiesResultValue(amenitiesResult);
-    });
-
-    this.mapClickSubscription = this.mapClickService.$clickPosition.subscribe(clickPosition => {
-      this.newClickPositionValue(clickPosition)
-    });
-
-    this.itinerarySubscription = this.itineraryService.$itineraryVisual.subscribe(itinerariesVisual => {
-      this.newItinerariesVisuel(itinerariesVisual);
-    });
-
-    this.newItineraryUserInfosSubscription = this.itineraryService.newItineraryUserInfos$.subscribe(itineraryUserInfos => {
-      this.newItineraryUserInfosValue(itineraryUserInfos);
-    })
-
-    this.isLoadingNewItinerarySubscription = this.itineraryService.$isLoadingItineraryOnBackend.subscribe(isLoadingItinerary => {
-      this.newIsLoadingItineraryValue(isLoadingItinerary);
-    })
-
     this.getScreenWidth = window.innerWidth;
     this.getScreenHeight = window.innerHeight;
+
+    this.loadCurrentPositionSubscription()
   }
 
   ngAfterViewInit(): void {
     this.initializeMap();
-
+    this.loadCenterOnUserSubscription()
+    this.loadAmenitiesResultSubscription()
+    this.loadMapClickSubscription()
+    this.loadItinerarySubscription()
+    this.loadNewItineraryUserInfosSubscription()
+    this.loadIsLoadingNewItinerarySubscription()
   }
+
+  private loadCurrentPositionSubscription() {
+    if (this.currentPositionSubscription) {this.currentPositionSubscription .unsubscribe();}
+    this.currentPositionSubscription = this.geolocalisationService.currentPosition$.subscribe(currentPosition => {
+    this.newCurrentPositionValue(currentPosition);
+  }); }
+  private loadCenterOnUserSubscription() {
+    if (this.centerOnUserSubscription) {this.centerOnUserSubscription .unsubscribe();}
+    this.centerOnUserSubscription = this.geolocalisationService.centerOnUser$.subscribe(centerOnUser => {
+    this.newCenterOnUserValue(centerOnUser);
+  }); }
+  private loadAmenitiesResultSubscription() {
+    if (this.amenitiesResultSubscription) {this.amenitiesResultSubscription .unsubscribe();}
+    this.amenitiesResultSubscription = this.amenityService.$amenitiesResult.subscribe(amenitiesResult => {
+    this.newAmenitiesResultValue(amenitiesResult);
+  }); }
+  private loadMapClickSubscription() {
+    if (this.mapClickSubscription) {this.mapClickSubscription .unsubscribe();}
+    this.mapClickSubscription = this.mapClickService.$clickPosition.subscribe(clickPosition => {
+    this.newClickPositionValue(clickPosition)
+  }); }
+  private loadItinerarySubscription() {
+    if (this.itinerarySubscription) {this.itinerarySubscription .unsubscribe();}
+    this.itinerarySubscription = this.itineraryService.$itineraryVisual.subscribe(itinerariesVisual => {
+    this.newItinerariesVisuel(itinerariesVisual);
+  }); }
+  private loadNewItineraryUserInfosSubscription() {
+    if (this.newItineraryUserInfosSubscription) {this.newItineraryUserInfosSubscription .unsubscribe();}
+    this.newItineraryUserInfosSubscription = this.itineraryService.newItineraryUserInfos$.subscribe(itineraryUserInfos => {
+    this.newItineraryUserInfosValue(itineraryUserInfos);
+  }) }
+  private loadIsLoadingNewItinerarySubscription() {
+    if (this.isLoadingNewItinerarySubscription) {this.isLoadingNewItinerarySubscription .unsubscribe();}
+    this.isLoadingNewItinerarySubscription = this.itineraryService.$isLoadingItineraryOnBackend.subscribe(isLoadingItinerary => {
+    this.newIsLoadingItineraryValue(isLoadingItinerary);
+  }) }
+
+
+
+
+
+
 
   private newCurrentPositionValue(currentPosition: GeolocationPosition | null): void {
     this.currentPosition = currentPosition;
@@ -347,8 +368,11 @@ export class ItineraryMapComponent implements OnInit, AfterViewInit, OnDestroy {
    * Initialize the map when we create the component
    */
   private initializeMap(): void {
+
+    const currentPositionUser = this.geolocalisationService.currentPosition ? new LatLng(this.geolocalisationService.currentPosition.coords.latitude, this.geolocalisationService.currentPosition.coords.longitude) : undefined;
+
     this.map = L.map('map', {
-      center: [ 48.86077, 2.29519 ],
+      center: currentPositionUser != undefined ? currentPositionUser : [ 48.86077, 2.29519 ],
       zoom: 14,
     });
 
@@ -401,7 +425,7 @@ export class ItineraryMapComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
 
-  @HostListener('window:resize', ['$event'])
+  @HostListener('window:resize')
   onWindowResize() {
 
     this.getScreenWidth = window.innerWidth;
@@ -410,19 +434,26 @@ export class ItineraryMapComponent implements OnInit, AfterViewInit, OnDestroy {
     this.map.off();
     this.map.remove();
     this.initializeMap();
+    this.loadCenterOnUserSubscription()
+    this.loadAmenitiesResultSubscription()
+    this.loadMapClickSubscription()
+    this.loadItinerarySubscription()
+    this.loadNewItineraryUserInfosSubscription()
+    this.loadIsLoadingNewItinerarySubscription()
   }
 
 
-
-
     ngOnDestroy(): void {
-    this.currentPositionSubscription.unsubscribe();
-    this.centerOnUserSubscription.unsubscribe();
-    this.amenitiesResultSubscription.unsubscribe();
-    this.mapClickSubscription.unsubscribe();
-    this.itinerarySubscription.unsubscribe();
-    this.newItineraryUserInfosSubscription.unsubscribe();
-    this.isLoadingNewItinerarySubscription.unsubscribe();
+      this.currentPositionSubscription.unsubscribe();
+      this.centerOnUserSubscription.unsubscribe();
+      this.amenitiesResultSubscription.unsubscribe();
+      this.mapClickSubscription.unsubscribe();
+      this.itinerarySubscription.unsubscribe();
+      this.newItineraryUserInfosSubscription.unsubscribe();
+      this.isLoadingNewItinerarySubscription.unsubscribe();
+
+      this.map.off();
+      this.map.remove();
   }
 
 }
