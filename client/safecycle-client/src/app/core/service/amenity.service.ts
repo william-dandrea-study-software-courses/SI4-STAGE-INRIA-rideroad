@@ -44,10 +44,7 @@ export class AmenityService {
 
 
 
-
-  constructor(private http: HttpClient) {
-
-  }
+  constructor(private http: HttpClient) {}
 
   public selectAmenity(amenity: AmenityTitle) {
     const index = this.amenitiesTitle.findIndex(amen => amen.name === amenity.name);
