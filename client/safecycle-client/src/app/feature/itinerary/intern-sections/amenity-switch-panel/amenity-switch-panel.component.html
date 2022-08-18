@@ -1,5 +1,3 @@
-
-
 <mat-chip-list [multiple]="true">
   <mat-chip *ngFor="let amenity of amenities" (click)="onSelect(amenity)" [selected]="amenity.isSelected">
     {{amenity.name}}
