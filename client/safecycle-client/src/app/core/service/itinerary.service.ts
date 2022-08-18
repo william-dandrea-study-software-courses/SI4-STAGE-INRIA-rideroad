@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {BehaviorSubject, Observable, throwError} from "rxjs";
 import {NominatimAddressModel} from "../model/nominatim-address.model";
-import {ItineraryModel} from "../model/itinerary.model";
+import {ItineraryModel, PathModel} from "../model/itinerary.model";
 import {ItineraryVisual} from "../model/itinerary-visual.class"
 import {LatLng} from "leaflet";
 import {MultiCheckpointsItineraryModel} from "../model/multi-checkpoints-itinerary.model";
@@ -168,8 +168,8 @@ export class ItineraryService {
 
 
 
-  public isBikePath(highway: string): boolean {
-    return highway === "cycleway"
+  public isBikePath(highways: PathModel): boolean {
+    return highways.tags['highway'] === "cycleway" || highways.tags['cycleway:right'] != null || highways.tags['cycleway:left'] != null || highways.tags['route_bicycle_icn'] == 'yes'
   }
 
   public isPedestrianPath(highway: string): boolean {
