@@ -13,9 +13,9 @@ import {MatTabChangeEvent} from "@angular/material/tabs";
 export class DialogNewAmenityComponent implements OnInit {
 
   public bikeServicesRepairStation: {name: string, isSelected: boolean, attribute: string, value: string}[] = [
-    {name: 'Reparation', isSelected: false, attribute: "service:bicycle:repair", value: "no"},
-    {name: 'Pump', isSelected: false, attribute: "service:bicycle:pump", value: "no"},
-    {name: 'Tools', isSelected: false, attribute: "service:bicycle:tools", value: "no"},
+    {name: 'Reparation', isSelected: false, attribute: "repair", value: "no"},
+    {name: 'Pump', isSelected: false, attribute: "pump", value: "no"},
+    {name: 'Tools', isSelected: false, attribute: "tools", value: "no"},
   ];
 
   public drinkingWaterForm: FormGroup = this.formBuilder.group({
@@ -83,21 +83,30 @@ export class DialogNewAmenityComponent implements OnInit {
         this.osmLoginForm.value['password'],
         this.drinkingWaterForm.value['drinking_water_access'],
         this.drinkingWaterForm.value['drinking_water_fee'],
-        )
+        ).subscribe(result => {
+          console.log(result)
+      }, error => {
+          console.log(error)
+      })
     }
 
     if (this.selectedTabGroupIndex === "repair_station") {
 
-      const servicesDict: {attribute: string, value: string}[] = []
-      this.bikeServicesRepairStation.forEach(serv => servicesDict.push({attribute: serv.attribute, value: serv.value}))
-
+      const repair: string | undefined = this.bikeServicesRepairStation.find(s => s.attribute === "repair")?.value;
+      const pump: string | undefined  = this.bikeServicesRepairStation.find(s => s.attribute === "pump")?.value;
+      const tools: string | undefined  = this.bikeServicesRepairStation.find(s => s.attribute === "tools")?.value;
       this.editAmenityService.addNewRepairStation(
         this.osmLoginForm.value['email'],
         this.osmLoginForm.value['password'],
         this.repairStationForm.value['repair_station_fee'],
-        servicesDict
-        );
-
+        repair ? repair : "no",
+        pump ? pump : "no",
+        tools ? tools : "no",
+        ).subscribe(result => {
+        console.log(result)
+      }, error => {
+        console.log(error)
+      });
     }
 
     if (this.selectedTabGroupIndex === "shelter") {
@@ -106,7 +115,11 @@ export class DialogNewAmenityComponent implements OnInit {
         this.osmLoginForm.value['password'],
         this.shelterForm.value['shelter_bench'],
         this.shelterForm.value['shelter_bin'],
-      )
+      ).subscribe(result => {
+        console.log(result)
+      }, error => {
+        console.log(error)
+      })
     }
 
     if (this.selectedTabGroupIndex === "toilets") {
@@ -116,7 +129,11 @@ export class DialogNewAmenityComponent implements OnInit {
         this.toiletsForm.value['toilets_disposal'],
         this.toiletsForm.value['toilets_access'],
         this.toiletsForm.value['toilets_gender'],
-      )
+      ).subscribe(result => {
+        console.log(result)
+      }, error => {
+        console.log(error)
+      })
     }
 
 
