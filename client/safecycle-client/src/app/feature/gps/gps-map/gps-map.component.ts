@@ -114,7 +114,6 @@ export class GpsMapComponent implements OnInit, AfterViewInit, OnDestroy {
 
     if (this.currentItinerary != null) {
 
-      console.log(this.currentItinerary)
 
       const allSegments: L.Polyline[] = [];
 

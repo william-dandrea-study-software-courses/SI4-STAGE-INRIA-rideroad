@@ -2,6 +2,7 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {GpsService} from "../../../core/service/gps.service";
 import {Subscription} from "rxjs";
 import {round} from "mathjs";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-gps-details-bar',
@@ -14,7 +15,7 @@ export class GpsDetailsBarComponent implements OnInit, OnDestroy {
   public distanceUntilEnd: number | undefined = undefined;
 
 
-  constructor(private gpsService: GpsService) {}
+  constructor(private gpsService: GpsService, private router: Router) {}
 
   ngOnInit(): void {
     this.distanceUntilEndSubscription = this.gpsService.$distanceUntilEnd.subscribe(distanceUntilEnd => {
@@ -25,9 +26,11 @@ export class GpsDetailsBarComponent implements OnInit, OnDestroy {
   private newDistanceUntilEndValue(distanceUntilEnd: number | undefined) {
     this.distanceUntilEnd = distanceUntilEnd;
     if (this.distanceUntilEnd) {this.distanceUntilEnd = round(this.distanceUntilEnd, 2)}
-    console.log(distanceUntilEnd)
   }
 
+  public leaveGpsMode() {
+    this.router.navigate(['itinerary'])
+  }
 
   ngOnDestroy() {
     if (this.distanceUntilEndSubscription) {this.distanceUntilEndSubscription.unsubscribe();}

@@ -169,7 +169,6 @@ export class ItineraryMapComponent implements OnInit, AfterViewInit, OnDestroy {
 
     if (this.itinerariesVisual != null) {
       this.showItinerary(this.itinerariesVisual);
-      console.log(this.itinerariesVisual)
     }
   }
 

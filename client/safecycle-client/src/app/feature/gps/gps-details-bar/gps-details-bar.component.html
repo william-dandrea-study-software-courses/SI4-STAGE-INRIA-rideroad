@@ -2,7 +2,9 @@
 
 <section class="full-width full-height center-on-div-column">
 
-  You will arrive in {{distanceUntilEnd | roundkm}} m
+  You will arrive in {{distanceUntilEnd | roundkm}}
+
+  <button mat-raised-button color="warn" (click)="leaveGpsMode()">Leave GPS mode</button>
 
 </section>
 

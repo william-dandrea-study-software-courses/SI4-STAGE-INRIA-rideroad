@@ -29,7 +29,6 @@ export class AmenitySwitchPanelComponent implements OnInit, OnDestroy {
 
     this.amenitiesLoadingSubscription = this.amenityService.$isLoadingAmenities.subscribe(isLoading => {
       this.isLoadingAmenities = isLoading;
-      console.log(isLoading)
 
       if (isLoading instanceof Error) {
         this.snackBar.open("Cannot load amenities, please try to zoom more", "Ok", {duration: 5000})

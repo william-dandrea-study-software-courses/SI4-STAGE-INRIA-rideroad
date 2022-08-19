@@ -4,6 +4,7 @@ import {AmenityTitle} from "../../../../core/service/amenity.service";
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {AmenityEnum} from "../../../../core/model/amenity.model";
 import {MatTabChangeEvent} from "@angular/material/tabs";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
   selector: 'app-dialog-new-amenity',
@@ -46,7 +47,7 @@ export class DialogNewAmenityComponent implements OnInit {
 
   private selectedTabGroupIndex: string = "drinking_water";
 
-  constructor(private editAmenityService: EditAmenityService, private formBuilder: FormBuilder) { }
+  constructor(private editAmenityService: EditAmenityService, private formBuilder: FormBuilder, private snackBar: MatSnackBar) { }
 
   ngOnInit(): void {}
 
@@ -75,7 +76,6 @@ export class DialogNewAmenityComponent implements OnInit {
   }
 
   public onValidate() {
-    console.log(this.selectedTabGroupIndex)
 
     if (this.selectedTabGroupIndex === "drinking_water") {
       this.editAmenityService.addNewDrinkingWater(
@@ -84,9 +84,9 @@ export class DialogNewAmenityComponent implements OnInit {
         this.drinkingWaterForm.value['drinking_water_access'],
         this.drinkingWaterForm.value['drinking_water_fee'],
         ).subscribe(result => {
-          console.log(result)
+          this.snackBar.open("Success", "", {duration: 2000})
       }, error => {
-          console.log(error)
+        this.snackBar.open("Error, please try again", "", {duration: 4000})
       })
     }
 
@@ -103,9 +103,9 @@ export class DialogNewAmenityComponent implements OnInit {
         pump ? pump : "no",
         tools ? tools : "no",
         ).subscribe(result => {
-        console.log(result)
+        this.snackBar.open("Success", "", {duration: 2000})
       }, error => {
-        console.log(error)
+        this.snackBar.open("Error, please try again", "", {duration: 4000})
       });
     }
 
@@ -116,10 +116,10 @@ export class DialogNewAmenityComponent implements OnInit {
         this.shelterForm.value['shelter_bench'],
         this.shelterForm.value['shelter_bin'],
       ).subscribe(result => {
-        console.log(result)
+        this.snackBar.open("Success", "", {duration: 2000})
       }, error => {
-        console.log(error)
-      })
+        this.snackBar.open("Error, please try again", "", {duration: 4000})
+      });
     }
 
     if (this.selectedTabGroupIndex === "toilets") {
@@ -130,10 +130,10 @@ export class DialogNewAmenityComponent implements OnInit {
         this.toiletsForm.value['toilets_access'],
         this.toiletsForm.value['toilets_gender'],
       ).subscribe(result => {
-        console.log(result)
+        this.snackBar.open("Success", "", {duration: 2000})
       }, error => {
-        console.log(error)
-      })
+        this.snackBar.open("Error, please try again", "", {duration: 4000})
+      });
     }
 
 

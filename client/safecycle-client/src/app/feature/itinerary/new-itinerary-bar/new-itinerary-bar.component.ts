@@ -74,6 +74,13 @@ export class NewItineraryBarComponent implements OnInit, OnDestroy {
         this.itineraryService.setStart(this.departureAddress);
       }
     })
+
+    this.itineraryService.newItineraryUserInfos$.subscribe(infos => {
+      if (infos != null && infos.endMarker != null) {
+        this.destinationControl.setValue(`${infos.endMarker.lat} ,  ${infos.endMarker.lng}`)
+        this.destinationAddress = new LatLng(infos.endMarker.lat, infos.endMarker.lng);
+      }
+    })
   }
 
 

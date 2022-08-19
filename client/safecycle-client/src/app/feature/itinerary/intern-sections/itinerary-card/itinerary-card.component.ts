@@ -6,6 +6,7 @@ import {ChartConfiguration, ChartOptions} from "chart.js";
 import {ItineraryVisual} from "../../../../core/model/itinerary-visual.class";
 import {GpsService} from "../../../../core/service/gps.service";
 import {Router} from "@angular/router";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
   selector: 'app-itinerary-card',
@@ -40,6 +41,7 @@ export class ItineraryCardComponent implements OnInit, OnDestroy {
   constructor(public itineraryService: ItineraryService,
               private gpsService: GpsService,
               private router: Router,
+              private snackBar: MatSnackBar
               ) {}
 
   ngOnInit(): void {
@@ -70,7 +72,7 @@ export class ItineraryCardComponent implements OnInit, OnDestroy {
         } else {
           road = road+Number(path.length)
         }
-      
+
       });
       this.percentageRouteProfile[0]= ((100*bike) / this.currentItinerary.itinerary.length)
       this.percentageRouteProfile[1]= ((100*dirt) / this.currentItinerary.itinerary.length)
@@ -100,13 +102,12 @@ export class ItineraryCardComponent implements OnInit, OnDestroy {
   }
 
   public launchItinerary(): void {
-    console.log("Launch")
     if (this.currentItinerary != null) {
       this.gpsService.setItinerary(this.currentItinerary);
       this.gpsService.launchNavigation(true);
       this.router.navigate(['gps'])
     } else {
-      console.log("Cannot Launch Itinerary")
+      this.snackBar.open("Cannot launch itinerary because any itinerary is set", "", {duration: 3000})
     }
   }
 
