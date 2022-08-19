@@ -97,12 +97,7 @@ export class GpsService {
             is_visited: false,
             step: step,
           })
-
-
-          console.log(instruction)
         }
-
-
       })
     })
   }

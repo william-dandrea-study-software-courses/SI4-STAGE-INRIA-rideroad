@@ -14,6 +14,7 @@ import { ItineraryMapComponent } from './itinerary-map/itinerary-map.component';
 import { NewAmenityComponent } from './intern-sections/new-amenity/new-amenity.component';
 import { DialogNewAmenityComponent } from './intern-sections/dialog-new-amenity/dialog-new-amenity.component';
 import {MatRadioModule} from "@angular/material/radio";
+import {MatButtonToggleModule} from "@angular/material/button-toggle";
 
 
 @NgModule({
@@ -34,6 +35,7 @@ import {MatRadioModule} from "@angular/material/radio";
         NgChartsModule,
         PlotlyModule,
         MatRadioModule,
+        MatButtonToggleModule,
     ]
 })
 export class ItineraryModule { }

@@ -5,8 +5,7 @@ from server.safecycle_server.safecycle_itinerary_app.services.ContributeAmenitie
 
 class MyTestCase(unittest.TestCase):
     def test_something(self):
-        contributeAmenities = ContributeAmenities()
-        contributeAmenities.addNewWaterPoint()
+        pass
 
 
 if __name__ == '__main__':

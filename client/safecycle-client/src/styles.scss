@@ -6,7 +6,6 @@ html, body {
 }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
-
 .max-spacer {
   flex: 1 1 auto;
 }
@@ -56,4 +55,8 @@ hr.rounded {
   justify-content: center;
   align-items: center;
   flex-direction: row;
+}
+
+.mt-10 {
+  margin-top: 10px;
 }

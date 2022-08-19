@@ -7,6 +7,7 @@ from django.shortcuts import render
 # Create your views here.
 from django.views.decorators.csrf import csrf_exempt
 
+from .services.ContributeAmenities import ContributeAmenities
 from .services.ItineraryGeneration import ItineraryGeneration
 from .services.MultiCheckPointsItinerary import MultiCheckPointsItinerary
 from .services.ResearchAmenitiesBbox import ResearchAmenitiesBbox
@@ -66,7 +67,6 @@ def get_itinerary_with_checkpoints(request):
 
     if request.method == 'POST':
         body = json.loads(request.body)
-        # print(body)
 
         departure = LonLat(longitude=body['departure'][0], latitude=body['departure'][1])
         destination = LonLat(longitude=body['destination'][0], latitude=body['destination'][1])
@@ -105,12 +105,129 @@ def get_strategic_points_in_a_bbox(request):
         except:
             return HttpResponse("Cannot parse arguments")
 
-        # amenities: List[AmenityEnum] = [AmenityEnum.DRINKING_WATER, AmenityEnum.RESTAURANT, AmenityEnum.BICYCLE_REPAIR_STATION, AmenityEnum.SHELTER, AmenityEnum.TOILETS]
-        # amenities: List[AmenityEnum] = [AmenityEnum.DRINKING_WATER, AmenityEnum.RESTAURANT, AmenityEnum.BICYCLE_REPAIR_STATION, AmenityEnum.SHELTER, AmenityEnum.TOILETS]
-        # tourism: List[TourismEnum] = [TourismEnum.CAMP_SITE]
-
         r = ResearchAmenitiesBbox(bottom_left_longitude = bottom_left_longitude, bottom_left_latitude = bottom_left_latitude, top_right_longitude = top_right_longitude, top_right_latitude = top_right_latitude, amenities=amenities)
         return HttpResponse(json.dumps(r.launch()))
 
 
+@csrf_exempt
+def post_new_drinking_water_amenity(request):
 
+    if request.method == 'POST':
+        body = json.loads(request.body)
+        print(body)
+
+        login = body['login']
+        password = body['password']
+        access = body['access']
+        fee = body['fee']
+        longitude = body['longitude']
+        latitude = body['latitude']
+
+        try:
+            login = str(login)
+            password = str(password)
+            access = str(access)
+            fee = str(fee)
+            longitude = float(longitude)
+            latitude = float(latitude)
+        except:
+            return HttpResponse("Cannot parse arguments")
+
+        contributeAmenities = ContributeAmenities()
+        result = contributeAmenities.addNewDrinkingWater(longitude, latitude, login, password, access, fee)
+
+        return HttpResponse(json.dumps({"status": "OK"}))
+
+
+@csrf_exempt
+def post_new_repair_station_amenity(request):
+    if request.method == 'POST':
+        body = json.loads(request.body)
+        print(body)
+
+        login = body['login']
+        password = body['password']
+        fee = body['fee']
+        attributes = body['attributes']
+        longitude = body['longitude']
+        latitude = body['latitude']
+
+        try:
+            login = str(login)
+            password = str(password)
+            fee = str(fee)
+            attribute_repair = str(attributes["repair"])
+            attribute_pump = str(attributes["pump"])
+            attribute_tools = str(attributes["tools"])
+            longitude = float(longitude)
+            latitude = float(latitude)
+        except:
+            return HttpResponse("Cannot parse arguments")
+
+        contributeAmenities = ContributeAmenities()
+        result = contributeAmenities.addNewRepairStation(longitude, latitude,login, password, fee, attribute_repair, attribute_pump, attribute_tools)
+
+        return HttpResponse(json.dumps({"status": "OK"}))
+
+@csrf_exempt
+def post_new_shelter_amenity(request):
+
+    if request.method == 'POST':
+        body = json.loads(request.body)
+        print(body)
+
+        login = body['login']
+        password = body['password']
+        bench = body['bench']
+        bin = body['bin']
+        longitude = body['longitude']
+        latitude = body['latitude']
+
+
+        try:
+            login = str(login)
+            password = str(password)
+            bench = str(bench)
+            bin = str(bin)
+            longitude = float(longitude)
+            latitude = float(latitude)
+        except:
+            return HttpResponse("Cannot parse arguments")
+
+        contributeAmenities = ContributeAmenities()
+        result = contributeAmenities.addNewShelter(longitude, latitude,login, password, bench, bin)
+
+
+        return HttpResponse(json.dumps({"status": "OK"}))
+
+@csrf_exempt
+def post_new_toilets_amenity(request):
+
+    if request.method == 'POST':
+        body = json.loads(request.body)
+        print(body)
+
+        login = body['login']
+        password = body['password']
+        disposal = body['disposal']
+        access = body['access']
+        gender = body['gender']
+        longitude = body['longitude']
+        latitude = body['latitude']
+
+
+        try:
+            login = str(login)
+            password = str(password)
+            disposal = str(disposal)
+            access = str(access)
+            gender = str(gender)
+            longitude = float(longitude)
+            latitude = float(latitude)
+        except:
+            return HttpResponse("Cannot parse arguments")
+
+        contributeAmenities = ContributeAmenities()
+        result = contributeAmenities.addNewToilets(longitude, latitude, login, password, disposal, access, gender)
+
+        return HttpResponse(json.dumps({"status": "OK"}))

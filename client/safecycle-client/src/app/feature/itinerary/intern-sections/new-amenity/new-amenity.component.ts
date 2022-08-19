@@ -8,6 +8,7 @@ import {LatLng} from "leaflet";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {MatDialog} from "@angular/material/dialog";
 import {DialogNewAmenityComponent} from "../dialog-new-amenity/dialog-new-amenity.component";
+import {AmenityEnum} from "../../../../core/model/amenity.model";
 
 @Component({
   selector: 'app-new-amenity',
@@ -19,7 +20,13 @@ export class NewAmenityComponent implements OnInit, OnDestroy {
   private amenitiesTitleSubscription: Subscription = new Subscription();
   private mapClickSubscription: Subscription = new Subscription();
 
-  public amenities: AmenityTitle[] = []
+  public amenities: AmenityTitle[] = [
+    {name: 'Drinking Water', isSelected: true, type: AmenityEnum.DRINKING_WATER},
+    {name: 'Repair Station', isSelected: false, type: AmenityEnum.BICYCLE_REPAIR_STATION},
+    {name: 'Shelter', isSelected: true, type: AmenityEnum.SHELTER},
+    {name: 'Toilets', isSelected: true, type: AmenityEnum.TOILETS},
+  ];
+
 
   public isFocusOn: boolean = false
   public form: FormGroup = this.formBuilder.group({
@@ -31,12 +38,7 @@ export class NewAmenityComponent implements OnInit, OnDestroy {
   constructor(private editAmenityService: EditAmenityService, private snackBar: MatSnackBar, private mapClickService: MapClickService, private formBuilder: FormBuilder, private dialog: MatDialog) { }
 
   ngOnInit(): void {
-    this.amenitiesTitleSubscription = this.editAmenityService.$editableAmenitiesTitle.subscribe(amenities => {
-      this.amenities = amenities;
-    });
-
     this.initializeMapClick()
-
   }
 
   public onFocus() {

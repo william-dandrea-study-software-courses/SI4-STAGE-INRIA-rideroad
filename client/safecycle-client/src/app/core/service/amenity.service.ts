@@ -4,6 +4,13 @@ import {LatLngBounds} from "leaflet";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {environment} from "../../../environments/environment";
 import {AmenityEnum, AmenityModel} from "../model/amenity.model";
+import {
+  BICYCLE_REPAIR_STATION_ICON,
+  CAMP_SITE_ICON,
+  DRINKING_WATER_ICON,
+  GET_AMENITY_IN_BBOX, NOT_FOUND_ICON,
+  RESTAURANT_ICON, SHELTER_ICON, TOILETS_ICON
+} from "../../../config";
 
 export interface AmenityTitle {
   name: string;
@@ -44,10 +51,7 @@ export class AmenityService {
 
 
 
-
-  constructor(private http: HttpClient) {
-
-  }
+  constructor(private http: HttpClient) {}
 
   public selectAmenity(amenity: AmenityTitle) {
     const index = this.amenitiesTitle.findIndex(amen => amen.name === amenity.name);
@@ -67,7 +71,7 @@ export class AmenityService {
   public downloadAmenities() {
 
     if (this.amenitiesTitle.length != 0 && this.mapBoundsForAmenities != null) {
-      const url = environment.backend_url + 'amenitities-bbox';
+      const url = environment.backend_url + GET_AMENITY_IN_BBOX;
 
 
       this.isLoadingAmenities = true;
@@ -103,15 +107,15 @@ export class AmenityService {
   public getIconUrl(amenity: string) {
 
     switch (amenity) {
-      case AmenityEnum.DRINKING_WATER: return '/assets/icons/water_drop_icon.svg';
-      case AmenityEnum.CAMP_SITE: return '/assets/icons/camping_icon.svg';
-      case AmenityEnum.RESTAURANT: return '/assets/icons/restaurant_icon.svg';
-      case AmenityEnum.BICYCLE_REPAIR_STATION: return '/assets/icons/repair_icon.svg';
-      case AmenityEnum.SHELTER: return '/assets/icons/shelter_icon.svg';
-      case AmenityEnum.TOILETS: return '/assets/icons/toilets_icon.svg';
+      case AmenityEnum.DRINKING_WATER: return DRINKING_WATER_ICON;
+      case AmenityEnum.CAMP_SITE: return CAMP_SITE_ICON;
+      case AmenityEnum.RESTAURANT: return RESTAURANT_ICON;
+      case AmenityEnum.BICYCLE_REPAIR_STATION: return BICYCLE_REPAIR_STATION_ICON;
+      case AmenityEnum.SHELTER: return SHELTER_ICON;
+      case AmenityEnum.TOILETS: return TOILETS_ICON;
     }
 
-    return '/assets/icons/didnt_find_icon.svg'
+    return NOT_FOUND_ICON;
 
   }
 

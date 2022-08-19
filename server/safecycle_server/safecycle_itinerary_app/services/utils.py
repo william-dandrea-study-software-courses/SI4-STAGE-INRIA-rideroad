@@ -5,7 +5,6 @@ from typing import List
 from .models.AmenityEnum import AmenityEnum
 from .models.TourismEnum import TourismEnum
 
-
 from hashlib import md5
 from ..config import Config
 import requests
@@ -15,8 +14,7 @@ import re
 ONE_DEGREE_LATITUDE_IN_METER = 1.0 / 111320.0
 ONE_DEGREE_LONGITUDE_IN_METER = 1.0 / 111320.0
 
-
-def query_builder_bbox(bbox: List[float], amenitySelectors: List[AmenityEnum], tourismSelectors: List[TourismEnum]):    
+def query_builder_bbox(bbox: List[float], amenitySelectors: List[AmenityEnum], tourismSelectors: List[TourismEnum]):
     result = ''
     bbox_string = f'({bbox[0]},{bbox[1]},{bbox[2]},{bbox[3]})'
 
@@ -27,6 +25,7 @@ def query_builder_bbox(bbox: List[float], amenitySelectors: List[AmenityEnum], t
         result += f'node["tourism"="{tourism}"]{bbox_string};'
 
     return f'({result});out body;'
+
 
 
 

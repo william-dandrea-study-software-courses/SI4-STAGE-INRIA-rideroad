@@ -8,6 +8,7 @@ import {LatLng} from "leaflet";
 import {MultiCheckpointsItineraryModel} from "../model/multi-checkpoints-itinerary.model";
 import {environment} from "../../../environments/environment";
 import {NewUserItineraryInfosClass} from "../model/new-user-itinerary-infos.class";
+import {GET_NEW_ITINERARY_VIA_CHECKPOINTS} from "../../../config";
 
 export class ItineraryError extends Error {
   constructor(error: string) {
@@ -39,28 +40,12 @@ export class ItineraryService {
   constructor(private http: HttpClient) { }
 
 
-  private getItinerary(longitudeStart: number, latitudeStart: number, longitudeEnd: number, latitudeEnd: number, roadType: number): Observable<ItineraryModel[]> {
-    this.isLoadingItineraryOnBackend = true;
-    this.$isLoadingItineraryOnBackend.next(this.isLoadingItineraryOnBackend);
-
-    const url = environment.backend_url + 'itinerary';
-
-    let queryParams = new HttpParams();
-    queryParams = queryParams.append("departure_longitude", longitudeStart);
-    queryParams = queryParams.append("departure_latitude", latitudeStart);
-    queryParams = queryParams.append("destination_longitude", longitudeEnd);
-    queryParams = queryParams.append("destination_latitude", latitudeEnd);
-    queryParams = queryParams.append("road_type", roadType);
-
-    return this.http.get<ItineraryModel[]>(url, {params:queryParams})
-  }
-
 
   private getItineraryWithCheckPoints(longitudeStart: number, latitudeStart: number, longitudeEnd: number, latitudeEnd: number, roadType: number, checkPoints: LatLng[]): Observable<MultiCheckpointsItineraryModel> {
     this.isLoadingItineraryOnBackend = true;
     this.$isLoadingItineraryOnBackend.next(this.isLoadingItineraryOnBackend);
 
-    const url = environment.backend_url + 'checkpoints-itinerary';
+    const url = environment.backend_url + GET_NEW_ITINERARY_VIA_CHECKPOINTS;
 
     const body = {
       departure: [longitudeStart, latitudeStart],
@@ -180,13 +165,5 @@ export class ItineraryService {
   public isDirtPath(highway: string): boolean {
     return highway === "abandoned"|| highway === "bridleway" || highway === "proposed";
   }
-
-
-
-
-
-
-
-
 
 }

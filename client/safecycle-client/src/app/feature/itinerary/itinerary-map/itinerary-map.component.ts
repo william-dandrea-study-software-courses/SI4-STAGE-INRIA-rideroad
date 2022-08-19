@@ -1,7 +1,25 @@
 import {AfterViewInit, Component, HostListener, Input, OnDestroy, OnInit} from '@angular/core';
 import * as L from 'leaflet';
 import {Subscription} from "rxjs";
-import {ATTRIBUTION_MAP, URL_TILE_LAYER} from "../../../../config";
+import {
+  ASSISTANT_NAVIGATION_ICON,
+  ATTRIBUTION_MAP,
+  UNSELECTED_ITINERARY_COLOR,
+  CHECKPOINT_ITINERARY_MARKER_ICON,
+  DEFAULT_MAP_CENTER_LATITUDE,
+  DEFAULT_MAP_CENTER_LONGITUDE,
+  DEFAULT_ZOOM,
+  DIRT_ITINERARY_COLOR,
+  FINISH_ITINERARY_MARKER_ICON,
+  MARKER_ICON_SIZE,
+  MAX_ZOOM,
+  MIN_ZOOM,
+  PEDESTRIAN_ITINERARY_COLOR,
+  PROTECTED_ITINERARY_COLOR,
+  ROAD_ITINERARY_COLOR,
+  START_ITINERARY_MARKER_ICON,
+  URL_TILE_LAYER
+} from "../../../../config";
 import {AmenityService} from "../../../core/service/amenity.service";
 import {AutoCompletionAddressService} from "../../../core/service/auto-completion-address.service";
 import {GeolocalisationService} from "../../../core/service/geolocalisation.service";
@@ -9,7 +27,7 @@ import {GpsService} from "../../../core/service/gps.service";
 import {ItineraryService} from "../../../core/service/itinerary.service";
 import {MapClickService} from "../../../core/service/map-click.service";
 import {AmenityModel} from "../../../core/model/amenity.model";
-import {FeatureGroup, LatLng, LeafletMouseEvent} from "leaflet";
+import {FeatureGroup, LatLng, LeafletMouseEvent, PointTuple} from "leaflet";
 import {ItineraryVisual} from "../../../core/model/itinerary-visual.class";
 import {NewUserItineraryInfosClass} from "../../../core/model/new-user-itinerary-infos.class";
 import {MatSnackBar} from "@angular/material/snack-bar";
@@ -169,7 +187,6 @@ export class ItineraryMapComponent implements OnInit, AfterViewInit, OnDestroy {
 
     if (this.itinerariesVisual != null) {
       this.showItinerary(this.itinerariesVisual);
-      console.log(this.itinerariesVisual)
     }
   }
 
@@ -208,7 +225,8 @@ export class ItineraryMapComponent implements OnInit, AfterViewInit, OnDestroy {
         const layer = L.marker(new LatLng(amenity.lat, amenity.lon), {
           icon: L.icon({
             iconUrl: this.amenityService.getIconUrl(amenity.tags.amenity),
-            iconSize: [35, 35]
+            // @ts-ignore
+            iconSize: MARKER_ICON_SIZE,
           }),
         })
 
@@ -266,17 +284,17 @@ export class ItineraryMapComponent implements OnInit, AfterViewInit, OnDestroy {
     itinerary.itinerary.paths.forEach(path => {
       const allLongLat = path.coords.map(coord => new LatLng(coord.lat, coord.lon, coord.elevation))
 
-      let color: string = "#b2b2b2";
+      let color: string = UNSELECTED_ITINERARY_COLOR;
       let opacity: number = 0.8;
       if (itinerary.is_selectionned) {
         if (this.itineraryService.isDirtPath(path.tags['highway'])) {
-          color = "#8f5858"
+          color = DIRT_ITINERARY_COLOR
         } else if (this.itineraryService.isPedestrianPath(path.tags['highway'])) {
-          color = "#4f7c40"
+          color = PEDESTRIAN_ITINERARY_COLOR
         } else if (this.itineraryService.isBikePath(path)) {
-          color = "#759bc9"
+          color = PROTECTED_ITINERARY_COLOR
         } else {
-          color = "#484848"
+          color = ROAD_ITINERARY_COLOR
         }
 
         opacity = 1.0;
@@ -298,17 +316,17 @@ export class ItineraryMapComponent implements OnInit, AfterViewInit, OnDestroy {
 
     if (itineraryUserInfos.startMarker != null) {
       // show start marker
-      this.itineraryMarkers.push(this.createMarker(itineraryUserInfos.startMarker, "/assets/icons/start_itinerary_marker.svg", 0));
+      this.itineraryMarkers.push(this.createMarker(itineraryUserInfos.startMarker, START_ITINERARY_MARKER_ICON, 0));
     }
 
     if (itineraryUserInfos.endMarker != null) {
       // show end marker
-      this.itineraryMarkers.push(this.createMarker(itineraryUserInfos.endMarker, "/assets/icons/end_itinerary_marker.svg", 0));
+      this.itineraryMarkers.push(this.createMarker(itineraryUserInfos.endMarker, FINISH_ITINERARY_MARKER_ICON, 0));
     }
 
     itineraryUserInfos.checkPoints.forEach(latLngCheckpoint => {
       // Show checkpoint
-      this.itineraryMarkers.push(this.createMarker(latLngCheckpoint, "/assets/icons/checkpoint_marker.svg", 0));
+      this.itineraryMarkers.push(this.createMarker(latLngCheckpoint, CHECKPOINT_ITINERARY_MARKER_ICON, 0));
     });
 
     this.itineraryMarkers.forEach(itineraryMarker => {itineraryMarker.addTo(this.map)})
@@ -322,7 +340,8 @@ export class ItineraryMapComponent implements OnInit, AfterViewInit, OnDestroy {
     return new L.Marker(position, {
       icon: new L.Icon({
         iconUrl: url,
-        iconSize: [35, 35]
+        // @ts-ignore
+        iconSize: MARKER_ICON_SIZE,
       }),
       rotationAngle: rotation
     });
@@ -359,7 +378,7 @@ export class ItineraryMapComponent implements OnInit, AfterViewInit, OnDestroy {
     const currentPositionForMarker: LatLng = new LatLng(currentPosition.coords.latitude, currentPosition.coords.longitude)
     const rotation = currentPosition.coords.heading ? currentPosition.coords.heading : 0;
 
-    this.currentNavigationMarker = this.createMarker(currentPositionForMarker, "/assets/icons/assistant_navigation.svg", rotation)
+    this.currentNavigationMarker = this.createMarker(currentPositionForMarker, ASSISTANT_NAVIGATION_ICON, rotation)
 
     this.currentNavigationMarker.addTo(this.map)
   }
@@ -372,13 +391,13 @@ export class ItineraryMapComponent implements OnInit, AfterViewInit, OnDestroy {
     const currentPositionUser = this.geolocalisationService.currentPosition ? new LatLng(this.geolocalisationService.currentPosition.coords.latitude, this.geolocalisationService.currentPosition.coords.longitude) : undefined;
 
     this.map = L.map('map', {
-      center: currentPositionUser != undefined ? currentPositionUser : [ 48.86077, 2.29519 ],
-      zoom: 14,
+      center: currentPositionUser != undefined ? currentPositionUser : [ DEFAULT_MAP_CENTER_LATITUDE, DEFAULT_MAP_CENTER_LONGITUDE ],
+      zoom: DEFAULT_ZOOM,
     });
 
     const tiles = L.tileLayer(URL_TILE_LAYER, {
-      maxZoom: 18,
-      minZoom: 8,
+      maxZoom: MAX_ZOOM,
+      minZoom: MIN_ZOOM,
       attribution: ATTRIBUTION_MAP,
       detectRetina: true,
     });
@@ -403,10 +422,10 @@ export class ItineraryMapComponent implements OnInit, AfterViewInit, OnDestroy {
       const div = L.DomUtil.create('div', 'legend' );
 
       const labels = [
-        {name: 'Dirt Road', color: "#8f5858"},
-        {name: 'Bike Road', color: "#759bc9"},
-        {name: 'Regular Road', color: "#484848"},
-        {name: 'Pedestrian Road', color: "#4f7c40"},
+        {name: 'Dirt Road', color: DIRT_ITINERARY_COLOR},
+        {name: 'Bike Road', color: PROTECTED_ITINERARY_COLOR},
+        {name: 'Regular Road', color: ROAD_ITINERARY_COLOR},
+        {name: 'Pedestrian Road', color: PEDESTRIAN_ITINERARY_COLOR},
       ];
 
 
