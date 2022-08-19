@@ -59,7 +59,22 @@
 
 .details-path-type{
   height:20px;
-  width:10%; 
+  width:10%;
   display:inline-block;
   font-size:0.5em
+}
+
+
+
+.protected-itinerary-background {
+  background-color: var(--protected-itinerary-color);
+}
+.dirt-itinerary-background {
+  background-color: var(--dirt-itinerary-color);
+}
+.road-itinerary-background {
+  background-color: var(--road-itinerary-color);
+}
+.pedestrian-itinerary-background {
+  background-color: var(--pedestrian-itinerary-color);
 }

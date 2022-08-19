@@ -6,6 +6,7 @@ import {ItineraryVisual} from "../../../core/model/itinerary-visual.class";
 import {GpsService} from "../../../core/service/gps.service";
 import {GeolocalisationService} from "../../../core/service/geolocalisation.service";
 import {Subscription} from "rxjs";
+import {ASSISTANT_NAVIGATION_ICON, MARKER_ICON_SIZE} from "../../../../config";
 
 declare var require: any
 const osrmTextInstructions = require('osrm-text-instructions')('v5');
@@ -30,12 +31,6 @@ export class GpsMapComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private segmentsOnMap: Layer[] = [];
   private currentNavigationMarker: Marker | null = null;
-
-
-  // TEST =====
-  private listOfPathsTest: LatLng[] = []
-  // TEST =====
-
 
 
   constructor(private gpsService: GpsService, private geolocalisationService: GeolocalisationService) { }
@@ -71,7 +66,9 @@ export class GpsMapComponent implements OnInit, AfterViewInit, OnDestroy {
 
         this.currentNavigationMarker = new L.Marker(currentPositionForMarker, {
           icon: new L.Icon({
-            iconUrl: "/assets/icons/assistant_navigation.svg"
+            iconUrl: ASSISTANT_NAVIGATION_ICON,
+            // @ts-ignore
+            iconSize: MARKER_ICON_SIZE,
           }),
           rotationAngle: rotation
         })

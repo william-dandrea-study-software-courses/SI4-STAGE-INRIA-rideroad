@@ -21,10 +21,10 @@
         </div>
       </div>
       <div>
-        <span class="details-path-type" style="background-color:#759bc9"  [ngStyle]="{'width':this.percentageRouteProfile[0]+'%'}" title="protected : {{(this.percentageRouteProfile[0]*(this.currentItinerary?.itinerary?.length ?? 0)/100000).toFixed(2)}}km"></span>
-        <span class="details-path-type" style="background-color:#8f5858"  [ngStyle]="{'width':this.percentageRouteProfile[1]+'%'}" title="dirt : {{(this.percentageRouteProfile[1]*(this.currentItinerary?.itinerary?.length ?? 0)/100000).toFixed(2)}}km"></span>
-        <span class="details-path-type" style="background-color:#484848"  [ngStyle]="{'width':this.percentageRouteProfile[3]+'%'}" title="road : {{(this.percentageRouteProfile[3]*(this.currentItinerary?.itinerary?.length ?? 0)/100000).toFixed(2)}}km"></span>
-        <span class="details-path-type" style="background-color:#4f7c40"  [ngStyle]="{'width':this.percentageRouteProfile[2]+'%'}" title="pedestrian : {{(this.percentageRouteProfile[2]*(this.currentItinerary?.itinerary?.length ?? 0)/100000).toFixed(2)}}km"></span>
+        <span class="protected-itinerary-background details-path-type" [ngStyle]="{'width':this.percentageRouteProfile[0]+'%'}" title="protected : {{(this.percentageRouteProfile[0]*(this.currentItinerary?.itinerary?.length ?? 0)/100000).toFixed(2)}}km"></span>
+        <span class="dirt-itinerary-background details-path-type" [ngStyle]="{'width':this.percentageRouteProfile[1]+'%'}" title="dirt : {{(this.percentageRouteProfile[1]*(this.currentItinerary?.itinerary?.length ?? 0)/100000).toFixed(2)}}km"></span>
+        <span class="road-itinerary-background details-path-type " [ngStyle]="{'width':this.percentageRouteProfile[3]+'%'}" title="road : {{(this.percentageRouteProfile[3]*(this.currentItinerary?.itinerary?.length ?? 0)/100000).toFixed(2)}}km"></span>
+        <span class="pedestrian-itinerary-background details-path-type " [ngStyle]="{'width':this.percentageRouteProfile[2]+'%'}" title="pedestrian : {{(this.percentageRouteProfile[2]*(this.currentItinerary?.itinerary?.length ?? 0)/100000).toFixed(2)}}km"></span>
       </div>
       <button mat-raised-button class="full-width" (click)="launchItinerary()">Navigate</button>
 
