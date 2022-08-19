@@ -5,7 +5,7 @@ from .models.DirectionModel import OSMRResponse, OSMRDeserializer
 import requests
 import logging
 
-from .variables import BASE_ROUTING_INFOS_OSM_URL, DETAILS_ROUTING_INFOS_OSM_URL
+from .config import Config
 
 logger = logging.getLogger(__name__)
 
@@ -31,7 +31,7 @@ class DirectionInfosGenerator:
             checkpointsStr += f"{ch.lon},{ch.lat};"
         checkpointsStr = checkpointsStr[:-1]
 
-        url: str = f"{BASE_ROUTING_INFOS_OSM_URL}{self.startLocation.lon},{self.startLocation.lat};{checkpointsStr};{self.endLocation.lon},{self.endLocation.lat}{DETAILS_ROUTING_INFOS_OSM_URL}"
+        url: str = f"{Config.BASE_ROUTING_INFOS_OSM_URL}{self.startLocation.lon},{self.startLocation.lat};{checkpointsStr};{self.endLocation.lon},{self.endLocation.lat}{Config.DETAILS_ROUTING_INFOS_OSM_URL}"
 
         request_manager = requests.get(url, timeout=2)
 

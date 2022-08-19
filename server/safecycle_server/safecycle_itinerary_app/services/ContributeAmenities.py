@@ -1,12 +1,12 @@
 
 import osmapi
 
-from .variables import URL_ADD_NEW_AMENITIES
+from .config import Config
 
 
 class ContributeAmenities:
 
-    URL_API: str = URL_ADD_NEW_AMENITIES
+    URL_API: str = Config.URL_ADD_NEW_AMENITIES
 
     def __init__(self):
         pass

@@ -6,7 +6,7 @@ from .models.AmenityEnum import AmenityEnum
 from .models.TourismEnum import TourismEnum
 
 from hashlib import md5
-from ..config import Config
+from .config import Config
 import requests
 import re
 
@@ -53,7 +53,7 @@ class HttpError(Exception) :
         Exception.__init__(self, "Http error %d on '%s' :\n%s" % (status, url, text))
 
 def debug(*args, **kwargs):
-    if Config.IS_DEV == True:
+    if Config.DEBUG == True:
         if kwargs :
             for key, val in kwargs.items():
                 args += "%s=%s" % (key, str(val)),

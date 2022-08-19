@@ -2,6 +2,7 @@ from django_thread import ThreadPoolExecutor
 
 import requests
 import logging
+import utils
 
 from .DirectionInfosGenerator import DirectionInfosGenerator
 from .exceptions.BrouterException import BrouterException
@@ -10,7 +11,7 @@ from .models.Coord import Coord
 from .models.DirectionModel import OSMRResponse
 from .models.Itinerary import Itinerary
 from .models.Path import Path
-from .variables import BROUTER_BASE_URL
+from .config import Config
 
 logger = logging.getLogger(__name__)
 
@@ -63,7 +64,7 @@ class ItineraryGeneration:
         return itinerarys
 
     def berouter_request(self, profile: str, alternative: int):
-        url = BROUTER_BASE_URL
+        url = Config.BROUTER_BASE_URL
         url += f'format=geojson' + '&'
         url += f'profile={profile}' + '&'
         url += f'lonlats={self.__departure_longitude},{self.__departure_latitude}|{self.__destination_longitude},{self.__destination_latitude}' + '&'
