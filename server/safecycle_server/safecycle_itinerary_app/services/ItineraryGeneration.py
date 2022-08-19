@@ -1,21 +1,16 @@
-import json
 from django_thread import ThreadPoolExecutor
-from typing import List
 
 import requests
-from requests import Session
 import logging
 
-from . import utils
 from .DirectionInfosGenerator import DirectionInfosGenerator
-from .ResearchElementsInArea import ResearchElementsInArea
 from .exceptions.BrouterException import BrouterException
 from .models import RoadTypeEnum
-from .models.AmenityEnum import AmenityEnum
 from .models.Coord import Coord
 from .models.DirectionModel import OSMRResponse
 from .models.Itinerary import Itinerary
 from .models.Path import Path
+from .variables import BROUTER_BASE_URL
 
 logger = logging.getLogger(__name__)
 
@@ -61,17 +56,8 @@ class ItineraryGeneration:
 
         return itinerarys
 
-
-
-
-
-
-
-
-
-
     def berouter_request(self, profile: str, alternative: int):
-        url = 'http://brouter.de/brouter?'
+        url = BROUTER_BASE_URL
         url += f'format=geojson' + '&'
         url += f'profile={profile}' + '&'
         url += f'lonlats={self.__departure_longitude},{self.__departure_latitude}|{self.__destination_longitude},{self.__destination_latitude}' + '&'
@@ -155,15 +141,12 @@ class ItineraryGeneration:
                         logger.error("There was still coordinates!")
                     break
 
-        # self.generateAmenities(iti)
         self.generateDirections(iti)
         return iti
 
 
 
     def generateDirections(self, itinerary: Itinerary):
-        # directionInfosGenerator = DirectionInfosGenerator(current_path.getFirstCoord(), current_path.getLastCoord())
-        # current_path.setDirectionInfos(directionInfosGenerator.getDirections())
 
         firstCoord = itinerary.paths[0].getFirstCoord()
         lastCoord = itinerary.paths[-1].getLastCoord()
@@ -177,46 +160,3 @@ class ItineraryGeneration:
             steps = direction_legs[index].steps
             path.setDirectionInfos(steps)
 
-
-
-
-
-
-
-
-
-
-
-
-    def generateAmenities(self, itinerary: Itinerary):
-
-        paths: List[Coord] = [res.getFirstCoord() for res in itinerary.paths]
-        paths.append(itinerary.paths[-1].getLastCoord())
-        amenities: List[AmenityEnum] = [AmenityEnum.DRINKING_WATER, AmenityEnum.BENCH]
-
-        def process_fn(inputs):
-            index = inputs[0]
-            r = ResearchElementsInArea(path=paths[index: index + 30], radius=100, amenities=amenities)
-            return r.launch()
-
-
-        executor = ThreadPoolExecutor(max_workers=2)
-
-        amenitiesResult = []
-        for index in range(0, len(paths), 30):
-            future = executor.submit(process_fn, [index])
-            amenitiesResult.append(future)
-
-        itinerary.amenities = [f.result() for f in amenitiesResult]
-
-
-
-        """
-        paths: List[Coord] = [res.getFirstCoord() for res in itinerary.paths]
-        paths.append(itinerary.paths[-1].getLastCoord())
-
-        amenities: List[AmenityEnum] = [AmenityEnum.DRINKING_WATER, AmenityEnum.BENCH]
-
-        r = ResearchElementsInArea(path=paths, radius=100, amenities=amenities)
-        itinerary.amenities = r.launch()
-        """

@@ -23,19 +23,6 @@ class MultiCheckPointsItinerary:
         )
 
     def search(self):
-
-        """
-
-        itinerary: ItineraryGeneration = ItineraryGeneration(departure_longitude=self.__start.longitude, departure_latitude=self.__start.latitude,
-                                        destination_longitude=self.__end.longitude,
-                                        destination_latitude=self.__end.latitude, road_type=self.__roadType)
-
-        result: List[Itinerary] = itinerary.search()
-        self.__multiCheckPointModel.itineraries = result
-
-        """
-
-
         # Recover all itineraries (with all the variantes) from Brouter
         allItinerariesNoConcatenate: List[List[Itinerary]] = []
         lastCheckpoint: LonLat = self.__start

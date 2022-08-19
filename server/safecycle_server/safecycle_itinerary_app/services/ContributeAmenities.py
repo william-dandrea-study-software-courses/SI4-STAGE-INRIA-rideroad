@@ -1,9 +1,12 @@
 
 import osmapi
 
+from .variables import URL_ADD_NEW_AMENITIES
+
+
 class ContributeAmenities:
 
-    URL_API: str = "https://master.apis.dev.openstreetmap.org"
+    URL_API: str = URL_ADD_NEW_AMENITIES
 
     def __init__(self):
         pass
@@ -17,7 +20,6 @@ class ContributeAmenities:
             "access": access,
             "fee": fee,
         }})
-        print(creationResult)
         api.ChangesetClose()
 
     def addNewRepairStation(self, longitude: float, latitude: float, login: str, password: str, fee: str, attribute_repair: str, attribute_pump: str, attribute_tools: str):
@@ -31,7 +33,6 @@ class ContributeAmenities:
             "service:bicycle:tools": attribute_tools,
             "fee": fee,
         }})
-        print(creationResult)
         api.ChangesetClose()
 
     def addNewShelter(self, longitude: float, latitude: float, login: str, password: str, bench: str, bin_v: str):
@@ -43,7 +44,6 @@ class ContributeAmenities:
             "bench": bench,
             "bin": bin_v,
         }})
-        print(creationResult)
         api.ChangesetClose()
 
     def addNewToilets(self, longitude: float, latitude: float, login: str, password: str, disposal: str, access: str, gender: str ):
@@ -56,5 +56,4 @@ class ContributeAmenities:
             "access": access,
             "gender": gender,
         }})
-        print(creationResult)
         api.ChangesetClose()

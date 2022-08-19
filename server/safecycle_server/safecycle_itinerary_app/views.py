@@ -67,7 +67,6 @@ def get_itinerary_with_checkpoints(request):
 
     if request.method == 'POST':
         body = json.loads(request.body)
-        # print(body)
 
         departure = LonLat(longitude=body['departure'][0], latitude=body['departure'][1])
         destination = LonLat(longitude=body['destination'][0], latitude=body['destination'][1])
@@ -105,10 +104,6 @@ def get_strategic_points_in_a_bbox(request):
             top_right_latitude = float(top_right_latitude)
         except:
             return HttpResponse("Cannot parse arguments")
-
-        # amenities: List[AmenityEnum] = [AmenityEnum.DRINKING_WATER, AmenityEnum.RESTAURANT, AmenityEnum.BICYCLE_REPAIR_STATION, AmenityEnum.SHELTER, AmenityEnum.TOILETS]
-        # amenities: List[AmenityEnum] = [AmenityEnum.DRINKING_WATER, AmenityEnum.RESTAURANT, AmenityEnum.BICYCLE_REPAIR_STATION, AmenityEnum.SHELTER, AmenityEnum.TOILETS]
-        # tourism: List[TourismEnum] = [TourismEnum.CAMP_SITE]
 
         r = ResearchAmenitiesBbox(bottom_left_longitude = bottom_left_longitude, bottom_left_latitude = bottom_left_latitude, top_right_longitude = top_right_longitude, top_right_latitude = top_right_latitude, amenities=amenities)
         return HttpResponse(json.dumps(r.launch()))
