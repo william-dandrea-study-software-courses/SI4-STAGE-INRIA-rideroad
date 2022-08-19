@@ -4,9 +4,20 @@ import {Subscription} from "rxjs";
 import {
   ASSISTANT_NAVIGATION_ICON,
   ATTRIBUTION_MAP,
-  BASIC_ITINERARY_COLOR, CHECKPOINT_ITINERARY_MARKER_ICON,
-  DIRT_ITINERARY_COLOR, FINISH_ITINERARY_MARKER_ICON, MARKER_ICON_SIZE,
-  PEDESTRIAN_ITINERARY_COLOR, PROTECTED_ITINERARY_COLOR, ROAD_ITINERARY_COLOR, START_ITINERARY_MARKER_ICON,
+  UNSELECTED_ITINERARY_COLOR,
+  CHECKPOINT_ITINERARY_MARKER_ICON,
+  DEFAULT_MAP_CENTER_LATITUDE,
+  DEFAULT_MAP_CENTER_LONGITUDE,
+  DEFAULT_ZOOM,
+  DIRT_ITINERARY_COLOR,
+  FINISH_ITINERARY_MARKER_ICON,
+  MARKER_ICON_SIZE,
+  MAX_ZOOM,
+  MIN_ZOOM,
+  PEDESTRIAN_ITINERARY_COLOR,
+  PROTECTED_ITINERARY_COLOR,
+  ROAD_ITINERARY_COLOR,
+  START_ITINERARY_MARKER_ICON,
   URL_TILE_LAYER
 } from "../../../../config";
 import {AmenityService} from "../../../core/service/amenity.service";
@@ -273,7 +284,7 @@ export class ItineraryMapComponent implements OnInit, AfterViewInit, OnDestroy {
     itinerary.itinerary.paths.forEach(path => {
       const allLongLat = path.coords.map(coord => new LatLng(coord.lat, coord.lon, coord.elevation))
 
-      let color: string = BASIC_ITINERARY_COLOR;
+      let color: string = UNSELECTED_ITINERARY_COLOR;
       let opacity: number = 0.8;
       if (itinerary.is_selectionned) {
         if (this.itineraryService.isDirtPath(path.tags['highway'])) {
@@ -380,13 +391,13 @@ export class ItineraryMapComponent implements OnInit, AfterViewInit, OnDestroy {
     const currentPositionUser = this.geolocalisationService.currentPosition ? new LatLng(this.geolocalisationService.currentPosition.coords.latitude, this.geolocalisationService.currentPosition.coords.longitude) : undefined;
 
     this.map = L.map('map', {
-      center: currentPositionUser != undefined ? currentPositionUser : [ 48.86077, 2.29519 ],
-      zoom: 14,
+      center: currentPositionUser != undefined ? currentPositionUser : [ DEFAULT_MAP_CENTER_LATITUDE, DEFAULT_MAP_CENTER_LONGITUDE ],
+      zoom: DEFAULT_ZOOM,
     });
 
     const tiles = L.tileLayer(URL_TILE_LAYER, {
-      maxZoom: 18,
-      minZoom: 8,
+      maxZoom: MAX_ZOOM,
+      minZoom: MIN_ZOOM,
       attribution: ATTRIBUTION_MAP,
       detectRetina: true,
     });
@@ -411,10 +422,10 @@ export class ItineraryMapComponent implements OnInit, AfterViewInit, OnDestroy {
       const div = L.DomUtil.create('div', 'legend' );
 
       const labels = [
-        {name: 'Dirt Road', color: "#8f5858"},
-        {name: 'Bike Road', color: "#759bc9"},
-        {name: 'Regular Road', color: "#484848"},
-        {name: 'Pedestrian Road', color: "#4f7c40"},
+        {name: 'Dirt Road', color: DIRT_ITINERARY_COLOR},
+        {name: 'Bike Road', color: PROTECTED_ITINERARY_COLOR},
+        {name: 'Regular Road', color: ROAD_ITINERARY_COLOR},
+        {name: 'Pedestrian Road', color: PEDESTRIAN_ITINERARY_COLOR},
       ];
 
 

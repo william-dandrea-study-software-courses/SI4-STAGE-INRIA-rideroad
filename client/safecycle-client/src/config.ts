@@ -9,7 +9,8 @@ export const DIRT_ITINERARY_COLOR: string = "#8f5858";
 export const PROTECTED_ITINERARY_COLOR: string = "#759bc9";
 export const ROAD_ITINERARY_COLOR: string = "#484848";
 export const PEDESTRIAN_ITINERARY_COLOR: string = "#4f7c40";
-export const BASIC_ITINERARY_COLOR: string = "#b2b2b2";
+export const UNSELECTED_ITINERARY_COLOR: string = "#b2b2b2";
+export const NAVIGATION_ITINERARY_COLOR: string = "#8291ff";
 
 // SIZES
 export const MARKER_ICON_SIZE = [35, 35];
@@ -29,9 +30,14 @@ export const TOILETS_ICON: string = '/assets/icons/toilets_icon.svg';
 export const NOT_FOUND_ICON: string = '/assets/icons/didnt_find_icon.svg';
 
 
-// URL OSM
+// OSM
 export const URL_TILE_LAYER: string  = "https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png";
 export const ATTRIBUTION_MAP: string  = "&copy; <a href=\"http://www.openstreetmap.org/copyright\">OpenStreetMap</a>";
+export const MAX_ZOOM: number = 18;
+export const MIN_ZOOM: number = 8;
+export const DEFAULT_ZOOM: number = 18;
+export const DEFAULT_MAP_CENTER_LATITUDE: number = 48.86077;  // PARIS
+export const DEFAULT_MAP_CENTER_LONGITUDE: number = 2.29519;  // PARIS
 
 export const NOMINATIM_API_URL: string = 'https://nominatim.openstreetmap.org/search.php';
 

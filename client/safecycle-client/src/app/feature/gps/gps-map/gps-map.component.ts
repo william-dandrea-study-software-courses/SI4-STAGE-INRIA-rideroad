@@ -6,7 +6,14 @@ import {ItineraryVisual} from "../../../core/model/itinerary-visual.class";
 import {GpsService} from "../../../core/service/gps.service";
 import {GeolocalisationService} from "../../../core/service/geolocalisation.service";
 import {Subscription} from "rxjs";
-import {ASSISTANT_NAVIGATION_ICON, MARKER_ICON_SIZE} from "../../../../config";
+import {
+  ASSISTANT_NAVIGATION_ICON, DEFAULT_MAP_CENTER_LATITUDE, DEFAULT_MAP_CENTER_LONGITUDE,
+  DEFAULT_ZOOM,
+  MARKER_ICON_SIZE,
+  MAX_ZOOM,
+  MIN_ZOOM,
+  NAVIGATION_ITINERARY_COLOR
+} from "../../../../config";
 
 declare var require: any
 const osrmTextInstructions = require('osrm-text-instructions')('v5');
@@ -82,7 +89,7 @@ export class GpsMapComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private initialisationMap(): void {
 
-    const coordinatesCenter: LatLng = new LatLng(48.86077, 2.29519 );
+    const coordinatesCenter: LatLng = new LatLng(DEFAULT_MAP_CENTER_LATITUDE, DEFAULT_MAP_CENTER_LONGITUDE);
     if (this.geolocalisationService.currentPosition) {
       coordinatesCenter.lat = this.geolocalisationService.currentPosition.coords.latitude;
       coordinatesCenter.lng = this.geolocalisationService.currentPosition.coords.longitude;
@@ -90,12 +97,12 @@ export class GpsMapComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.map = L.map('gps-map', {
       center: coordinatesCenter,
-      zoom: 18,
+      zoom: DEFAULT_ZOOM,
     });
 
     const tiles = L.tileLayer('https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png', {
-      maxZoom: 18,
-      minZoom: 8,
+      maxZoom: MAX_ZOOM,
+      minZoom: MIN_ZOOM,
       attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
       detectRetina: true,
     });
@@ -117,7 +124,7 @@ export class GpsMapComponent implements OnInit, AfterViewInit, OnDestroy {
       this.currentItinerary.itinerary.paths.forEach(path => {
         const allLongLat = path.coords.map(coord => new LatLng(coord.lat, coord.lon, coord.elevation))
 
-        let color: string = "#8291ff";
+        let color: string = NAVIGATION_ITINERARY_COLOR;
         let opacity: number = 1.0;
 
 
