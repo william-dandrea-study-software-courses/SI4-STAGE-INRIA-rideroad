@@ -1,0 +1,14 @@
+{
+  "fast" : {
+      "unprotected_cost" : 1.05,
+      "unsafe_cost" : 1.5
+  },
+  "medium" : {
+       "unprotected_cost" : 1.1,
+       "unsafe_cost" : 3
+  },
+  "safe" : {
+       "unprotected_cost" : 1.2,
+       "unsafe_cost" : 10
+  }
+}

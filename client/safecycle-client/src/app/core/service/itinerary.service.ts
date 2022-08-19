@@ -154,7 +154,8 @@ export class ItineraryService {
 
 
   public isBikePath(highways: PathModel): boolean {
-    return highways.tags['highway'] === "cycleway" || highways.tags['cycleway:right'] != null || highways.tags['cycleway:left'] != null || highways.tags['route_bicycle_icn'] == 'yes'
+    let lanes = ["lane", "opposite", "opposite_lane", "track", "opposite_track", "share_busway", "share_lane"]
+    return highways.tags['highway'] === "cycleway" || highways.tags['bicycle'] === "designated" || highways.tags['bicycle_road'] != null || lanes.includes(highways.tags['cycleway:right']) || lanes.includes(highways.tags['cycleway:left']) || lanes.includes(highways.tags['cycleway'])|| highways.tags['route_bicycle_icn'] == 'yes'
   }
 
   public isPedestrianPath(highway: string): boolean {

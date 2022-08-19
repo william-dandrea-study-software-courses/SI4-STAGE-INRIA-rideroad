@@ -72,7 +72,6 @@ export class ItineraryCardComponent implements OnInit, OnDestroy {
         } else {
           road = road+Number(path.length)
         }
-
       });
       this.percentageRouteProfile[0]= ((100*bike) / this.currentItinerary.itinerary.length)
       this.percentageRouteProfile[1]= ((100*dirt) / this.currentItinerary.itinerary.length)

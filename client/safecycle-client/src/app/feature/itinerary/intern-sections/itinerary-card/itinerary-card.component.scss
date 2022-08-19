@@ -78,3 +78,29 @@
 .pedestrian-itinerary-background {
   background-color: var(--pedestrian-itinerary-color);
 }
+
+
+.selected-card {
+  background: #b4dcfc;
+}
+
+.centered {
+  text-align: center;
+}
+
+//tab stuff
+
+::ng-deep.mat-tab-label.mat-tab-label-active:not(.mat-tab-disabled),
+::ng-deep.mat-tab-label.mat-tab-label-active.cdk-keyboard-focused:not(.mat-tab-disabled) {
+  background-color: #ffffff ;
+  font-weight: 700;
+  color: black;
+  opacity: 1;
+}
+
+.details-path-type{
+  height:20px;
+  width:10%; 
+  display:inline-block;
+  font-size:0.5em
+}

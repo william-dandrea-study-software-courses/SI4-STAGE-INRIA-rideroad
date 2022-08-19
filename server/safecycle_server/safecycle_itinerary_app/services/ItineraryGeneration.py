@@ -45,6 +45,12 @@ class ItineraryGeneration:
         if self.__road_type == 3:  # Bike Path
             profile = "trekking"
 
+        if self.__road_type == 4:  # Safety Path from Raphael Jolivet
+            #profile = "safety"
+            utils.post_profile("safe")
+            profile = utils.profile_fullname("safe")
+        
+
         executor = ThreadPoolExecutor()
 
         itinerarys = []
